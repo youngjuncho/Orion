@@ -1,290 +1,347 @@
-# ADM Research Specification
+# ADM Orion Implementation Specification
 
 Version: 0.1
 
-Status: Research
-
-Author: Orion OS
+Status: Draft
 
 Last Updated: 2026-06-14
 
----
+Depends On:
 
-# Overview
-
-ADM (Absolute Dual Momentum) is a rules-based investment strategy developed by Gary Antonacci.
-
-The strategy combines:
-
-1. Relative Momentum
-2. Absolute Momentum
-
-to improve risk-adjusted returns while reducing major drawdowns.
-
-ADM is the foundational strategy selected for Moon v1.0 because of its simplicity, transparency, and extensive historical validation.
+* ADM_Research.md
 
 ---
 
-# Source Material
+# Purpose
 
-Primary Source:
+This document defines the Orion-specific implementation of the ADM strategy.
 
-Dual Momentum Investing
-
-Author:
-
-Gary Antonacci
-
-Publication Year:
-
-2014
-
-Supporting Research:
-
-* Relative Strength Strategies
-* Absolute Momentum Research
-* Risk Premia Harvesting Through Dual Momentum
+While ADM_Research.md preserves the original Gary Antonacci methodology, this document specifies how ADM will be implemented within Orion OS.
 
 ---
 
-# Research Objective
+# Implementation Principles
 
-Determine whether investors should allocate capital to:
+## Original First
 
-* US Equities
-* International Equities
-* Defensive Assets
-
-based on relative and absolute momentum signals.
+The original ADM methodology remains the reference implementation.
 
 ---
 
-# Core Concepts
+## Practical Execution
 
-## Relative Momentum
+The Orion implementation prioritizes:
 
-Relative Momentum compares the performance of multiple risky assets.
-
-The strongest-performing asset is selected.
-
-Question:
-
-Which risk asset has performed better?
+* Simplicity
+* ETF availability
+* Low maintenance
+* Monthly execution
 
 ---
 
-## Absolute Momentum
+# Orion ADM Universe
 
-Absolute Momentum evaluates whether the selected asset has generated positive performance relative to a risk-free alternative.
-
-Question:
-
-Is the selected asset strong enough to own?
-
----
-
-# Original GEM Framework
-
-GEM = Global Equities Momentum
-
-The original implementation uses:
-
-Risk Assets:
-
-* US Equities
-* International Equities
-
-Defensive Asset:
-
-* Cash or Treasury Bills
-
----
-
-# Original Decision Process
-
-Step 1
-
-Compare:
-
-US Equity Momentum
-
-vs
-
-International Equity Momentum
-
-Winner:
-
-Highest Momentum Asset
-
----
-
-Step 2
-
-Compare:
-
-Winner Momentum
-
-vs
-
-Cash Return
-
-If Winner > Cash
-
-Invest in Winner
-
-Else
-
-Move to Defensive Asset
-
----
-
-# Momentum Measurement
-
-Original Methodology:
-
-Trailing 12-Month Total Return
-
-Lookback Window:
-
-12 Months
-
-Evaluation Frequency:
-
-Monthly
-
----
-
-# Rebalancing Rules
-
-Evaluation Date:
-
-Last trading day of each month
-
-Execution Date:
-
-Next trading day
-
-Rebalancing Frequency:
-
-Monthly
-
----
-
-# Portfolio States
-
-## State A
-
-Risk On
-
-Asset:
+## Risk Assets
 
 US Equity
 
-Condition:
+Ticker:
 
-US Momentum > International Momentum
+VTI
 
-AND
+Description:
 
-US Momentum > Cash
+US Total Stock Market
 
 ---
-
-## State B
-
-Risk On
-
-Asset:
 
 International Equity
 
-Condition:
+Ticker:
 
-International Momentum > US Momentum
+VEU
 
-AND
+Description:
 
-International Momentum > Cash
-
----
-
-## State C
-
-Risk Off
-
-Asset:
-
-Cash / Treasury
-
-Condition:
-
-Winner Momentum <= Cash
+FTSE All-World ex-US
 
 ---
 
-# Expected Benefits
+## Defensive Asset
 
-Historical research suggests that ADM may provide:
+Primary Candidate
 
-* Higher risk-adjusted returns
-* Lower drawdowns
-* Reduced bear market exposure
-* Simpler decision framework
+Ticker:
 
----
+SGOV
 
-# Known Limitations
+Description:
 
-## Limited Asset Universe
+0-3 Month US Treasury ETF
 
-Original GEM uses only a small number of assets.
-
----
-
-## Trend Following Risk
-
-Momentum strategies may experience whipsaw periods.
-
----
-
-## Tax Considerations
-
-Monthly rebalancing may create taxable events.
-
----
-
-## Implementation Differences
-
-Results may vary depending on:
-
-* ETF selection
-* Data source
-* Total return calculations
-* Execution timing
-
----
-
-# Research Questions
-
-RQ-001
-
-Should Orion implement the original GEM universe first?
-
-Status:
-
-Open
-
----
-
-RQ-002
-
-What is the preferred defensive asset?
-
-Candidates:
+Backup Candidates:
 
 * BIL
 * SHY
+
+Current Status:
+
+Pending Final Approval
+
+---
+
+# Data Source
+
+Primary Source
+
+Yahoo Finance
+
+Reason:
+
+* Free
+* Reliable
+* Python ecosystem support
+
+---
+
+Backup Sources
+
+* Stooq
+* Alpha Vantage
+* Polygon
+
+Status:
+
+Future Review
+
+---
+
+# Signal Calculation
+
+## Evaluation Frequency
+
+Monthly
+
+---
+
+## Evaluation Date
+
+Last Trading Day
+
+Example:
+
+2026-06-30
+
+---
+
+## Execution Date
+
+Next Trading Day
+
+Example:
+
+2026-07-01
+
+---
+
+# Momentum Calculation
+
+Initial Orion Standard
+
+Trailing 12-Month Return
+
+Formula:
+
+Current Price / Price 12 Months Ago - 1
+
+Status:
+
+Pending Validation
+
+---
+
+# State Model
+
+## Risk On
+
+Condition:
+
+VTI selected
+
+Output:
+
+State:
+Risk On
+
+Asset:
+VTI
+
+---
+
+## International Risk On
+
+Condition:
+
+VEU selected
+
+Output:
+
+State:
+Risk On
+
+Asset:
+VEU
+
+---
+
+## Risk Off
+
+Condition:
+
+Defensive Asset selected
+
+Output:
+
+State:
+Risk Off
+
+Asset:
+SGOV
+
+---
+
+# Moon Dashboard Output
+
+Example
+
+Strategy:
+ADM
+
+Current Asset:
+VTI
+
+State:
+Risk On
+
+Relative Momentum:
+Positive
+
+Absolute Momentum:
+Positive
+
+Rebalance Date:
+2026-06-30
+
+Next Action:
+Hold
+
+---
+
+# CLI Output
+
+Command
+
+orion moon adm
+
+Example
+
+ADM
+
+Current Asset: VTI
+
+State: Risk On
+
+Momentum: Positive
+
+Next Rebalance: 2026-06-30
+
+---
+
+# Dashboard Score
+
+ADM contributes to the Moon Dashboard.
+
+Score Calculation:
+
+Not Yet Defined
+
+Future Document:
+
+Moon_Scoring_Framework.md
+
+Status:
+
+Pending
+
+---
+
+# Rebalancing Policy
+
+Default Frequency
+
+Monthly
+
+---
+
+Forced Rebalance
+
+Not Allowed
+
+---
+
+Manual Override
+
+Not Allowed
+
+---
+
+# Logging Requirements
+
+Every rebalance event must store:
+
+Date
+
+Selected Asset
+
+Previous Asset
+
+Signal
+
+Momentum Values
+
+---
+
+# Future Enhancements
+
+Potential Orion Variants
+
+ADM-US
+
+ADM-Global
+
+ADM-Leveraged
+
+ADM-Rotation
+
+Status:
+
+Research Only
+
+Not Approved
+
+---
+
+# Known Open Issues
+
+OI-001
+
+Final defensive asset selection
+
+Candidates:
+
 * SGOV
+* BIL
+* SHY
 
 Status:
 
@@ -292,9 +349,11 @@ Open
 
 ---
 
-RQ-003
+OI-002
 
-Should dividends be included in return calculations?
+Total return calculation methodology
+
+Need verification against original research.
 
 Status:
 
@@ -302,25 +361,25 @@ Open
 
 ---
 
-# Research Conclusion
+OI-003
 
-ADM is approved as the first Moon strategy for further implementation research.
+Dividend adjustment handling
 
-The original methodology should be preserved before any Orion-specific modifications are introduced.
+Need validation.
 
-Principle:
+Status:
 
-Original First
-
-Customization Later
+Open
 
 ---
 
-# Next Document
+# Approval Status
 
-ADM_Orion.md
+Research:
+Completed
 
-Purpose:
+Implementation:
+Draft
 
-Define Orion-specific implementation details while preserving the original ADM methodology.
-
+Coding:
+Not Started

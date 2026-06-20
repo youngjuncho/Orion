@@ -23,7 +23,7 @@ Customization Later
 | BAA | In Progress | Not Started | Not Started | Research |
 | VAA | Not Started | Not Started | Not Started | Planned |
 | HAA | Not Started | Not Started | Not Started | Planned |
-| DAA | Not Started | Not Started | Not Started | Planned |
+| BDA | Not Started | Not Started | Not Started | Planned |
 
 ---
 
@@ -33,7 +33,7 @@ Customization Later
 2. BAA
 3. VAA
 4. HAA
-5. DAA
+5. BDA
 
 ---
 
@@ -48,7 +48,7 @@ Customization Later
 
 - BAA
 - HAA
-- DAA
+- BDA
 
 ---
 

@@ -61,7 +61,7 @@ Build the first operational investment engine.
 * BAA Research
 * VAA Research
 * HAA Research
-* DAA Research
+* BDA Research
 
 ### Specifications
 
@@ -69,7 +69,7 @@ Build the first operational investment engine.
 * BAA Orion
 * VAA Orion
 * HAA Orion
-* DAA Orion
+* BDA Orion
 
 ### Implementation
 
