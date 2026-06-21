@@ -503,3 +503,113 @@ Status: Approved
 Date: 2026-06-21
 
 ---
+
+## D-021
+
+Orion shall maintain a centralized glossary.
+
+The glossary defines standard terminology used across all Orion documentation.
+
+Examples:
+
+* OS
+* Framework
+* Engine
+* Dashboard
+* Strategy
+* Signal
+* State
+* Regime
+
+The glossary serves as the authoritative terminology reference for Orion OS.
+
+Status: Approved
+
+Date: 2026-06-21
+
+---
+
+## D-021 — Phoenix Scope and Core Digital Asset Separation
+
+Date:
+
+2026-06-21
+
+Status:
+
+Approved
+
+### Decision
+
+Bitcoin (BTC) and Ethereum (ETH) are excluded from Phoenix.
+
+BTC and ETH are treated as Core Digital Assets and are managed independently from Phoenix.
+
+Phoenix focuses exclusively on altcoin category leaders and leadership transitions.
+
+### Core Digital Asset Allocation
+
+Default allocation:
+
+* BTC 60%
+* ETH 40%
+
+Accumulation method:
+
+* Periodic purchases
+* No tactical rebalancing
+* Long-term holding
+
+### Phoenix Scope
+
+Phoenix manages:
+
+* Smart Contract Leaders
+* Oracle Leaders
+* AI Infrastructure Leaders
+* RWA Leaders
+* Other approved category leaders
+
+Phoenix does not manage:
+
+* BTC
+* ETH
+
+### Rebalancing Principle
+
+Price changes alone shall not trigger portfolio rebalancing.
+
+Phoenix responds to:
+
+* Leadership changes
+* Category leader replacement
+* Replacement risk events
+
+### Rationale
+
+BTC and ETH currently represent foundational digital asset infrastructure.
+
+Phoenix exists to identify emerging category leaders and potential future winners rather than manage established core digital assets.
+
+Separating Core Digital Assets from Phoenix simplifies portfolio construction and preserves Phoenix's focus on leadership monitoring.
+
+### Impact
+
+Core Digital Assets
+
+* BTC
+* ETH
+
+Phoenix Portfolio
+
+* Altcoin category leaders only
+
+Status:
+
+Effective immediately.
+
+---
+
+
+
+---
