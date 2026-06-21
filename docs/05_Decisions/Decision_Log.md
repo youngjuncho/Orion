@@ -333,3 +333,173 @@ Review criteria include:
 2026-06-20
 
 ---
+
+## D-014
+
+Moon strategies are documented in two layers:
+
+1. Research Specification
+2. Orion Implementation Specification
+
+Research documents preserve original methodology.
+
+Implementation documents define Orion-specific execution details.
+
+Status: Approved
+
+Date: 2026-06-21
+
+---
+
+## D-015
+
+Moon Governance Framework is established as the governing document for all Moon strategies.
+
+All future strategy additions, removals, methodology changes, and implementation changes must comply with Moon_Governance.md.
+
+Status: Approved
+
+Date: 2026-06-21
+
+---
+
+## D-016
+
+Moon uses Strategy Consensus Allocation as the portfolio aggregation methodology.
+
+Final portfolio weights are derived from the combined output of approved strategies.
+
+Moon does not apply discretionary weighting between strategies.
+
+Status: Approved
+
+Date: 2026-06-21
+
+---
+
+## D-017
+
+Aurora shall monitor not only current market regime but also regime transition dynamics.
+
+Aurora outputs must include:
+
+* Current State
+* State Momentum
+
+Examples:
+
+* Improving
+* Stable
+* Deteriorating
+
+Purpose:
+
+Detect potential market regime changes before full regime confirmation.
+
+Status: Approved
+
+Date: 2026-06-21
+
+---
+
+## D-018
+
+Aurora shall distinguish between Core Indicators and Cross Asset Indicators.
+
+Core Indicators determine the primary market regime.
+
+Cross Asset Indicators provide additional environmental context.
+
+Examples:
+
+Core:
+* Trend
+* Liquidity
+* Volatility
+* Credit
+
+Cross Asset:
+* Dollar
+* Gold
+* Oil
+* Bitcoin
+
+Status: Approved
+
+Date: 2026-06-21
+
+---
+
+## D-018
+
+Orion shall use the following architecture terminology.
+
+OS:
+The complete Orion investment operating system.
+
+Framework:
+A major investment domain within Orion.
+
+Engine:
+A calculation or analysis module inside a framework.
+
+Strategy:
+A rules-based investment methodology within a framework.
+
+Examples:
+
+Moon = Framework
+
+ADM = Strategy
+
+Aurora Trend = Engine
+
+Orion = OS
+
+Status: Approved
+
+Date: 2026-06-21
+
+---
+
+## D-019
+
+Aurora shall manage indicators using an indicator lifecycle.
+
+States:
+
+* Candidate
+* Approved
+* Retired
+
+Only Approved indicators may be used in production scoring.
+
+All status changes must be recorded in Aurora documentation and the Decision Log.
+
+Status: Approved
+
+Date: 2026-06-21
+
+---
+
+## D-020
+
+Aurora shall monitor regime transitions separately from regime classification.
+
+Transition monitoring is considered a primary objective of Aurora.
+
+Examples:
+
+* Bull → Bear Watch
+* Bear → Bull Watch
+
+Aurora must report both:
+
+1. Current Regime
+2. Regime Direction
+
+Status: Approved
+
+Date: 2026-06-21
+
+---

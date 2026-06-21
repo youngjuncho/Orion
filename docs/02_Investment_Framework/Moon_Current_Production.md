@@ -33,6 +33,16 @@ No individual stocks are allowed.
 
 No cryptocurrencies are allowed.
 
+Signal generation uses the original research universe.
+
+Execution ETFs may differ according to:
+
+Moon_Execution_Mapping.md
+
+Principle:
+
+Signal Integrity Has Priority Over Execution Convenience.
+
 ---
 
 # Active Strategies
@@ -46,6 +56,10 @@ Current production strategies:
 * VAA
 
 All strategies are evaluated monthly.
+
+All strategies receive equal portfolio weight.
+
+Moon does not apply discretionary weighting between strategies.
 
 ---
 
@@ -192,6 +206,16 @@ must be recorded in:
 docs/05_Decisions/Decision_Log.md
 
 before implementation.
+
+Moon governance is defined in:
+
+docs/02_Investment_Framework/Moon_Governance.md
+
+All material changes require:
+
+* Documentation Update
+* Decision Log Entry
+* Governance Approval
 
 ---
 
