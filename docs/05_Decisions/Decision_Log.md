@@ -2,6 +2,24 @@
 
 This document records all material architectural, investment, governance, and operational decisions made within Orion OS.
 
+## Decision Status Definitions
+
+Approved
+
+Decision is active and governs Orion.
+
+Draft
+
+Decision is under evaluation.
+
+Superseded
+
+Decision has been replaced by one or more newer decisions.
+
+Retired
+
+Decision is no longer used and has no active replacement.
+
 ---
 
 ## D-001
@@ -116,7 +134,12 @@ Phoenix is a digital asset observation and investment framework focused on categ
 
 ### Status
 
-Draft
+Superseded
+
+### Superseded By
+
+* D-021 Phoenix Scope and Core Asset Separation
+* D-022 Phoenix Portfolio Construction Methodology
 
 ### Date
 
@@ -430,38 +453,6 @@ Date: 2026-06-21
 
 ---
 
-## D-018
-
-Orion shall use the following architecture terminology.
-
-OS:
-The complete Orion investment operating system.
-
-Framework:
-A major investment domain within Orion.
-
-Engine:
-A calculation or analysis module inside a framework.
-
-Strategy:
-A rules-based investment methodology within a framework.
-
-Examples:
-
-Moon = Framework
-
-ADM = Strategy
-
-Aurora Trend = Engine
-
-Orion = OS
-
-Status: Approved
-
-Date: 2026-06-21
-
----
-
 ## D-019
 
 Aurora shall manage indicators using an indicator lifecycle.
@@ -497,31 +488,6 @@ Aurora must report both:
 
 1. Current Regime
 2. Regime Direction
-
-Status: Approved
-
-Date: 2026-06-21
-
----
-
-## D-021
-
-Orion shall maintain a centralized glossary.
-
-The glossary defines standard terminology used across all Orion documentation.
-
-Examples:
-
-* OS
-* Framework
-* Engine
-* Dashboard
-* Strategy
-* Signal
-* State
-* Regime
-
-The glossary serves as the authoritative terminology reference for Orion OS.
 
 Status: Approved
 
@@ -774,6 +740,165 @@ Phoenix_Category_Framework.md
 
 Approved
 
+---
+
+## D-023
+
+Date:
+
+2026-06-22
+
+Title:
+
+Orion Operating Architecture Established
+
+Status:
+
+Approved
+
+---
+
+### Context
+
+As Orion evolved, the distinction between monitoring functions and portfolio management functions became increasingly important.
+
+Initial architecture discussions treated Aurora, Moon, Supernova, and Phoenix as equivalent engines.
+
+However, further analysis showed that Aurora serves a fundamentally different purpose.
+
+---
+
+### Decision
+
+Orion shall be organized into:
+
+* One Monitoring Layer
+* Three Portfolio Engines
+
+Architecture:
+
+Aurora
+
+↓
+
+Market Context
+
+↓
+
+Investor Interpretation
+
+↓
+
+Moon / Supernova / Phoenix
+
+↓
+
+Portfolio Actions
+
+---
+
+Aurora is designated as Orion's Monitoring Layer.
+
+Aurora provides:
+
+* Market Regime
+* Risk State
+* Transition Risk
+* Market Commentary
+
+Aurora does not directly manage portfolios.
+
+Aurora does not generate buy or sell instructions.
+
+---
+
+Moon is designated as the ETF Portfolio Engine.
+
+Supernova is designated as the Equity Portfolio Engine.
+
+Phoenix is designated as the Digital Asset Portfolio Engine.
+
+Each portfolio engine remains independently governed.
+
+---
+
+### Consequences
+
+Benefits:
+
+* Clear separation of monitoring and execution responsibilities
+* Simplified mental model
+* Improved modularity
+* Better alignment with actual portfolio structure
+
+Risks:
+
+* Portfolio engines may interpret Aurora differently
+* Some overlap may remain during future framework evolution
+
+---
+
+### Reference Documents
+
+* Orion_Operating_Architecture.md
+* Orion_Technical_Architecture.md
+
+---
+
+## D-024
+
+Orion shall maintain a centralized glossary.
+
+The glossary defines standard terminology used across all Orion documentation.
+
+Examples:
+
+* OS
+* Framework
+* Engine
+* Dashboard
+* Strategy
+* Signal
+* State
+* Regime
+
+The glossary serves as the authoritative terminology reference for Orion OS.
+
+Status: Approved
+
+Date: 2026-06-21
+
+---
+
+## D-025
+
+Orion shall use the following architecture terminology.
+
+OS:
+The complete Orion investment operating system.
+
+Framework:
+A major investment domain within Orion.
+
+Engine:
+A calculation or analysis module inside a framework.
+
+Strategy:
+A rules-based investment methodology within a framework.
+
+Examples:
+
+Moon = Framework
+
+ADM = Strategy
+
+Aurora Trend = Engine
+
+Orion = OS
+
+Status: Approved
+
+Date: 2026-06-21
 
 ---
 
