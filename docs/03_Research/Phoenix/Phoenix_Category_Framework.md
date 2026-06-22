@@ -1,14 +1,16 @@
 # Phoenix Category Framework
 
-Version: 0.1
+Version: 0.2
 
 Status: Draft
 
-Last Updated: 2026-06-21
+Last Updated: 2026-06-22
 
 Depends On:
 
 * Phoenix_Research.md
+* D-021
+* D-022
 
 ---
 
@@ -48,6 +50,12 @@ Challenger
 
 Replacement Risk
 
+Phoenix invests only in approved category leaders.
+
+Reference:
+
+D-022
+
 ---
 
 # Category Structure
@@ -68,7 +76,7 @@ Primary Functions:
 
 Representative Asset:
 
-BTC
+* BTC
 
 Status:
 
@@ -78,10 +86,13 @@ Notes:
 
 Store of Value assets are monitored for ecosystem awareness but are outside Phoenix portfolio construction.
 
+Phoenix does not allocate capital to Store of Value assets.
+
+BTC is monitored for ecosystem awareness only.
+
 Reference:
 
 D-021
-
 
 ---
 
@@ -99,19 +110,30 @@ Primary Functions:
 * Asset issuance
 * Smart contracts
 
-Current Leaders:
+Current Leader:
 
-* ETH
 * SOL
 
-Candidate Challengers:
+Primary Challenger:
 
 * SUI
+
+Watchlist:
+
 * APT
+* SEI
+
+Core Asset (Outside Phoenix):
+
+* ETH
 
 Status:
 
 Competitive
+
+Reference:
+
+D-021
 
 ---
 
@@ -131,7 +153,15 @@ Primary Functions:
 
 Current Leader:
 
-LINK
+* LINK
+
+Primary Challenger:
+
+* API3
+
+Watchlist:
+
+* SUPRA
 
 Status:
 
@@ -154,10 +184,17 @@ Primary Functions:
 * Trading
 * Yield generation
 
-Candidate Leaders:
+Current Leader:
 
 * AAVE
+
+Primary Challenger:
+
 * MKR
+
+Watchlist:
+
+* MORPHO
 
 Status:
 
@@ -179,9 +216,17 @@ Primary Functions:
 * Treasury products
 * Credit markets
 
-Candidate Leaders:
+Current Leader:
 
 * ONDO
+
+Primary Challenger:
+
+* PENDLE
+
+Watchlist:
+
+* MPL
 
 Status:
 
@@ -203,10 +248,17 @@ Primary Functions:
 * Model training
 * AI marketplaces
 
-Candidate Leaders:
+Current Leader:
 
 * TAO
+
+Primary Challenger:
+
 * RENDER
+
+Watchlist:
+
+* AKT
 
 Status:
 
@@ -228,9 +280,17 @@ Primary Functions:
 * Data publishing
 * Scalability infrastructure
 
-Candidate Leaders:
+Current Leader:
 
 * TIA
+
+Primary Challenger:
+
+* AVAIL
+
+Watchlist:
+
+None
 
 Status:
 
@@ -254,10 +314,17 @@ Primary Functions:
 * Compute networks
 * Storage networks
 
-Candidate Leaders:
+Current Leader:
 
 * RENDER
+
+Primary Challenger:
+
 * HNT
+
+Watchlist:
+
+* AKT
 
 Status:
 
@@ -279,9 +346,17 @@ Primary Functions:
 * Settlement
 * Liquidity provision
 
-Candidate Leaders:
+Current Leader:
 
 * BNB
+
+Primary Challenger:
+
+None
+
+Watchlist:
+
+None
 
 Status:
 
@@ -303,9 +378,17 @@ Primary Functions:
 * Transfers
 * Cross-border payments
 
-Candidate Leaders:
+Current Leader:
 
 * XRP
+
+Primary Challenger:
+
+None
+
+Watchlist:
+
+None
 
 Status:
 
@@ -313,39 +396,38 @@ Research
 
 ---
 
-# Category States
-
-Each category receives one of the following states.
-
-Exceptional
-
-Strong
-
-Healthy
-
-Stable
-
-Neutral
-
-Weak
-
-Danger
-
-Critical
-
----
-
 # Leadership States
 
 Each category tracks:
 
-Leader
+* Leader
+* Primary Challenger
+* Replacement Risk
+* Leadership Trend
 
-Primary challenger
+Leadership States are defined in:
 
-Replacement risk
+Phoenix_Operating_Model.md
 
-Leadership trend
+States:
+
+* Dominant
+* Stable
+* Competitive
+* Transition
+* Disrupted
+
+---
+
+# Portfolio Eligibility
+
+Only approved category leaders are eligible for portfolio inclusion.
+
+Primary challengers and watchlist assets are monitored but are not eligible for portfolio inclusion.
+
+Reference:
+
+D-022
 
 ---
 
@@ -404,7 +486,7 @@ Open
 
 OI-404
 
-Should operational category mapping be separated from Category Frmaework?
+Should operational category mapping be separated from Category Framework?
 
 Status:
 
@@ -418,4 +500,4 @@ Phoenix_Operating_Model.md
 
 Purpose:
 
-Define how Phoenix evaluates categories, leaders, challengers, and replacement risk.
+Define how Phoenix evaluates categories, leaders, challengers, replacement risk, and portfolio eligibility.

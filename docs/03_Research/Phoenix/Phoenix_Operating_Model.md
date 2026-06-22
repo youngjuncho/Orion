@@ -281,6 +281,10 @@ D-021
 
 Phoenix is category based.
 
+Only approved category leaders are eligible for portfolio inclusion.
+
+Challengers and watchlist assets are monitored for leadership evalution but are not eligible for portfolio inclusion.
+
 Each approved category contributes one selected leader.
 
 Example:
@@ -341,6 +345,10 @@ Allocation methodology:
 
 Equal Weight
 
+All approved category leaders receive equal portfolio weight.
+
+Leadership changes may result in portfolio replacement during the next review cycle.
+
 Version:
 
 Initial Standard
@@ -348,6 +356,10 @@ Initial Standard
 Status:
 
 Approved
+
+Reference:
+
+D-022
 
 ---
 
@@ -365,7 +377,7 @@ D-021
 
 ---
 
-# Existing Capital Management
+# Existing Capital Allocation
 
 Initial Phoenix capital may be distributed equally among approved category leaders.
 

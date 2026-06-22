@@ -610,6 +610,172 @@ Effective immediately.
 
 ---
 
+## D-022
+
+Date:
+
+2026-06-22
+
+Status:
+
+Approved
+
+Category:
+
+Phoenix
+
+---
+
+## Title
+
+Phoenix Portfolio Construction Methodology
+
+---
+
+## Context
+
+Phoenix identifies digital asset leaders at the category level.
+
+The framework evaluates:
+
+* Categories
+* Leaders
+* Challengers
+* Replacement Risk
+
+A portfolio construction methodology is required.
+
+Key questions:
+
+* Should challengers be included?
+* How many assets should be held?
+* How should weights be assigned?
+
+---
+
+## Decision
+
+Phoenix shall invest only in approved category leaders.
+
+Challengers and watchlist assets are used exclusively for monitoring and replacement evaluation.
+
+They are not eligible for portfolio inclusion.
+
+Portfolio weights are assigned equally across all approved leaders.
+
+---
+
+## Example
+
+Approved Leaders:
+
+* SOL
+* LINK
+* TAO
+* ONDO
+* TIA
+
+Result:
+
+* SOL 20%
+* LINK 20%
+* TAO 20%
+* ONDO 20%
+* TIA 20%
+
+---
+
+## Leadership Change
+
+If a challenger becomes the new approved leader:
+
+Example:
+
+Before
+
+* SOL
+
+After
+
+* SUI
+
+The portfolio shall rebalance during the next review cycle.
+
+---
+
+## Exclusions
+
+Phoenix does not manage:
+
+* BTC
+* ETH
+
+These assets are managed separately under D-021.
+
+---
+
+## Rationale
+
+Leader-only construction aligns with the purpose of Phoenix.
+
+Phoenix exists to identify and own category leaders.
+
+It does not attempt to predict future leaders before leadership has been established.
+
+This approach:
+
+* Simplifies operations
+* Reduces turnover
+* Improves explainability
+* Maintains consistency with the framework philosophy
+
+---
+
+## Consequences
+
+Benefits
+
+* Simple implementation
+* Clear governance
+* Lower operational complexity
+
+Risks
+
+* Leadership transitions may be captured later
+* Challenger upside may be missed
+
+These risks are accepted.
+
+---
+
+## Review Trigger
+
+This decision should be reconsidered if:
+
+* Phoenix exceeds 10 portfolio assets
+* Leadership turnover becomes frequent
+* Historical testing demonstrates superior challenger participation
+
+---
+
+## Related Documents
+
+Phoenix_Operating_Model.md
+
+Phoenix_Leader_Framework.md
+
+Phoenix_Scoring_Framework.md
+
+Phoenix_Category_Framework.md
+
+---
+
+## Status
+
+Approved
+
+
+---
 
 
 ---
