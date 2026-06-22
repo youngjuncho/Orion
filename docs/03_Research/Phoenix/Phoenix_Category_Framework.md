@@ -402,6 +402,16 @@ Open
 
 ---
 
+OI-404
+
+Should operational category mapping be separated from Category Frmaework?
+
+Status:
+
+Deferred
+
+---
+
 # Next Document
 
 Phoenix_Operating_Model.md
