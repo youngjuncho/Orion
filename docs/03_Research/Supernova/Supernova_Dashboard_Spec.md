@@ -1,266 +1,174 @@
 # Supernova Dashboard Specification
 
-Version: 0.1
+Version: 1.1
 
 Status: Draft
 
-Last Updated: 2026-06-22
-
-Depends On:
-
-* Supernova_Research.md
-* Supernova_Theme_Framework.md
-* Supernova_Watchlist_Framework.md
-* Supernova_Scoring_Framework.md
+Last Updated: 2026-06-23
 
 ---
 
 # Purpose
 
-This document defines the dashboard structure used by Supernova.
+The Supernova Dashboard monitors the health and leadership status of approved companies.
 
-The dashboard provides visibility into:
-
-* Theme exposure
-* Company quality
-* Watchlist status
-* Portfolio composition
-* Review requirements
+The dashboard is designed for long-term ownership monitoring rather than short-term trading.
 
 ---
 
-# Dashboard Objectives
+# Dashboard Layout
 
-The dashboard should answer:
+## Portfolio Summary
 
-1. Which themes are represented?
-2. Which companies are approved?
-3. Which companies require review?
-4. Which candidates may be promoted?
-5. Which companies may be removed?
-6. How concentrated is the portfolio?
+Display:
 
----
-
-# Section 1
-
-Theme Overview
-
-Purpose:
-
-Monitor exposure to Orion 5D themes.
-
-Fields:
-
-| Theme                  | Status | Approved Companies |
-| ---------------------- | ------ | ------------------ |
-| Decoupling             | Active | 3                  |
-| Deglobalization        | Active | 2                  |
-| Demographics           | Active | 2                  |
-| Decarbonization        | Active | 3                  |
-| Digital Transformation | Active | 5                  |
+* Approved Company Count
+* Average Score
+* Theme Coverage
+* Replacement Risk Summary
 
 ---
 
-# Section 2
+## Approved Companies
 
-Approved Companies
+For each company display:
 
-Purpose:
+Ticker
 
-Display current Supernova accumulation candidates.
+Theme
 
-Fields:
+Score
 
-| Company   | Theme                  | Score | Status   |
-| --------- | ---------------------- | ----- | -------- |
-| NVIDIA    | Digital Transformation | 68    | Approved |
-| Microsoft | Digital Transformation | 66    | Approved |
-| ASML      | Digital Transformation | 64    | Approved |
-| Eli Lilly | Demographics           | 62    | Approved |
+Leadership Status
 
----
+Replacement Risk
 
-# Section 3
-
-Candidate Companies
-
-Purpose:
-
-Monitor potential future additions.
-
-Fields:
-
-| Company     | Theme                  | Score | Status    |
-| ----------- | ---------------------- | ----- | --------- |
-| AMD         | Digital Transformation | 58    | Candidate |
-| CrowdStrike | Digital Transformation | 57    | Candidate |
-| ServiceNow  | Digital Transformation | 56    | Candidate |
+Trend
 
 ---
 
-# Section 4
+Example
 
-Watchlist Companies
+NVDA
 
-Purpose:
+Theme:
 
-Monitor early-stage opportunities.
+Digital Transformation
 
-Fields:
+Score:
 
-| Company    | Theme        | Score |
-| ---------- | ------------ | ----- |
-| Rocket Lab | Decoupling   | 45    |
-| Tempus AI  | Demographics | 44    |
+92
 
----
+Leadership Status:
 
-# Section 5
+Leader
 
-Review Required
+Replacement Risk:
 
-Purpose:
+Low
 
-Identify companies requiring reassessment.
+Trend:
 
-Fields:
-
-| Company         | Previous Score | Current Score | Status          |
-| --------------- | -------------- | ------------- | --------------- |
-| Example Company | 61             | 39            | Review Required |
+Stable
 
 ---
 
-# Section 6
+## Theme Health
 
-Theme Distribution
+Display:
 
-Purpose:
+Theme
 
-Measure portfolio diversification across themes.
+Leader
 
-Fields:
+Challenger
 
-| Theme                  | Companies | Weight |
-| ---------------------- | --------- | ------ |
-| Digital Transformation | 4         | 40%    |
-| Decarbonization        | 2         | 20%    |
-| Demographics           | 2         | 20%    |
-| Decoupling             | 1         | 10%    |
-| Deglobalization        | 1         | 10%    |
+Theme Score
+
+Trend
 
 ---
 
-# Section 7
+Example
 
-Promotion Candidates
+Digital Transformation
 
-Purpose:
+Leader:
 
-Track companies nearing Approved status.
+NVDA
 
-Criteria:
+Challenger:
 
-Score ≥ 55
+MSFT
 
-Fields:
+Theme Score:
 
-| Company    | Theme                  | Score |
-| ---------- | ---------------------- | ----- |
-| AMD        | Digital Transformation | 58    |
-| ServiceNow | Digital Transformation | 57    |
+91
 
----
+Trend:
 
-# Section 8
-
-Removal Candidates
-
-Purpose:
-
-Track companies at risk of removal.
-
-Criteria:
-
-Score < 40
-
-Fields:
-
-| Company         | Theme         | Score |
-| --------------- | ------------- | ----- |
-| Example Company | Example Theme | 35    |
+Improving
 
 ---
 
-# Section 9
+## Replacement Risk Monitor
 
-Portfolio Summary
+Display:
 
-Purpose:
+Company
 
-Provide high-level framework status.
+Risk Level
 
-Metrics:
+Reason
 
-Approved Companies
-
-Candidate Companies
-
-Watchlist Companies
-
-Average Score
-
-Highest Score
-
-Lowest Score
-
-Theme Coverage
-
-Last Review Date
+Review Status
 
 ---
 
-# Review Frequency
+Example
 
-Dashboard Update
+PLTR
 
-Monthly
+Replacement Risk:
 
----
+Medium
 
-Theme Review
+Reason:
 
-Quarterly
+Increasing competition
 
----
+Review:
 
-Framework Review
-
-Annually
+Required
 
 ---
 
-# Future Enhancements
+## Review Queue
 
-Potential additions:
+Display companies requiring additional review.
 
-* Revenue Growth Trends
-* Earnings Revision Tracking
-* Analyst Estimate Trends
-* Insider Ownership Tracking
-* Capital Allocation Metrics
+States:
 
-Status:
-
-Research
+* Watch
+* Review
+* Replacement Candidate
 
 ---
 
-# Next Document
+# Color Bands
 
-Supernova_Data_Sources.md
+90-100 Exceptional
 
-Purpose:
+80-89 Strong
 
-Define data providers, company information sources, and scoring inputs used by Supernova.
+70-79 Healthy
+
+60-69 Stable
+
+50-59 Neutral
+
+40-49 Weak
+
+30-39 Danger
+
+0-29 Critical

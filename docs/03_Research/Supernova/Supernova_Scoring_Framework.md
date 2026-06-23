@@ -1,391 +1,194 @@
 # Supernova Scoring Framework
 
-Version: 0.1
+Version: 1.1
 
 Status: Draft
 
-Last Updated: 2026-06-22
+Last Updated: 2026-06-23
 
 Depends On:
 
 * Supernova_Research.md
-* Supernova_Theme_Framework.md
 * Supernova_Watchlist_Framework.md
 
 ---
 
 # Purpose
 
-This document defines the scoring methodology used by Supernova.
+This framework evaluates whether approved companies continue to deserve ownership.
 
-The framework evaluates business quality, strategic relevance, and long-term compounding potential.
+The objective is not to predict short-term price performance.
 
----
-
-# Design Principle
-
-Supernova seeks to identify exceptional businesses capable of long-term value creation.
-
-The scoring framework prioritizes:
-
-* Business quality
-* Competitive strength
-* Structural growth
-* Strategic relevance
-
-Short-term market performance is not a primary factor.
+The objective is to monitor long-term leadership durability.
 
 ---
 
-# Scoring Structure
+# Scoring Range
 
-Total Score:
-
-70 Points
-
-Seven Categories
-
-10 Points Each
+0-100
 
 ---
 
-# Category 1
+# Scoring Components
 
-Theme Alignment
+## Theme Exposure
 
 Weight:
 
-10
+20%
 
 Question:
 
-How strongly is the company aligned with Orion's 5D themes?
+How strongly is the company exposed to its target theme?
 
-Evaluation:
+---
 
-0-3
+## Competitive Moat
 
-Weak
+Weight:
 
-4-6
+25%
 
-Moderate
+Question:
 
-7-8
+How durable is the company's competitive advantage?
+
+---
+
+## Leadership Position
+
+Weight:
+
+25%
+
+Question:
+
+Does the company remain the leader within its category?
+
+---
+
+## Growth Quality
+
+Weight:
+
+15%
+
+Question:
+
+Is long-term growth still intact?
+
+---
+
+## Execution Quality
+
+Weight:
+
+15%
+
+Question:
+
+Is management executing effectively?
+
+---
+
+# Score Bands
+
+90-100 Exceptional
+
+80-89 Strong
+
+70-79 Healthy
+
+60-69 Stable
+
+50-59 Neutral
+
+40-49 Weak
+
+30-39 Danger
+
+0-29 Critical
+
+---
+
+# Replacement Risk
+
+Risk is evaluated separately.
+
+Levels:
+
+Very Low
+
+Low
+
+Medium
+
+High
+
+Critical
+
+---
+
+# Interpretation
+
+Exceptional
+
+Dominant Leader
+
+---
 
 Strong
 
-9-10
-
-Core Theme Leader
+Leader
 
 ---
 
-# Category 2
+Healthy
 
-Competitive Advantage
-
-Weight:
-
-10
-
-Question:
-
-Does the company possess a durable moat?
-
-Examples:
-
-* Network effects
-* Scale advantages
-* Intellectual property
-* Switching costs
-
-Evaluation:
-
-0-10
+Leader Under Monitoring
 
 ---
 
-# Category 3
+Stable
 
-Market Leadership
-
-Weight:
-
-10
-
-Question:
-
-Is the company a leader within its category?
-
-Examples:
-
-* Market share
-* Industry influence
-* Ecosystem importance
-
-Evaluation:
-
-0-10
+Review Required
 
 ---
 
-# Category 4
+Neutral
 
-Growth Potential
-
-Weight:
-
-10
-
-Question:
-
-Can the company sustain long-term earnings and revenue growth?
-
-Evaluation:
-
-0-10
+Watch
 
 ---
 
-# Category 5
+Weak
 
-Financial Strength
-
-Weight:
-
-10
-
-Question:
-
-Is the balance sheet healthy and resilient?
-
-Examples:
-
-* Cash position
-* Debt profile
-* Free cash flow generation
-
-Evaluation:
-
-0-10
+Replacement Candidate
 
 ---
 
-# Category 6
+Danger
 
-Management Quality
-
-Weight:
-
-10
-
-Question:
-
-Does management allocate capital effectively?
-
-Evaluation Criteria:
-
-* Capital allocation
-* Strategic execution
-* Governance quality
-
-Evaluation:
-
-0-10
+Replacement Recommended
 
 ---
 
-# Category 7
+Critical
 
-Strategic Relevance
-
-Weight:
-
-10
-
-Question:
-
-Will this company remain important over the next decade?
-
-Evaluation:
-
-0-10
-
----
-
-# Company States
-
-## Approved
-
-Score:
-
-60+
-
-Action:
-
-Eligible for accumulation
-
----
-
-## Candidate
-
-Score:
-
-50-59
-
-Action:
-
-Monitor
-
----
-
-## Watchlist
-
-Score:
-
-40-49
-
-Action:
-
-Observe
-
----
-
-## Review Required
-
-Score:
-
-30-39
-
-Action:
-
-Review
-
----
-
-## Remove
-
-Score:
-
-Below 30
-
-Action:
-
-Remove from framework
-
----
-
-# Example
-
-NVIDIA
-
-Theme Alignment
-
-10
-
-Competitive Advantage
-
-10
-
-Market Leadership
-
-10
-
-Growth Potential
-
-10
-
-Financial Strength
-
-9
-
-Management Quality
-
-9
-
-Strategic Relevance
-
-10
-
-Total:
-
-68
-
-Status:
-
-Approved
+Retire
 
 ---
 
 # Review Frequency
 
-Company Review
+Company Review:
 
 Monthly
 
----
-
-Scoring Review
+Theme Review:
 
 Quarterly
 
----
-
-Framework Review
+Framework Review:
 
 Annually
-
----
-
-# Governance Rules
-
-Changes to scoring methodology require:
-
-* Framework review
-* Documentation
-* Decision log approval
-
-before implementation.
-
----
-
-# Known Open Issues
-
-OI-631
-
-Should valuation be included?
-
-Status:
-
-Open
-
----
-
-OI-632
-
-Should management quality become a separate framework?
-
-Status:
-
-Deferred
-
----
-
-OI-633
-
-Sector-specific scoring adjustments.
-
-Status:
-
-Deferred
-
----
-
-# Next Document
-
-Supernova_Dashboard_Spec.md
-
-Purpose:
-
-Define portfolio monitoring and company review dashboards.

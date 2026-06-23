@@ -1,34 +1,33 @@
 # Supernova Watchlist v1
 
-Version: 1.0
+Version: 1.1
 
 Status: Draft
 
-Last Updated: 2026-06-22
+Last Updated: 2026-06-23
 
 Depends On:
 
 * Supernova_Research.md
 * Supernova_Theme_Framework.md
-* Supernova_Scoring_Framework.md
 
 ---
 
 # Purpose
 
-This document defines the initial Supernova research universe.
+This document defines the monitoring universe for Supernova.
 
-The watchlist identifies category leaders, challengers, and candidate companies across the Orion 5D Megatrend Framework.
+The Watchlist exists to support leadership monitoring and replacement evaluation for approved companies.
 
-The watchlist is used for research and monitoring purposes.
+The Watchlist is not a portfolio.
 
-Inclusion in this document does not imply portfolio approval.
+The Watchlist serves as the research layer of Supernova.
 
 ---
 
 # Design Philosophy
 
-Supernova follows a theme-first approach.
+Supernova evaluates companies through the following structure.
 
 Theme
 
@@ -44,301 +43,105 @@ Challenger
 
 Watchlist
 
-Companies are evaluated relative to competitors operating within the same structural trend.
+↓
 
----
-
-# Decoupling
-
-## Purpose
-
-Supply chain security.
-
-Strategic manufacturing.
-
-Semiconductor sovereignty.
-
----
-
-## Leaders
-
-* NVIDIA
-* TSMC
-* ASML
-
----
-
-## Challengers
-
-* Samsung Electronics
-* Applied Materials
-
----
-
-## Watchlist
-
-* Tokyo Electron
-* Lam Research
-* KLA
-
----
-
-# Deglobalization
-
-## Purpose
-
-Regional supply chains.
-
-Industrial reshoring.
-
-Strategic infrastructure investment.
-
----
-
-## Leaders
-
-* Schneider Electric
-* Siemens
-
----
-
-## Challengers
-
-* Eaton
-* ABB
-
----
-
-## Watchlist
-
-* Emerson
-* Rockwell Automation
-
----
-
-# Demographics
-
-## Purpose
-
-Population aging.
-
-Healthcare demand expansion.
-
-Longevity and obesity treatment.
-
----
-
-## Leaders
-
-* Eli Lilly
-* Novo Nordisk
-
----
-
-## Challengers
-
-* UnitedHealth Group
-
----
-
-## Watchlist
-
-* Intuitive Surgical
-* Abbott Laboratories
-* Stryker
-
----
-
-# Decarbonization
-
-## Purpose
-
-Energy transition.
-
-Grid modernization.
-
-Energy efficiency.
-
----
-
-## Leaders
-
-* Schneider Electric
-* Eaton
-
----
-
-## Challengers
-
-* Quanta Services
-
----
-
-## Watchlist
-
-* Vertiv
-* NextEra Energy
+Replacement Risk
 
 ---
 
 # Digital Transformation
 
-## Purpose
+## Current Approved Companies
 
-Artificial Intelligence.
-
-Cloud Computing.
-
-Software Platforms.
-
-Automation.
-
----
-
-## Leaders
-
-* Microsoft
-* NVIDIA
+* NVDA
+* GOOGL
+* PLTR
 
 ---
 
 ## Challengers
 
+* Microsoft
 * Amazon
-* Alphabet
 
 ---
 
 ## Watchlist
 
-* Meta Platforms
+* Meta
 * ServiceNow
 * Salesforce
+* AMD
 
 ---
 
-# Cross Theme Leaders
+# Demographics
 
-The following companies have significant exposure to multiple themes.
+## Current Approved Company
 
-## Exceptional Candidates
+* ISRG
 
-* NVIDIA
-* Microsoft
-* TSMC
+---
+
+## Challengers
+
+* Stryker
+* Medtronic
+
+---
+
+## Watchlist
+
+* Abbott
+* UnitedHealth
+
+---
+
+# Decarbonization
+
+## Current Approved Company
+
+* CEG
+
+---
+
+## Challengers
+
+* Vistra
+* GE Vernova
+
+---
+
+## Watchlist
+
+* NextEra Energy
+* Eaton
 * Schneider Electric
-
----
-
-# Existing Holdings
-
-The following positions may already exist outside Supernova governance.
-
-Current Example:
-
-* Samsung Electronics
-
-These positions should be monitored separately from future Supernova allocation decisions.
 
 ---
 
 # Watchlist States
 
-Each company shall have one of the following states.
+Approved
 
-## Approved
+Challenger
 
-Eligible for Supernova portfolio inclusion.
+Watchlist
 
----
-
-## Candidate
-
-Under active evaluation.
+Retired
 
 ---
 
-## Watchlist
+# Review Objective
 
-Research only.
+The purpose of the Watchlist is to identify:
 
----
-
-## Retired
-
-No longer under active consideration.
-
----
-
-# Governance Rules
-
-Changes to:
-
-* Theme assignments
-* Leader status
-* Challenger status
-* Company inclusion
-
-must be recorded in:
-
-Decision_Log.md
-
-before implementation.
-
----
-
-# Known Open Issues
-
-OI-601
-
-Theme overlap management.
-
-Examples:
-
-* NVIDIA
-* Microsoft
-* Schneider Electric
-
-Status:
-
-Open
-
----
-
-OI-602
-
-Approved company selection methodology.
-
-Status:
-
-Open
-
----
-
-OI-603
-
-Maximum approved companies per theme.
-
-Status:
-
-Open
-
----
-
-OI-604
-
-International versus domestic company weighting.
-
-Status:
-
-Open
+* Emerging challengers
+* Theme leadership shifts
+* Increasing replacement risk
 
 ---
 
 # Next Document
 
 Supernova_Approved_Companies_v1.md
-
-Purpose:
-
-Define the initial approved company universe for Supernova.

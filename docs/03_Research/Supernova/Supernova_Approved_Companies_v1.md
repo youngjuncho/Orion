@@ -4,301 +4,370 @@ Version: 1.0
 
 Status: Approved
 
-Last Updated: 2026-06-22
+Last Updated: 2026-06-23
 
 Depends On:
 
+* Supernova_Research.md
+* Supernova_Theme_Framework.md
+* Supernova_Watchlist_Framework.md
 * Supernova_Watchlist_v1.md
-* Supernova_Scoring_Framework.md
 
 ---
 
 # Purpose
 
-This document defines the initial approved company universe for Supernova.
+This document defines the currently approved companies within Supernova.
 
-Approved companies are eligible for portfolio inclusion and long-term accumulation.
+Approved companies represent active Supernova holdings.
 
-The objective is to own category-leading businesses positioned to benefit from long-term structural trends.
+The purpose of Supernova is not to continuously discover new companies.
+
+The primary objective is to monitor whether currently approved companies continue to maintain leadership within their respective themes.
 
 ---
 
 # Design Philosophy
 
-Supernova seeks:
+Supernova is a long-term ownership framework.
 
-* Durable competitive advantages
-* Strong balance sheets
-* Long-term earnings growth
-* Strategic relevance
-* Multi-year ownership potential
+The framework seeks to answer:
 
-Approved companies should be capable of remaining portfolio candidates for many years.
+"Do the companies we own continue to deserve ownership?"
 
----
+Supernova focuses on:
 
-# Approved Companies
+* Theme Leadership
+* Competitive Position
+* Structural Growth
+* Replacement Risk
 
-## Digital Transformation
-
-### Microsoft
-
-Ticker:
-
-MSFT
-
-Role:
-
-Cloud Computing
-
-Enterprise Software
-
-Artificial Intelligence
-
-Status:
-
-Approved
+Price movements alone do not determine approval status.
 
 ---
 
-### NVIDIA
+# Current Approved Companies
+
+## NVIDIA
 
 Ticker:
 
 NVDA
 
+Theme:
+
+Digital Transformation
+
 Role:
 
-AI Infrastructure
-
-Accelerated Computing
-
-Data Center Expansion
+AI Infrastructure Leader
 
 Status:
 
 Approved
 
----
+Leadership Status:
 
-## Decoupling
-
-### TSMC
-
-Ticker:
-
-TSM
-
-Role:
-
-Advanced Semiconductor Manufacturing
-
-Status:
-
-Approved
+Leader
 
 ---
 
-### ASML
-
-Ticker:
-
-ASML
-
-Role:
-
-Advanced Lithography
-
-Semiconductor Equipment
-
-Status:
-
-Approved
-
----
-
-## Demographics
-
-### Eli Lilly
-
-Ticker:
-
-LLY
-
-Role:
-
-Obesity Treatment
-
-Diabetes
-
-Healthcare Innovation
-
-Status:
-
-Approved
-
----
-
-### Novo Nordisk
-
-Ticker:
-
-NVO
-
-Role:
-
-Obesity Treatment
-
-Diabetes
-
-Healthcare Innovation
-
-Status:
-
-Approved
-
----
-
-## Decarbonization
-
-### Schneider Electric
-
-Ticker:
-
-SU.PA
-
-Role:
-
-Energy Efficiency
-
-Industrial Electrification
-
-Grid Modernization
-
-Status:
-
-Approved
-
----
-
-### Eaton
-
-Ticker:
-
-ETN
-
-Role:
-
-Electrical Infrastructure
-
-Power Management
-
-Status:
-
-Approved
-
----
-
-# Cross Theme Candidates
-
-The following companies currently possess exposure to multiple themes and may become future approved companies.
-
-## Candidate
-
-Amazon
-
-Ticker:
-
-AMZN
-
----
-
-## Candidate
-
-Alphabet
+## Alphabet
 
 Ticker:
 
 GOOGL
 
----
+Theme:
 
-## Candidate
+Digital Transformation
 
-Meta Platforms
+Role:
 
-Ticker:
+Digital Platform Leader
 
-META
+AI Platform
 
----
-
-## Candidate
-
-Samsung Electronics
-
-Ticker:
-
-005930.KS
-
-Notes:
-
-Existing holding.
-
-Monitored separately due to significant portfolio concentration.
-
----
-
-# Initial Portfolio Construction
-
-Default methodology:
-
-Equal Weight
-
-Example:
-
-8 Approved Companies
-
-↓
-
-12.5% each
-
----
-
-Alternative methodologies may be evaluated in future versions.
-
-Examples:
-
-* Theme Weighting
-* Score Weighting
-* Conviction Weighting
+Cloud Infrastructure
 
 Status:
 
-Research
+Approved
+
+Leadership Status:
+
+Leader
+
+---
+
+## Intuitive Surgical
+
+Ticker:
+
+ISRG
+
+Theme:
+
+Demographics
+
+Role:
+
+Surgical Robotics Leader
+
+Status:
+
+Approved
+
+Leadership Status:
+
+Leader
+
+---
+
+## Palantir
+
+Ticker:
+
+PLTR
+
+Theme:
+
+Digital Transformation
+
+Role:
+
+Government Data Platform
+
+AI Software Infrastructure
+
+Status:
+
+Approved
+
+Leadership Status:
+
+Leader
+
+---
+
+## Constellation Energy
+
+Ticker:
+
+CEG
+
+Theme:
+
+Decarbonization
+
+Role:
+
+Nuclear Power Leader
+
+AI Power Infrastructure
+
+Status:
+
+Approved
+
+Leadership Status:
+
+Leader
+
+---
+
+# Approval Criteria
+
+Approved companies should satisfy most of the following conditions.
+
+* Strong theme exposure
+* Category leadership
+* Durable competitive moat
+* Strategic relevance
+* Long-term growth potential
+* Manageable replacement risk
+
+---
+
+# Leadership Monitoring
+
+Each approved company shall be monitored using the following framework.
+
+Leader
+
+↓
+
+Challenger
+
+↓
+
+Replacement Risk
+
+↓
+
+Review Decision
+
+---
+
+# Example
+
+NVDA
+
+Leader
+
+↓
+
+AMD
+
+Challenger
+
+↓
+
+Replacement Risk
+
+↓
+
+Monthly Review
+
+---
+
+# Approval States
+
+## Approved
+
+Eligible for continued accumulation.
+
+---
+
+## Review
+
+Leadership status requires additional monitoring.
+
+No immediate portfolio action required.
+
+---
+
+## Watch
+
+Replacement risk increasing.
+
+Monthly review required.
+
+---
+
+## Replacement Candidate
+
+Leadership deterioration confirmed.
+
+Replacement evaluation required.
+
+---
+
+## Retired
+
+No longer approved for Supernova ownership.
+
+---
+
+# Portfolio Construction
+
+Current methodology:
+
+Equal Weight
+
+Approved Companies:
+
+* NVDA
+* GOOGL
+* ISRG
+* PLTR
+* CEG
+
+Target Weight:
+
+20% each
+
+---
+
+# Accumulation Policy
+
+Investment Method:
+
+Dollar Cost Averaging (DCA)
+
+Frequency:
+
+Monthly
+
+Accumulation continues regardless of short-term market conditions.
+
+---
+
+# Rebalancing Principle
+
+Price appreciation alone shall not trigger rebalancing.
+
+Price declines alone shall not trigger rebalancing.
+
+Rebalancing may occur only when:
+
+* Leadership changes
+* Theme relevance deteriorates
+* Replacement risk becomes unacceptable
+* Approved company status changes
 
 ---
 
 # Replacement Rules
 
-Approved companies may be replaced only when:
+An approved company may be replaced if:
 
-* Competitive position deteriorates materially
-* Theme exposure weakens
-* Superior company emerges
-* Governance concerns arise
+* A challenger becomes the new leader
+* Competitive advantage materially deteriorates
+* Theme exposure weakens significantly
+* Structural thesis becomes invalid
 
-Replacement decisions must be documented in:
+All replacement decisions must be documented in:
 
 Decision_Log.md
 
+before implementation.
+
 ---
 
-# Existing Holdings
+# Relationship With Watchlist
 
-Existing holdings do not automatically become approved companies.
+Approved Companies are selected from the Supernova Watchlist universe.
 
-Approval status and portfolio ownership are independent decisions.
+The Watchlist serves as the research layer.
+
+Approved Companies represent active ownership.
+
+---
+
+# Review Frequency
+
+Leadership Review:
+
+Monthly
+
+---
+
+Portfolio Review:
+
+Monthly
+
+---
+
+Theme Review:
+
+Quarterly
+
+---
+
+Framework Review:
+
+Annually
 
 ---
 
@@ -306,7 +375,7 @@ Approval status and portfolio ownership are independent decisions.
 
 OI-701
 
-Maximum number of approved companies.
+Approved company scoring thresholds.
 
 Status:
 
@@ -316,7 +385,7 @@ Open
 
 OI-702
 
-Theme weighting methodology.
+Replacement risk scoring methodology.
 
 Status:
 
@@ -326,7 +395,13 @@ Open
 
 OI-703
 
-Regional diversification requirements.
+Theme overlap treatment.
+
+Examples:
+
+* NVDA
+* GOOGL
+* PLTR
 
 Status:
 
@@ -336,7 +411,7 @@ Open
 
 OI-704
 
-Treatment of existing concentrated positions.
+Maximum approved company count.
 
 Status:
 
@@ -346,8 +421,6 @@ Open
 
 # Next Document
 
-Supernova Portfolio Rules
+None
 
-Purpose:
-
-Define accumulation, replacement, review, and portfolio management rules.
+This document represents the current Supernova production universe.
