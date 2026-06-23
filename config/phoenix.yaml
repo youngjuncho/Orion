@@ -1,53 +1,27 @@
-enabled: true
-
-review_frequency: monthly
-
-core_assets:
-
-BTC: 0.60
-ETH: 0.40
-
-portfolio_construction:
-
-methodology: equal_weight
-
-categories:
-
-smart_contract_platforms:
-
-```
-leader: SOL
-challenger: SUI
-```
-
-oracle_networks:
-
-```
-leader: LINK
-challenger: API3
-```
-
-real_world_assets:
-
-```
-leader: ONDO
-challenger: PENDLE
-```
-
-ai_infrastructure:
-
-```
-leader: TAO
-challenger: RENDER
-```
-
-data_availability:
-
-```
-leader: TIA
-challenger: AVAIL
-```
-
-replacement_policy: true
-
-leadership_monitoring: true
+phoenix:
+  enabled: true
+  review_frequency: monthly
+  core_assets:
+    btc_weight: 0.60
+    eth_weight: 0.40
+  portfolio_construction: equal_weight
+  categories:
+    smart_contracts:
+      leader: SOL
+      challenger: SUI
+    oracle:
+      leader: LINK
+      challenger: API3
+    rwa:
+      leader: ONDO
+      challenger: PENDLE
+    ai_infrastructure:
+      leader: TAO
+      challenger: RENDER
+    data_availability:
+      leader: TIA
+      challenger: AVAIL
+  replacement_policy:
+    enabled: true
+  leadership_monitoring:
+    enabled: true

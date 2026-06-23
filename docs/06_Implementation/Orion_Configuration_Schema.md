@@ -29,16 +29,11 @@ Investment logic should not be hardcoded.
 
 ```text
 config/
-
-system.yaml
-
-moon.yaml
-
-aurora.yaml
-
-supernova.yaml
-
-phoenix.yaml
+  system.yaml
+  moon.yaml
+  aurora.yaml
+  supernova.yaml
+  phoenix.yaml
 ```
 
 ---
@@ -77,25 +72,15 @@ Global Orion settings.
 
 ```yaml
 system:
-
   version: "1.0"
-
   environment: production
-
   timezone: Asia/Seoul
-
   currency: KRW
-
   logging:
-
     level: INFO
-
   data:
-
     retention_days: null
-
   dashboard:
-
     refresh_minutes: 60
 ```
 
@@ -113,35 +98,19 @@ Moon operational configuration.
 
 ```yaml
 moon:
-
   enabled: true
-
-  rebalance_frequency:
-
-    monthly
-
+  rebalance_frequency: monthly
   strategies:
-
     - ADM
     - BAA
     - BDA
     - HAA
     - VAA
-
-  strategy_weighting:
-
-    equal
-
-  execution_mode:
-
-    consensus
-
+  strategy_weighting: equal
+  execution_mode: consensus
   signal_assets:
-
     enabled: true
-
   execution_mapping:
-
     enabled: true
 ```
 
@@ -159,34 +128,23 @@ Aurora operational configuration.
 
 ```yaml
 aurora:
-
   enabled: true
-
-  update_frequency:
-
-    daily
-
+  update_frequency: daily
   scoring_range:
-
     min: 0
     max: 100
-
   indicator_groups:
-
     core:
       - trend
       - liquidity
       - volatility
       - credit
-
     cross_asset:
       - dollar
       - gold
       - oil
       - bitcoin
-
   transition_monitoring:
-
     enabled: true
 ```
 
@@ -204,40 +162,21 @@ Supernova operational configuration.
 
 ```yaml
 supernova:
-
   enabled: true
-
-  review_frequency:
-
-    monthly
-
-  framework:
-
-    five_d
-
+  review_frequency: monthly
+  framework: five_d
   approved_companies:
-
     - NVDA
     - GOOGL
     - PLTR
     - ISRG
     - CEG
-
   candidate_universe:
-
-    source:
-
-      Supernova_Candidate_Universe.md
-
+    source: Supernova_Candidate_Universe.md
   replacement_policy:
-
     enabled: true
-
   scoring:
-
-    range:
-
-      0-100
+    range: 0-100
 ```
 
 ---
@@ -254,60 +193,31 @@ Phoenix operational configuration.
 
 ```yaml
 phoenix:
-
   enabled: true
-
-  review_frequency:
-
-    monthly
-
+  review_frequency: monthly
   core_assets:
-
     btc_weight: 0.60
     eth_weight: 0.40
-
-  portfolio_construction:
-
-    equal_weight
-
+  portfolio_construction: equal_weight
   categories:
-
     smart_contracts:
-
       leader: SOL
-
       challenger: SUI
-
     oracle:
-
       leader: LINK
-
       challenger: API3
-
     rwa:
-
       leader: ONDO
-
       challenger: PENDLE
-
     ai_infrastructure:
-
       leader: TAO
-
       challenger: RENDER
-
     data_availability:
-
       leader: TIA
-
       challenger: AVAIL
-
   replacement_policy:
-
     enabled: true
-
   leadership_monitoring:
-
     enabled: true
 ```
 
@@ -318,6 +228,7 @@ phoenix:
 Required:
 
 * All configuration files must be valid YAML.
+* Each configuration file must contain its documented top-level key.
 * Missing required fields should raise validation errors.
 * Invalid enum values should raise validation errors.
 
@@ -361,7 +272,7 @@ Configuration should be updated to match approved documentation.
 
 # Next Step
 
-Create production configuration files:
+Production configuration files have been created:
 
 * system.yaml
 * moon.yaml

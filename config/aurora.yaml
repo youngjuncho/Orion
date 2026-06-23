@@ -1,23 +1,19 @@
-enabled: true
-
-update_frequency: daily
-
-scoring:
-min: 0
-max: 100
-
-transition_monitoring: true
-
-indicator_groups:
-
-core:
-- trend
-- liquidity
-- volatility
-- credit
-
-cross_asset:
-- dollar
-- gold
-- oil
-- bitcoin
+aurora:
+  enabled: true
+  update_frequency: daily
+  scoring_range:
+    min: 0
+    max: 100
+  indicator_groups:
+    core:
+      - trend
+      - liquidity
+      - volatility
+      - credit
+    cross_asset:
+      - dollar
+      - gold
+      - oil
+      - bitcoin
+  transition_monitoring:
+    enabled: true

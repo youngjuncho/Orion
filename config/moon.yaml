@@ -1,19 +1,15 @@
-enabled: true
-
-rebalance_frequency: monthly
-
-strategy_weighting: equal
-
-execution_mode: consensus
-
-signal_assets_enabled: true
-
-execution_mapping_enabled: true
-
-strategies:
-
-* ADM
-* BAA
-* BDA
-* HAA
-* VAA
+moon:
+  enabled: true
+  rebalance_frequency: monthly
+  strategies:
+    - ADM
+    - BAA
+    - BDA
+    - HAA
+    - VAA
+  strategy_weighting: equal
+  execution_mode: consensus
+  signal_assets:
+    enabled: true
+  execution_mapping:
+    enabled: true

@@ -1,16 +1,11 @@
-version: "1.0"
-
-environment: production
-
-timezone: Asia/Seoul
-
-currency: KRW
-
-logging:
-level: INFO
-
-data:
-retention_days: null
-
-dashboard:
-refresh_minutes: 60
+system:
+  version: "1.0"
+  environment: production
+  timezone: Asia/Seoul
+  currency: KRW
+  logging:
+    level: INFO
+  data:
+    retention_days: null
+  dashboard:
+    refresh_minutes: 60

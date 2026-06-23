@@ -4,24 +4,36 @@
 
 This document defines the technical architecture of Orion OS.
 
-Orion is designed as a modular Personal Investment Operating System consisting of independent analytical engines that can operate through CLI and Web interfaces.
+Orion is designed as a modular Personal Investment Operating System consisting of independently testable frameworks that can operate through CLI and Web interfaces.
 
 ---
 
 # System Overview
 
-Orion OS consists of four primary engines.
+Orion OS consists of one Monitoring Framework and three Portfolio Engines.
 
 ```text
-Orion
+Orion OS
 
-├── Moon
-├── Aurora
-├── Supernova
-└── Phoenix
+  Monitoring Framework
+    Aurora
+
+  Portfolio Engines
+    Moon
+    Supernova
+    Phoenix
 ```
 
-Each engine is independently executable and independently testable.
+Aurora provides market context.
+
+Moon, Supernova, and Phoenix provide portfolio intelligence.
+
+Each framework is independently executable and independently testable.
+
+Reference:
+
+* D-023
+* Orion_Operating_Architecture.md
 
 ---
 
@@ -29,7 +41,7 @@ Each engine is independently executable and independently testable.
 
 ## Modular
 
-Each dashboard must be isolated from the others.
+Each framework and dashboard must be isolated from the others.
 
 A failure in one module must not affect the operation of another module.
 
@@ -51,6 +63,8 @@ Investment logic must originate from:
 * Published methodologies
 * Verifiable investment frameworks
 
+Investment logic belongs in framework modules and shared core modules, not in dashboard modules.
+
 ---
 
 ## State Driven
@@ -65,14 +79,10 @@ The system does not generate price predictions.
 
 ```text
 Data Layer
-     ↓
-Research Engine
-     ↓
-Scoring Engine
-     ↓
-Dashboard Engine
-     ↓
-CLI / Web UI
+  -> Framework Engines
+  -> Scoring / State Models
+  -> Dashboard Presentation
+  -> CLI / Web UI
 ```
 
 ---
@@ -81,21 +91,20 @@ CLI / Web UI
 
 ```text
 orion/
-
-├── docs/
-│
-├── src/
-│   ├── core/
-│   ├── data/
-│   ├── dashboards/
-│   ├── cli/
-│   └── tests/
-│
-├── config/
-│
-├── data/
-│
-└── requirements.txt
+  docs/
+  src/
+    core/
+    data/
+    moon/
+    aurora/
+    supernova/
+    phoenix/
+    dashboard/
+    cli/
+  tests/
+  config/
+  data/
+  requirements.txt
 ```
 
 ---
@@ -110,8 +119,9 @@ Responsibilities:
 
 * Configuration
 * Logging
-* Scoring
+* Scoring models
 * State models
+* Shared utilities
 
 ---
 
@@ -127,13 +137,41 @@ The Data Layer must not contain investment logic.
 
 ---
 
+## Framework Layer
+
+Responsibilities:
+
+* Framework execution
+* Signal generation
+* State generation
+* Portfolio or monitoring outputs
+
+Framework logic belongs inside:
+
+* `src/moon`
+* `src/aurora`
+* `src/supernova`
+* `src/phoenix`
+
+---
+
 ## Dashboard Layer
 
 Responsibilities:
 
-* Strategy execution
-* Signal generation
-* State generation
+* Dashboard rendering
+* Visualization
+* Summary display
+* Navigation
+* Consumption of framework outputs
+
+The Dashboard Layer is presentation-only.
+
+Investment logic must not live inside dashboard modules.
+
+Dashboard code belongs inside:
+
+* `src/dashboard`
 
 ---
 
@@ -141,7 +179,7 @@ Responsibilities:
 
 ## Purpose
 
-Dynamic asset allocation engine.
+ETF Portfolio Engine.
 
 ---
 
@@ -185,7 +223,11 @@ Each strategy must be implemented as an independent module.
 
 ## Purpose
 
-Market climate engine.
+Monitoring Framework.
+
+Aurora monitors market climate and provides context.
+
+Aurora does not manage portfolios.
 
 ---
 
@@ -207,6 +249,8 @@ Aurora Score
 Market Regime
 
 Risk State
+
+Transition Risk
 ```
 
 ---
@@ -215,7 +259,7 @@ Risk State
 
 ## Purpose
 
-5D Megatrend monitoring engine.
+Equity Portfolio Engine for 5D Megatrend companies.
 
 ---
 
@@ -249,7 +293,7 @@ Accumulation Status
 
 ## Purpose
 
-Digital asset ecosystem engine.
+Digital Asset Portfolio Engine.
 
 ---
 
@@ -281,29 +325,31 @@ Replacement Risk
 
 # Scoring Engine
 
-All dashboards should use a common scoring framework.
+Framework engines and shared core utilities should use a common scoring framework.
+
+Dashboards display resulting scores but do not calculate investment logic.
 
 Range:
 
-0–100
+0-100
 
 Bands:
 
-90–100 Exceptional
+90-100 Exceptional
 
-80–89 Strong
+80-89 Strong
 
-70–79 Healthy
+70-79 Healthy
 
-60–69 Stable
+60-69 Stable
 
-50–59 Neutral
+50-59 Neutral
 
-40–49 Weak
+40-49 Weak
 
-30–39 Danger
+30-39 Danger
 
-0–29 Critical
+0-29 Critical
 
 ---
 
@@ -384,7 +430,7 @@ Aurora
 
 Objective:
 
-Market climate engine
+Market climate monitoring framework
 
 ---
 
@@ -394,7 +440,7 @@ Supernova
 
 Objective:
 
-5D megatrend engine
+5D megatrend equity engine
 
 ---
 
@@ -404,7 +450,7 @@ Phoenix
 
 Objective:
 
-Digital asset ecosystem engine
+Digital asset portfolio engine
 
 ---
 
@@ -425,7 +471,3 @@ Web Dashboard
 Objective:
 
 Unified investment operating system
-
-```
-```
-

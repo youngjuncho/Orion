@@ -34,11 +34,39 @@ Market state is more important than daily news flow.
 
 # Portfolio Architecture
 
-Orion consists of four independent investment frameworks.
+Orion consists of one Monitoring Framework and three independent Portfolio Engines.
+
+## Aurora
+
+Monitoring Framework
+
+Purpose:
+
+* Identify current market regime
+* Monitor macroeconomic conditions
+* Measure systemic risk
+* Provide environmental context
+
+Primary Question:
+
+"What environment are we investing in?"
+
+Outputs:
+
+* Aurora Score
+* Market Regime
+* Risk State
+* Transition Risk
+
+Aurora does not generate investment recommendations.
+
+Aurora does not manage portfolios.
+
+---
 
 ## Moon
 
-Tactical Asset Allocation Framework
+ETF Portfolio Engine
 
 Purpose:
 
@@ -58,31 +86,9 @@ Primary Question:
 
 ---
 
-## Aurora
-
-Market Climate Framework
-
-Purpose:
-
-* Identify current market regime
-* Monitor macroeconomic conditions
-* Measure systemic risk
-
-Primary Question:
-
-"What environment are we investing in?"
-
-Outputs:
-
-* Risk On
-* Neutral
-* Risk Off
-
----
-
 ## Supernova
 
-Megatrend Equity Framework
+Equity Portfolio Engine
 
 Purpose:
 
@@ -108,17 +114,22 @@ Framework:
 
 ## Phoenix
 
-Digital Asset Framework
+Digital Asset Portfolio Engine
 
 Purpose:
 
 * Monitor category-leading digital assets
 * Identify emerging ecosystem leaders
-* Provide exposure to next-generation digital infrastructure
+* Provide exposure to approved altcoin category leaders
 
 Primary Question:
 
 "Which digital assets are becoming category leaders?"
+
+References:
+
+* D-021
+* D-022
 
 ---
 
@@ -166,7 +177,7 @@ Aurora provides environmental context.
 
 Outputs are informational and intended to support decision making.
 
-Aurora is the market climate layer of Orion OS.
+Aurora is the Monitoring Framework of Orion OS.
 
 ---
 
@@ -222,37 +233,45 @@ Holdings may be replaced only when:
 
 ## Objective
 
-Monitor and invest in category-leading digital assets outside of BTC, ETH, and SOL.
+Monitor and invest in approved altcoin category leaders.
+
+BTC and ETH are Core Digital Assets and remain outside Phoenix governance.
+
+References:
+
+* D-021
+* D-022
 
 ---
 
-## Initial Watchlist
+## Portfolio Construction
 
-* TAO
-* LINK
-* AAVE
-* SUI
-* RENDER
-* WLD
-* ONDO
+Phoenix manages:
+
+* Approved category leaders
+* Leadership transitions
+* Replacement risk events
+
+Phoenix does not manage:
+
+* BTC
+* ETH
+
+Challengers and watchlist assets are monitored for replacement evaluation.
+
+Challengers and watchlist assets are not eligible for portfolio inclusion.
+
+Approved category leaders are equally weighted.
 
 ---
 
-## Governance Status
+## Review Policy
 
-Current status:
+Phoenix reviews category leadership and replacement risk on a monthly basis.
 
-Draft
+Price changes alone do not trigger portfolio rebalancing.
 
-Long-term accumulation methodology remains under review.
-
-Potential models:
-
-* Tactical Rotation
-* Long-Term Accumulation
-* Hybrid Model
-
-Final policy will be defined after additional research.
+Leadership changes and replacement risk events may trigger portfolio review.
 
 ---
 
@@ -290,4 +309,3 @@ The objective of Orion OS is to provide a complete Personal Investment Operating
 * Digital Asset Status
 
 within one minute each day.
-

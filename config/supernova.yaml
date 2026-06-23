@@ -1,19 +1,16 @@
-enabled: true
-
-framework: five_d
-
-review_frequency: monthly
-
-approved_companies:
-
-* NVDA
-* GOOGL
-* PLTR
-* ISRG
-* CEG
-
-replacement_policy: true
-
-scoring:
-min: 0
-max: 100
+supernova:
+  enabled: true
+  review_frequency: monthly
+  framework: five_d
+  approved_companies:
+    - NVDA
+    - GOOGL
+    - PLTR
+    - ISRG
+    - CEG
+  candidate_universe:
+    source: Supernova_Candidate_Universe.md
+  replacement_policy:
+    enabled: true
+  scoring:
+    range: 0-100

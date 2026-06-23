@@ -34,13 +34,13 @@ Market state matters more than daily news flow.
 
 Provide a daily investment operating system that answers four questions:
 
-### Moon
-
-What assets should be held right now?
-
 ### Aurora
 
 What is the current market climate?
+
+### Moon
+
+What assets should be held right now?
 
 ### Supernova
 
@@ -52,11 +52,33 @@ Which digital assets are emerging as category leaders within the evolving crypto
 
 ---
 
-# Dashboard Framework
+# Orion Frameworks
+
+## Aurora
+
+Monitoring Framework
+
+Purpose:
+
+* Monitor macroeconomic conditions
+* Detect market regimes
+* Measure liquidity and risk appetite
+* Provide context for portfolio engines
+
+Outputs:
+
+* Aurora Score
+* Market Regime
+* Risk State
+* Transition Risk
+
+Aurora does not manage portfolios.
+
+---
 
 ## Moon
 
-Dynamic Asset Allocation Engine
+ETF Portfolio Engine
 
 Purpose:
 
@@ -74,27 +96,9 @@ Planned Strategies:
 
 ---
 
-## Aurora
-
-Market Climate Engine
-
-Purpose:
-
-* Monitor macroeconomic conditions
-* Detect market regimes
-* Measure liquidity and risk appetite
-
-Outputs:
-
-* Risk On
-* Neutral
-* Risk Off
-
----
-
 ## Supernova
 
-5D Megatrend Investment Engine
+Equity Portfolio Engine
 
 Purpose:
 
@@ -120,36 +124,34 @@ Investment Policy:
 
 ## Phoenix
 
-Digital Asset Ecosystem Engine
+Digital Asset Portfolio Engine
 
 Purpose:
 
 * Monitor category-leading digital assets
 * Identify emerging crypto leaders
 * Track ecosystem strength and adoption
+* Own approved altcoin category leaders
 
 Current Focus Areas:
 
-* AI Networks
-* Oracle Infrastructure
-* RWA
-* Decentralized GPU
-* Layer 1 Ecosystems
-* Digital Identity
+* Smart Contract Platforms
+* Oracle Networks
+* Real World Assets
+* AI Infrastructure
+* Data Availability
 
-Representative Assets (Initial Watchlist):
+Portfolio Policy:
 
-* TAO
-* LINK
-* AAVE
-* SUI
-* RENDER
-* WLD
-* ONDO
+* BTC and ETH are Core Digital Assets outside Phoenix governance.
+* Phoenix manages approved altcoin category leaders.
+* Challengers and watchlist assets are monitored but not held.
+* Approved Phoenix category leaders are equally weighted.
 
-Note:
+References:
 
-The long-term portfolio management methodology is currently under review.
+* D-021
+* D-022
 
 ---
 
@@ -165,4 +167,3 @@ Each morning, Orion OS should enable the investor to understand:
 within one minute.
 
 The final objective is to build a complete Personal Investment Operating System.
-
