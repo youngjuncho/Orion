@@ -1,0 +1,53 @@
+enabled: true
+
+review_frequency: monthly
+
+core_assets:
+
+BTC: 0.60
+ETH: 0.40
+
+portfolio_construction:
+
+methodology: equal_weight
+
+categories:
+
+smart_contract_platforms:
+
+```
+leader: SOL
+challenger: SUI
+```
+
+oracle_networks:
+
+```
+leader: LINK
+challenger: API3
+```
+
+real_world_assets:
+
+```
+leader: ONDO
+challenger: PENDLE
+```
+
+ai_infrastructure:
+
+```
+leader: TAO
+challenger: RENDER
+```
+
+data_availability:
+
+```
+leader: TIA
+challenger: AVAIL
+```
+
+replacement_policy: true
+
+leadership_monitoring: true

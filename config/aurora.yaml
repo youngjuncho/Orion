@@ -1,0 +1,23 @@
+enabled: true
+
+update_frequency: daily
+
+scoring:
+min: 0
+max: 100
+
+transition_monitoring: true
+
+indicator_groups:
+
+core:
+- trend
+- liquidity
+- volatility
+- credit
+
+cross_asset:
+- dollar
+- gold
+- oil
+- bitcoin

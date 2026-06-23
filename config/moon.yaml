@@ -1,0 +1,19 @@
+enabled: true
+
+rebalance_frequency: monthly
+
+strategy_weighting: equal
+
+execution_mode: consensus
+
+signal_assets_enabled: true
+
+execution_mapping_enabled: true
+
+strategies:
+
+* ADM
+* BAA
+* BDA
+* HAA
+* VAA
