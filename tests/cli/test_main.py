@@ -1,0 +1,30 @@
+import pytest
+
+from src.cli.main import main
+
+
+@pytest.mark.parametrize(
+    ("argv", "expected"),
+    [
+        (["version"], "Orion v1"),
+        (["health"], "Orion health: not yet implemented"),
+        (["config"], "Orion config: loaded"),
+        (["dashboard"], "Orion dashboard: not yet implemented"),
+        (["data", "update"], "Orion data update: not yet implemented"),
+        (["moon", "report"], "moon report: not yet implemented"),
+        (["aurora", "indicators"], "aurora indicators: not yet implemented"),
+        (["supernova", "watchlist"], "supernova watchlist: not yet implemented"),
+        (["phoenix", "categories"], "phoenix categories: not yet implemented"),
+    ],
+)
+def test_cli_commands_dispatch(argv, expected, capsys) -> None:
+    exit_code = main(argv)
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert captured.out.strip() == expected
+
+
+def test_cli_requires_command() -> None:
+    with pytest.raises(SystemExit):
+        main([])

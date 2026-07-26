@@ -1,0 +1,8 @@
+"""Module execution entry point for `python -m src.cli`."""
+
+from __future__ import annotations
+
+from .main import main
+
+
+raise SystemExit(main())
