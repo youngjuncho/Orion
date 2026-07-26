@@ -4,7 +4,7 @@ Version: 1.0
 
 Status: Draft
 
-Last Updated: 2026-06-23
+Last Updated: 2026-07-26
 
 Depends On:
 
@@ -26,16 +26,15 @@ The objective is to ensure consistent implementation and maintainability.
 
 ```text
 orion/
-
-├── docs/
-├── src/
-├── tests/
-├── config/
-├── data/
-├── logs/
-├── scripts/
-├── requirements.txt
-└── README.md
+  docs/
+  src/
+  tests/
+  config/
+  data/
+  logs/
+  scripts/
+  requirements.txt
+  README.md
 ```
 
 ---
@@ -44,15 +43,14 @@ orion/
 
 ```text
 src/
-
-├── core/
-├── data/
-├── moon/
-├── aurora/
-├── supernova/
-├── phoenix/
-├── dashboard/
-└── cli/
+  core/
+  data/
+  moon/
+  aurora/
+  supernova/
+  phoenix/
+  dashboard/
+  cli/
 ```
 
 ---
@@ -139,6 +137,8 @@ Responsibilities:
 * Dashboard rendering
 * Summary generation
 * Visualization
+
+Dashboard is presentation-only.
 
 ---
 

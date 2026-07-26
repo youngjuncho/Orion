@@ -4,7 +4,7 @@ Version: 1.0
 
 Status: Draft
 
-Last Updated: 2026-06-23
+Last Updated: 2026-07-26
 
 ---
 
@@ -21,6 +21,8 @@ Orion is a deterministic system.
 Given identical inputs, identical outputs should be produced.
 
 All calculations should be testable.
+
+Dashboard tests should verify presentation behavior only.
 
 ---
 
@@ -42,9 +44,10 @@ Validate individual functions and calculations.
 
 Examples:
 
-* Momentum calculations
-* Scoring calculations
-* Allocation calculations
+* Configuration validation
+* Core model behavior
+* Framework model behavior
+* Framework calculations after they are documented and implemented
 
 ---
 
@@ -56,9 +59,15 @@ Validate interactions between modules.
 
 Examples:
 
-* Data → Strategy
-* Strategy → Dashboard
-* Aurora → Orion Dashboard
+* Data -> Framework engine
+* Framework engine -> Dashboard presentation
+* Aurora -> Orion Dashboard presentation
+* CLI -> Framework entry point
+* CLI -> Dashboard renderer
+
+Dashboards consume framework outputs.
+
+Dashboards do not own investment logic, scoring logic, allocation logic, or regime logic.
 
 ---
 
@@ -73,22 +82,23 @@ Examples:
 * ADM allocation consistency
 * Aurora regime consistency
 
+Regression tests should be added only after the relevant framework behavior is implemented from approved documentation.
+
 ---
 
 # Directory Structure
 
-```text id="m8xvkt"
+```text
 tests/
-
-moon/
-
-aurora/
-
-supernova/
-
-phoenix/
-
-integration/
+  core/
+  data/
+  moon/
+  aurora/
+  supernova/
+  phoenix/
+  dashboard/
+  cli/
+  integration/
 ```
 
 ---
@@ -103,8 +113,14 @@ Version 1 Target:
 
 # Test Execution
 
-```bash id="it85ew"
+```bash
 pytest
+```
+
+Windows local execution may use repository-local pytest temp and cache paths:
+
+```powershell
+pytest -q --basetemp .tmp\pytest -o cache_dir=.tmp\pytest_cache
 ```
 
 ---

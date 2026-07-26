@@ -4,7 +4,7 @@ Version: 1.0
 
 Status: Draft
 
-Last Updated: 2026-06-23
+Last Updated: 2026-07-26
 
 ---
 
@@ -19,30 +19,54 @@ Defines the recommended development environment for Orion OS.
 Recommended:
 
 ```text id="uqef7g"
-Python 3.12+
+Python 3.10+
 ```
+
+The current Windows development environment uses Python 3.10 through a conda environment named `orion`.
+
+Future production environments may standardize on a newer Python version after dependency compatibility is reviewed.
 
 ---
 
-# Virtual Environment
+# Local Development Environment
 
 Recommended:
+
+```powershell
+conda activate orion
+```
+
+Verify:
+
+```powershell
+python -c "import sys; print(sys.executable)"
+```
+
+Expected local interpreter:
+
+```text
+C:\Users\yj44c\anaconda3\envs\orion\python.exe
+```
+
+VSCode should use the same interpreter.
+
+---
+
+# Alternative Virtual Environment
+
+For non-conda environments:
 
 ```bash id="w30dsy"
 python -m venv .venv
 ```
 
----
+Activate on Windows:
 
-Activate:
-
-Windows
-
-```bash id="waf88y"
+```powershell
 .venv\Scripts\activate
 ```
 
-Linux / macOS
+Activate on Linux or macOS:
 
 ```bash id="j25e74"
 source .venv/bin/activate
@@ -125,8 +149,8 @@ orion data update
 
 Run Dashboard
 
-```bash id="2v7sre"
-streamlit run src/dashboard/app.py
+```powershell
+python -m src.cli dashboard
 ```
 
 ---
