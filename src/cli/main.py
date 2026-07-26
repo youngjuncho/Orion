@@ -6,6 +6,8 @@ import argparse
 from dataclasses import dataclass
 from typing import Callable
 
+from src.dashboard import render_dashboard
+
 
 Handler = Callable[[argparse.Namespace], int]
 
@@ -107,8 +109,7 @@ def _handle_config(_: argparse.Namespace) -> int:
 
 
 def _handle_dashboard(_: argparse.Namespace) -> int:
-    print("Orion dashboard: not yet implemented")
-    return 0
+    return render_dashboard()
 
 
 def _handle_data_update(_: argparse.Namespace) -> int:

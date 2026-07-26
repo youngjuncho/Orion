@@ -9,7 +9,6 @@ from src.cli.main import main
         (["version"], "Orion v1"),
         (["health"], "Orion health: not yet implemented"),
         (["config"], "Orion config: loaded"),
-        (["dashboard"], "Orion dashboard: not yet implemented"),
         (["data", "update"], "Orion data update: not yet implemented"),
         (["moon", "report"], "moon report: not yet implemented"),
         (["aurora", "indicators"], "aurora indicators: not yet implemented"),
