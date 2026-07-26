@@ -1,0 +1,27 @@
+phoenix:
+  enabled: true
+  review_frequency: monthly
+  core_assets:
+    btc_weight: 0.60
+    eth_weight: 0.40
+  portfolio_construction: equal_weight
+  categories:
+    smart_contracts:
+      leader: SOL
+      challenger: SUI
+    oracle:
+      leader: LINK
+      challenger: API3
+    rwa:
+      leader: ONDO
+      challenger: PENDLE
+    ai_infrastructure:
+      leader: TAO
+      challenger: RENDER
+    data_availability:
+      leader: TIA
+      challenger: AVAIL
+  replacement_policy:
+    enabled: true
+  leadership_monitoring:
+    enabled: true

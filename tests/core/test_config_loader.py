@@ -1,4 +1,5 @@
 from pathlib import Path
+import tempfile
 
 import pytest
 
@@ -13,14 +14,16 @@ from src.core.config_loader import (
 )
 
 
-def test_load_yaml_file_returns_mapping(tmp_path: Path) -> None:
+def test_load_yaml_file_returns_mapping() -> None:
+    tmp_path = _temp_dir()
     config_file = tmp_path / "system.yaml"
     config_file.write_text("system:\n  version: '1.0'\n", encoding="utf-8")
 
     assert load_yaml_file(config_file) == {"system": {"version": "1.0"}}
 
 
-def test_validate_required_files_raises_for_missing_file(tmp_path: Path) -> None:
+def test_validate_required_files_raises_for_missing_file() -> None:
+    tmp_path = _temp_dir()
     _write_valid_config(tmp_path)
     (tmp_path / "phoenix.yaml").unlink()
 
@@ -28,7 +31,8 @@ def test_validate_required_files_raises_for_missing_file(tmp_path: Path) -> None
         validate_required_files(tmp_path)
 
 
-def test_load_config_returns_typed_configuration(tmp_path: Path) -> None:
+def test_load_config_returns_typed_configuration() -> None:
+    tmp_path = _temp_dir()
     _write_valid_config(tmp_path)
 
     config = load_config(tmp_path)
@@ -44,7 +48,8 @@ def test_load_config_returns_typed_configuration(tmp_path: Path) -> None:
     assert config.phoenix.categories["oracle"].leader == "LINK"
 
 
-def test_load_config_raises_for_missing_required_field(tmp_path: Path) -> None:
+def test_load_config_raises_for_missing_required_field() -> None:
+    tmp_path = _temp_dir()
     _write_valid_config(tmp_path)
     (tmp_path / "system.yaml").write_text(
         """
@@ -65,7 +70,8 @@ system:
         load_config(tmp_path)
 
 
-def test_load_config_raises_for_invalid_enum(tmp_path: Path) -> None:
+def test_load_config_raises_for_invalid_enum() -> None:
+    tmp_path = _temp_dir()
     _write_valid_config(tmp_path)
     (tmp_path / "moon.yaml").write_text(
         """
@@ -88,7 +94,8 @@ moon:
         load_config(tmp_path)
 
 
-def test_load_config_requires_documented_top_level_key(tmp_path: Path) -> None:
+def test_load_config_requires_documented_top_level_key() -> None:
+    tmp_path = _temp_dir()
     _write_valid_config(tmp_path)
     (tmp_path / "system.yaml").write_text("version: '1.0'\n", encoding="utf-8")
 
@@ -210,3 +217,9 @@ phoenix:
 """.lstrip(),
         encoding="utf-8",
     )
+
+
+def _temp_dir() -> Path:
+    base = Path.cwd() / "test_tmp"
+    base.mkdir(parents=True, exist_ok=True)
+    return Path(tempfile.mkdtemp(prefix="config-", dir=base))
