@@ -1,15 +1,17 @@
 # Aurora Regime Framework
 
-Version: 0.1
+Version: 1.0
 
 Status: Draft
 
-Last Updated: 2026-06-21
+Last Updated: 2026-07-26
 
 Depends On:
 
 * Aurora_Research.md
 * Aurora_Operating_Model.md
+* Aurora_Scoring_Framework.md
+* Orion_Glossary.md
 
 ---
 
@@ -40,6 +42,8 @@ Credit
 ```
 
 These four components form the Core Layer.
+
+Each component is scored on a 0–100 scale.
 
 ---
 
@@ -106,6 +110,10 @@ Output:
 
 0 – 100
 
+Status:
+
+Research Draft
+
 ---
 
 # Liquidity Score
@@ -123,6 +131,10 @@ Candidate Indicators:
 Output:
 
 0 – 100
+
+Status:
+
+Research Draft
 
 ---
 
@@ -142,6 +154,10 @@ Output:
 
 0 – 100
 
+Status:
+
+Research Draft
+
 ---
 
 # Volatility Score
@@ -160,6 +176,12 @@ Output:
 0 – 100
 
 Higher score means healthier conditions.
+
+Lower volatility generally increases score.
+
+Status:
+
+Research Draft
 
 ---
 
@@ -246,9 +268,11 @@ Purpose:
 
 Detect potential regime changes.
 
+State Momentum is derived from the direction of Aurora Score over time.
+
 ---
 
-# Improving
+## Improving
 
 Condition:
 
@@ -266,7 +290,7 @@ Conditions becoming healthier.
 
 ---
 
-# Stable
+## Stable
 
 Condition:
 
@@ -278,7 +302,7 @@ No significant directional shift.
 
 ---
 
-# Deteriorating
+## Deteriorating
 
 Condition:
 
@@ -300,9 +324,11 @@ Conditions becoming weaker.
 
 Aurora should monitor transition risk.
 
+Transition signals are used to highlight possible regime changes before full confirmation appears in the score level.
+
 ---
 
-## Bull To Bear Warning
+## Risk On To Risk Off Warning
 
 Condition:
 
@@ -320,7 +346,7 @@ Early warning of weakening conditions.
 
 ---
 
-## Bear To Bull Warning
+## Risk Off To Risk On Warning
 
 Condition:
 
@@ -343,6 +369,10 @@ Potential recovery environment developing.
 Cross Asset indicators provide context.
 
 They do not determine the regime directly.
+
+Cross Asset indicators do not contribute directly to Aurora Score.
+
+They provide environmental confirmation only.
 
 ---
 
@@ -414,7 +444,7 @@ Supportive environment with improving conditions.
 
 # Open Questions
 
-RQ-101
+## RQ-101
 
 Final Trend Indicators
 
@@ -424,7 +454,7 @@ Open
 
 ---
 
-RQ-102
+## RQ-102
 
 Final Liquidity Indicators
 
@@ -434,7 +464,7 @@ Open
 
 ---
 
-RQ-103
+## RQ-103
 
 Final Credit Indicators
 
@@ -444,7 +474,7 @@ Open
 
 ---
 
-RQ-104
+## RQ-104
 
 Final Volatility Indicators
 
@@ -454,7 +484,7 @@ Open
 
 ---
 
-RQ-105
+## RQ-105
 
 State Momentum Lookback Methodology
 

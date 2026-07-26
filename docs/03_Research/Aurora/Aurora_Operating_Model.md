@@ -1,14 +1,16 @@
 # Aurora Operating Model
 
-Version: 0.1
+Version: 1.0
 
 Status: Draft
 
-Last Updated: 2026-06-21
+Last Updated: 2026-07-26
 
 Depends On:
 
 * Aurora_Research.md
+* Aurora_Regime_Framework.md
+* Aurora_Scoring_Framework.md
 
 ---
 
@@ -82,6 +84,15 @@ Aurora
 
 The Core Layer determines the primary market regime.
 
+The Core Layer uses the following components:
+
+* Trend
+* Liquidity
+* Volatility
+* Credit
+
+These components are scored and combined through the Aurora scoring framework.
+
 ---
 
 ## Trend
@@ -107,7 +118,7 @@ Measure financial system liquidity.
 Examples:
 
 * Federal Reserve Balance Sheet
-* M2
+* M2 Growth
 * Financial Conditions Index
 
 ---
@@ -144,6 +155,10 @@ Examples:
 The Cross Asset Layer provides environmental confirmation.
 
 Cross Asset indicators do not determine the regime directly.
+
+Cross Asset indicators do not contribute directly to Aurora Score.
+
+They provide additional context for interpretation.
 
 ---
 
@@ -183,6 +198,8 @@ Monitor speculative and liquidity-sensitive behavior.
 
 Aurora evaluates three primary regimes.
 
+The regime is derived from the Aurora Score mapping defined in Aurora_Regime_Framework.md.
+
 ---
 
 ## Risk On
@@ -191,7 +208,7 @@ Characteristics:
 
 * Positive Trend
 * Healthy Liquidity
-* Stable Volatility
+* Lower Stress
 * Healthy Credit
 
 Typical Environment:
@@ -235,6 +252,8 @@ Aurora evaluates whether conditions are improving or deteriorating.
 
 State Momentum is independent of Market Regime.
 
+State Momentum describes the direction of change in the Aurora Score over time.
+
 ---
 
 ## Improving
@@ -269,7 +288,7 @@ Examples:
 
 # Example Outputs
 
-Example 1
+## Example 1
 
 Regime:
 
@@ -285,7 +304,7 @@ Strong environment with no major change.
 
 ---
 
-Example 2
+## Example 2
 
 Regime:
 
@@ -303,7 +322,7 @@ Potential transition risk exists.
 
 ---
 
-Example 3
+## Example 3
 
 Regime:
 
@@ -329,7 +348,7 @@ Aurora determines context.
 
 Aurora never overrides Moon signals.
 
-Moon remains the execution framework.
+Moon is the ETF Portfolio Engine.
 
 ---
 
