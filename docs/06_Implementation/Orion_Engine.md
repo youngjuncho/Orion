@@ -8,50 +8,22 @@ Last Updated: 2026-07-27
 
 Depends On:
 
-* Orion_Operating_Architecture.md
-* Orion_Data_Model.md
-* Orion_Configuration_Model.md
-* Moon_Object_Model.md
-* Aurora_Interface.md
-* Moon_Interface.md
-* Supernova_Interface.md
-* Phoenix_Interface.md
+* Orion_Runtime.md
+* State_Model.md
+* Event_Model.md
+* Service_Model.md
+* Moon_Engine.md
+* Aurora_Engine.md
 
 ---
 
 # Purpose
 
-This document defines the execution engine of Orion OS.
+This document defines the top-level execution engine of Orion OS.
 
-The Orion Engine is responsible for coordinating all framework execution, managing shared state, and producing a unified system output.
+The Orion Engine coordinates framework execution, manages the runtime lifecycle, and provides a unified execution interface for the system.
 
-Individual frameworks remain responsible for their own domain logic.
-
-The Orion Engine is responsible for orchestration.
-
----
-
-# Design Principles
-
-## Separation of Responsibilities
-
-Frameworks perform calculations.
-
-The Orion Engine manages execution.
-
----
-
-## Deterministic Execution
-
-Given identical inputs and configuration, Orion Engine should always produce identical outputs.
-
----
-
-## Framework Independence
-
-Each framework operates independently through a standardized interface.
-
-Frameworks should not directly invoke one another.
+Individual investment logic remains the responsibility of each framework.
 
 ---
 
@@ -59,162 +31,146 @@ Frameworks should not directly invoke one another.
 
 The Orion Engine is responsible for:
 
+* Initializing the runtime
 * Loading configuration
-* Initializing framework objects
-* Coordinating execution order
-* Managing shared state
-* Persisting execution results
-* Producing dashboard data
-* Producing CLI output
-* Recording execution logs
+* Starting framework engines
+* Coordinating execution
+* Managing state transitions
+* Publishing events
+* Handling shutdown procedures
 
-The Orion Engine is not responsible for:
+The Orion Engine does not implement investment logic.
 
-* Investment decisions
-* Strategy calculations
-* Indicator calculations
-* Security selection
+---
 
-These responsibilities belong to the individual frameworks.
+# System Architecture
+
+```text
+                 Orion Engine
+                      │
+        ┌─────────────┼─────────────┐
+        │             │             │
+    Runtime      Event Bus     State Manager
+        │
+        ├───────────┬───────────────┐
+        │           │               │
+Aurora Engine  Moon Engine  Supernova Engine  Phoenix Engine
+```
+
+---
+
+# Startup Sequence
+
+The Orion Engine starts the system in the following order.
+
+1. Initialize Runtime
+2. Load Configuration
+3. Register Services
+4. Restore Previous State
+5. Start Framework Engines
+6. Publish Startup Event
+
+---
+
+# Runtime Coordination
+
+The Orion Engine provides the execution context shared by all framework engines.
+
+Shared resources include:
+
+* Configuration
+* Data Services
+* Logging
+* Event Bus
+* State Manager
+
+---
+
+# Execution Flow
+
+Each execution cycle follows the same sequence.
+
+```text
+Runtime Tick
+
+↓
+
+Collect Market Data
+
+↓
+
+Aurora Engine
+
+↓
+
+Moon Engine
+
+↓
+
+Supernova Engine
+
+↓
+
+Phoenix Engine
+
+↓
+
+State Update
+
+↓
+
+Dashboard Update
+
+↓
+
+Persist State
+```
+
+Framework execution order may evolve in future releases.
 
 ---
 
 # Engine Lifecycle
 
-Each execution follows the same lifecycle.
+Every framework engine follows the same lifecycle.
 
 ```text
 Initialize
 
 ↓
 
-Load Configuration
+Load Data
 
 ↓
 
-Load Market Data
+Execute
 
 ↓
 
-Execute Frameworks
+Publish Events
 
 ↓
 
-Aggregate Results
+Update State
 
 ↓
 
-Persist State
-
-↓
-
-Generate Outputs
-
-↓
-
-Shutdown
+Complete
 ```
 
 ---
 
-# Execution Order
+# Event Coordination
 
-The default execution sequence is:
+The Orion Engine routes events through the Event Bus.
 
-```text
-Aurora
+Typical events include:
 
-↓
-
-Moon
-
-↓
-
-Supernova
-
-↓
-
-Phoenix
-```
-
-Aurora executes first because it evaluates the market environment.
-
-Moon executes independently using its own strategy logic.
-
-Supernova and Phoenix execute independently of Moon.
-
-Execution order does not imply dependency unless explicitly defined.
-
----
-
-# Framework Interfaces
-
-Every framework implements a common execution interface.
-
-Required methods:
-
-```python
-initialize()
-
-load_data()
-
-run()
-
-get_result()
-
-shutdown()
-```
-
-Framework-specific calculations remain internal.
-
----
-
-# Shared Objects
-
-Frameworks exchange only standardized objects.
-
-Examples:
-
-* FrameworkResult
-* Score
-* State
-* Allocation
-* Portfolio
-* ReviewRecord
-
-Shared object definitions are maintained in:
-
-* Orion_Data_Model.md
-* Moon_Object_Model.md
-
----
-
-# Engine Result
-
-Each execution produces a single Engine Result.
-
-Minimum fields:
-
-* Execution Time
-* Framework Results
-* Dashboard Data
-* Portfolio Allocations
-* System Status
-
----
-
-# State Management
-
-The Orion Engine maintains the latest system state.
-
-Examples:
-
-* Current Aurora Regime
-* Current Moon Allocation
-* Current Supernova Watchlist
-* Current Phoenix Leaders
-
-Historical state management may be added in future versions.
+* RuntimeStarted
+* MarketDataUpdated
+* FrameworkCompleted
+* PortfolioUpdated
+* RuntimeStopped
 
 ---
 
@@ -222,92 +178,64 @@ Historical state management may be added in future versions.
 
 Framework failures should be isolated whenever possible.
 
-If a framework fails:
+The Orion Engine should:
 
-* Record the error
-* Preserve previous successful state if applicable
-* Continue executing remaining independent frameworks when safe
+* Log failures
+* Publish error events
+* Preserve runtime stability
+* Continue execution of unaffected frameworks
 
-Critical initialization failures terminate execution.
-
----
-
-# Logging
-
-Each execution records:
-
-* Start Time
-* End Time
-* Framework Status
-* Execution Duration
-* Errors
-* Warnings
-
-Logs should support debugging and auditability.
+Critical failures may terminate the runtime.
 
 ---
 
-# Scheduling
+# Configuration
 
-Default production schedule:
+The Orion Engine loads configuration from:
 
-* Monthly portfolio evaluation
-* Daily market monitoring
-* Manual execution supported
+```text
+config/
 
-Scheduling configuration is defined externally.
+system.yaml
+moon.yaml
+aurora.yaml
+supernova.yaml
+phoenix.yaml
+```
+
+Configuration is managed through the Configuration Service.
 
 ---
 
 # Dashboard Integration
 
-The Orion Dashboard consumes Engine Results only.
+The Orion Engine publishes normalized state information for dashboard consumers.
 
-The Dashboard performs no investment calculations.
+Examples:
 
-Its responsibility is visualization.
+* Orion Dashboard
+* Moon Dashboard
+* Aurora Dashboard
+
+Dashboards consume published state and do not execute framework logic directly.
 
 ---
 
 # CLI Integration
 
-Example:
+Example commands:
 
 ```text
 orion run
+
+orion moon run
+
+orion aurora run
+
+orion dashboard
 ```
 
-Execution Flow:
-
-```text
-CLI
-
-↓
-
-Orion Engine
-
-↓
-
-Framework Execution
-
-↓
-
-Results
-```
-
-Framework-specific commands remain available.
-
-Examples:
-
-```text
-orion aurora
-
-orion moon
-
-orion supernova
-
-orion phoenix
-```
+The CLI invokes the Orion Engine, which coordinates all framework execution.
 
 ---
 
@@ -316,10 +244,10 @@ orion phoenix
 Potential future additions:
 
 * Parallel framework execution
-* Incremental updates
-* Event-driven execution
-* Distributed processing
-* Background scheduling
+* Distributed execution
+* Scheduled automation
+* Plugin architecture
+* Cloud deployment
 
 Status:
 
@@ -331,11 +259,11 @@ Not Approved
 
 # Related Documents
 
-* Orion_Operating_Architecture.md
-* Orion_Data_Model.md
-* Orion_Configuration_Model.md
-* Moon_Object_Model.md
-* Aurora_Interface.md
-* Moon_Interface.md
-* Supernova_Interface.md
-* Phoenix_Interface.md
+* Orion_Runtime.md
+* State_Model.md
+* Event_Model.md
+* Service_Model.md
+* Moon_Engine.md
+* Aurora_Engine.md
+* Supernova_Engine.md
+* Phoenix_Engine.md
