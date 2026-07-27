@@ -1,10 +1,10 @@
 # Orion Glossary
 
-Version: 1.0
+Version: 1.1
 
 Status: Approved
 
-Last Updated: 2026-06-22
+Last Updated: 2026-07-27
 
 Depends On:
 
@@ -24,6 +24,8 @@ This document defines the standard terminology used throughout Orion OS.
 
 All Orion documentation should use these definitions consistently.
 
+This glossary is the authoritative reference for terminology across all Orion frameworks.
+
 ---
 
 # Architecture Terms
@@ -32,7 +34,7 @@ All Orion documentation should use these definitions consistently.
 
 The complete personal investment operating system.
 
-Orion consists of:
+Orion OS consists of four major investment frameworks:
 
 * Aurora
 * Moon
@@ -43,9 +45,11 @@ Orion consists of:
 
 ## Framework
 
-A major investment domain within Orion.
+A major investment domain within Orion OS.
 
-Examples:
+Each framework owns a distinct investment responsibility.
+
+Current Frameworks:
 
 * Aurora
 * Moon
@@ -58,6 +62,8 @@ Examples:
 
 A calculation or analysis component within a framework.
 
+Engines perform specific analytical tasks but do not define overall investment policy.
+
 Examples:
 
 * Aurora Trend Engine
@@ -68,7 +74,9 @@ Examples:
 
 ## Strategy
 
-A rules-based investment methodology.
+A rules-based investment methodology executed within a framework.
+
+Strategies generate investment signals according to predefined rules.
 
 Examples:
 
@@ -84,37 +92,53 @@ Examples:
 
 A user-facing visualization layer.
 
-Dashboards present framework outputs.
+Dashboards display framework outputs without changing investment decisions.
 
 ---
 
-# Operating Architecture Terms
+# Common Operating Terms
 
-## Monitoring Layer
+## State
 
-A framework that provides market context but does not directly manage portfolios.
+The current operating condition of a framework or model.
 
-Current Monitoring Layer:
+A State describes the present condition only.
 
-* Aurora
+Examples:
+
+Aurora
+
+* Risk On
+* Neutral
+* Risk Off
+
+Moon
+
+* Risk On
+* Risk Off
 
 ---
 
-## Portfolio Engine
+## Score
 
-A framework that manages a specific asset class portfolio.
+A normalized numerical assessment used to summarize current conditions.
 
-Current Portfolio Engines:
+Scores provide interpretation rather than prediction.
 
-* Moon
-* Supernova
-* Phoenix
+Typical Range:
+
+0–100
+
+Examples:
+
+* Aurora Score
+* Moon Strategy Score
 
 ---
 
 ## Portfolio
 
-A collection of investable assets managed under a framework.
+A collection of investable assets managed by a framework.
 
 Examples:
 
@@ -124,23 +148,47 @@ Examples:
 
 ---
 
+# Operating Architecture Terms
+
+## Monitoring Framework
+
+A framework that observes market conditions without directly managing portfolios.
+
+Current Monitoring Framework:
+
+* Aurora
+
+---
+
+## Portfolio Framework
+
+A framework that manages investable assets according to predefined rules.
+
+Current Portfolio Frameworks:
+
+* Moon
+* Supernova
+* Phoenix
+
+---
+
 # Aurora Terms
 
 ## Regime
 
-The current market environment.
+The current market environment determined by Aurora.
 
 Examples:
 
-* Risk-On
-* Risk-Off
+* Risk On
 * Neutral
+* Risk Off
 
 ---
 
-## Transition
+## State Momentum
 
-The directional movement of a regime.
+The directional movement of the current regime.
 
 Examples:
 
@@ -152,7 +200,7 @@ Examples:
 
 ## Indicator
 
-A measurable input used by Aurora.
+A measurable market input evaluated by Aurora.
 
 Examples:
 
@@ -164,20 +212,29 @@ Examples:
 
 ## Core Indicator
 
-An indicator used directly in regime determination.
+An indicator that directly contributes to Aurora Score and Regime classification.
+
+Examples:
+
+* Trend
+* Liquidity
+* Credit
+* Volatility
 
 ---
 
 ## Cross Asset Indicator
 
-An indicator used for contextual analysis.
+An indicator used for contextual confirmation.
+
+Cross Asset Indicators do not directly affect Aurora Score.
 
 Examples:
 
+* Dollar Index
 * Gold
 * Oil
 * Bitcoin
-* Dollar Index
 
 ---
 
@@ -185,7 +242,7 @@ Examples:
 
 ## Dynamic Asset Allocation
 
-An allocation methodology that changes portfolio weights based on market conditions.
+An investment methodology that adjusts portfolio allocation according to strategy signals.
 
 ---
 
@@ -197,7 +254,7 @@ The aggregation of multiple strategy outputs into a single portfolio allocation.
 
 ## Signal Asset
 
-The asset used for strategy calculations.
+The reference asset used for research, signal generation, and backtesting.
 
 Example:
 
@@ -207,7 +264,7 @@ SPY
 
 ## Execution Asset
 
-The asset actually purchased.
+The ETF used for real portfolio implementation.
 
 Example:
 
@@ -215,9 +272,31 @@ SPYM
 
 ---
 
+## Momentum State
+
+The current momentum condition of a strategy.
+
+Examples:
+
+* Positive
+* Negative
+
+---
+
+## Risk State
+
+The current risk posture implied by a strategy.
+
+Examples:
+
+* Risk On
+* Risk Off
+
+---
+
 ## Rebalance
 
-The process of adjusting portfolio allocations.
+The process of adjusting portfolio holdings to match target allocations.
 
 Moon default frequency:
 
@@ -229,7 +308,7 @@ Monthly
 
 ## 5D Framework
 
-The megatrend model used by Supernova.
+The structural megatrend model used by Supernova.
 
 Components:
 
@@ -243,7 +322,7 @@ Components:
 
 ## Theme
 
-A long-term structural trend.
+A long-term structural investment trend.
 
 Themes originate from the 5D Framework.
 
@@ -263,13 +342,7 @@ A company eligible for portfolio inclusion.
 
 ## Candidate Company
 
-A company under evaluation for future approval.
-
----
-
-## Replacement Risk
-
-The probability that an approved company loses leadership status.
+A company under evaluation.
 
 ---
 
@@ -290,23 +363,19 @@ Examples:
 
 ## Leader
 
-The strongest project within a category.
-
-Leaders are eligible for portfolio inclusion.
+The strongest approved project within a category.
 
 ---
 
 ## Challenger
 
-The strongest competitor to the current leader.
-
-Challengers are monitored but not held.
+The strongest competing project within a category.
 
 ---
 
 ## Watchlist Asset
 
-A project being monitored for future leadership potential.
+A project monitored for future leadership potential.
 
 ---
 
@@ -317,12 +386,6 @@ A change in category leadership.
 Example:
 
 SOL → SUI
-
----
-
-## Replacement Risk
-
-The probability that a challenger replaces the current leader.
 
 ---
 
@@ -345,13 +408,13 @@ D-021
 
 ## Approved
 
-Active and authorized for production use.
+Authorized for production use.
 
 ---
 
 ## Candidate
 
-Under evaluation and not yet approved.
+Under evaluation.
 
 ---
 
@@ -363,7 +426,7 @@ No longer actively used.
 
 ## Superseded
 
-Replaced by a newer decision or framework.
+Replaced by a newer framework or decision.
 
 ---
 
@@ -379,9 +442,9 @@ docs/05_Decisions/Decision_Log.md
 
 # Future Terms
 
-Additional terms may be added as Orion evolves.
+Additional terminology may be added as Orion OS evolves.
 
-All terminology changes should be reflected in:
+All terminology updates should be reflected in:
 
 * Orion_Glossary.md
 * Decision_Log.md
@@ -390,6 +453,4 @@ All terminology changes should be reflected in:
 
 # Next Document
 
-None
-
-This document serves as a shared reference for all Orion frameworks.
+Moon_Current_Production.md

@@ -1,12 +1,25 @@
 # Moon Current Production
 
-## Purpose
+Version: 1.1
+
+Status: Production
+
+Last Updated: 2026-07-27
+
+Depends On:
+
+* Moon_Interface.md
+* Moon_Execution_Mapping.md
+
+---
+
+# Purpose
 
 This document describes the current production implementation of Moon within Orion OS.
 
 Unlike research documents, this file represents the actual portfolio construction process currently used in live operation.
 
-Moon is the ETF-based Tactical Asset Allocation framework of Orion.
+Moon is the ETF Tactical Asset Allocation framework of Orion OS.
 
 ---
 
@@ -29,9 +42,10 @@ The framework seeks to:
 
 Moon invests exclusively through ETFs.
 
-No individual stocks are allowed.
+Moon does not invest in:
 
-No cryptocurrencies are allowed.
+* Individual Stocks
+* Cryptocurrencies
 
 Signal generation uses the original research universe.
 
@@ -57,7 +71,7 @@ Current production strategies:
 
 All strategies are evaluated monthly.
 
-All strategies receive equal portfolio weight.
+Each strategy receives equal portfolio weight.
 
 Moon does not apply discretionary weighting between strategies.
 
@@ -65,7 +79,7 @@ Moon does not apply discretionary weighting between strategies.
 
 # Strategy Weighting
 
-Each strategy receives equal portfolio weight.
+Each active strategy receives equal weight.
 
 Example:
 
@@ -77,7 +91,7 @@ If five strategies are active:
 * HAA = 20%
 * VAA = 20%
 
-No strategy is given discretionary priority.
+No strategy receives discretionary priority.
 
 ---
 
@@ -92,7 +106,7 @@ BAA selects:
 * SPY
 * QQQ
 
-Then:
+Result:
 
 * SPY = 50%
 * QQQ = 50%
@@ -105,7 +119,9 @@ within BAA.
 
 Moon uses Strategy Consensus Allocation.
 
-Final asset weights are calculated by aggregating contributions from all active strategies.
+Strategy results are aggregated into a unified portfolio allocation.
+
+Assets selected by multiple strategies naturally receive larger portfolio weights.
 
 Example:
 
@@ -123,12 +139,34 @@ Strategy Weights:
 * ADM = 50%
 * BAA = 50%
 
-Result:
+Final Allocation:
 
 * SPY = 75%
 * QQQ = 25%
 
-Assets selected by multiple strategies naturally receive higher portfolio weights.
+---
+
+# Execution Mapping
+
+Moon separates signal generation from execution.
+
+Signal Assets are used for:
+
+* Research
+* Backtesting
+* Signal Generation
+
+Execution Assets are used for:
+
+* Portfolio Implementation
+* Rebalancing
+* Order Generation
+
+Execution mapping is defined in:
+
+Moon_Execution_Mapping.md
+
+Signal generation always remains the canonical reference.
 
 ---
 
@@ -142,13 +180,14 @@ Execution Window:
 
 Last trading day of each month
 
-Process:
+Execution Process:
 
 1. Execute all strategies
-2. Collect selected ETFs
-3. Calculate strategy contributions
-4. Aggregate final asset weights
-5. Rebalance portfolio
+2. Generate Strategy Results
+3. Aggregate Consensus Allocation
+4. Translate Signal Assets into Execution Assets
+5. Generate Final Portfolio Allocation
+6. Rebalance Portfolio
 
 ---
 
@@ -158,6 +197,7 @@ Moon is responsible for:
 
 * Tactical Asset Allocation
 * ETF Selection
+* Portfolio Construction
 * Risk Management
 
 Moon does not:
@@ -166,29 +206,39 @@ Moon does not:
 * Manage cryptocurrencies
 * Predict macroeconomic events
 
-Those functions belong to other Orion frameworks.
+Those responsibilities belong to other Orion frameworks.
 
 ---
 
 # Relationship With Other Frameworks
 
-Moon:
+Aurora
 
-ETF Tactical Allocation
+Provides market context.
 
-Supernova:
+Aurora does not override Moon strategy execution.
 
-Individual Equity Accumulation
+---
 
-Phoenix:
+Moon
 
-Digital Asset Allocation
+Constructs and manages the ETF portfolio.
 
-Aurora:
+---
 
-Market Climate Monitoring
+Supernova
 
-Each framework operates independently.
+Manages long-term individual equity accumulation independently.
+
+---
+
+Phoenix
+
+Manages digital asset allocation independently.
+
+---
+
+Each framework operates independently according to its own investment methodology.
 
 ---
 
@@ -196,10 +246,12 @@ Each framework operates independently.
 
 Changes to:
 
-* Strategy set
-* Weighting methodology
-* Rebalancing rules
-* ETF universe
+* Strategy Set
+* Strategy Weighting
+* Consensus Methodology
+* Rebalancing Rules
+* ETF Universe
+* Execution Mapping
 
 must be recorded in:
 
@@ -216,6 +268,16 @@ All material changes require:
 * Documentation Update
 * Decision Log Entry
 * Governance Approval
+
+---
+
+# Related Documents
+
+* Moon_Interface.md
+* Moon_Execution_Mapping.md
+* Moon_Scoring_Framework.md
+* ADM_Orion.md
+* Orion_Glossary.md
 
 ---
 
