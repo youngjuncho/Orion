@@ -1,14 +1,17 @@
 # HAA Orion Implementation Specification
 
-Version: 0.1
+Version: 1.0
 
 Status: Draft
 
-Last Updated: 2026-06-20
+Last Updated: 2026-07-27
 
 Depends On:
 
 * HAA_Research.md
+* docs/02_Investment_Framework/Moon/Moon_Current_Production.md
+* docs/02_Investment_Framework/Moon/Moon_Object_Model.md
+* docs/06_Implementation/Moon_Interface.md
 
 ---
 
@@ -16,7 +19,9 @@ Depends On:
 
 This document defines the Orion-specific implementation of the HAA strategy.
 
-While HAA_Research.md preserves the original research foundation, this document specifies how HAA is implemented within Orion OS.
+While HAA_Research.md preserves the original Keller methodology, this document specifies how HAA is implemented within Orion OS.
+
+The implementation follows the standard Moon Strategy interface and produces a StrategyResult consumed by the Moon Consensus Allocation engine.
 
 ---
 
@@ -49,7 +54,7 @@ Evaluate overall market health before allocating capital.
 
 Current Status:
 
-Pending validation against original methodology.
+Pending validation against the original methodology.
 
 ---
 
@@ -120,21 +125,44 @@ Future Review
 
 ---
 
-# Evaluation Frequency
+# Evaluation Schedule
+
+## Evaluation Frequency
 
 Monthly
 
 ---
 
-# Evaluation Date
+## Evaluation Date
 
 Last Trading Day
 
 ---
 
-# Execution Date
+## Execution Date
 
 Next Trading Day
+
+---
+
+# Strategy Interface
+
+HAA implements the standard Moon Strategy interface.
+
+Input:
+
+* Market Data
+* Strategy Configuration
+
+Output:
+
+* StrategyResult
+
+The StrategyResult is consumed by the Moon Consensus Allocation engine.
+
+Reference:
+
+docs/06_Implementation/Moon_Interface.md
 
 ---
 
@@ -162,7 +190,7 @@ Rank candidate assets.
 
 Current Status:
 
-Pending validation against original methodology.
+Pending validation against the original methodology.
 
 Related Research Question:
 
@@ -172,9 +200,17 @@ RQ-302
 
 # Asset Selection
 
+Purpose:
+
+Generate a StrategyResult containing the selected offensive or defensive assets.
+
+The StrategyResult is passed to the Moon Consensus Allocation engine.
+
+---
+
 If Canary Conditions are Healthy:
 
-Select top-ranked assets from the Offensive Universe.
+Select the highest-ranked assets from the Offensive Universe.
 
 ---
 
@@ -218,7 +254,7 @@ Signal integrity has priority over execution convenience.
 
 Execution assets follow:
 
-docs/02_Investment_Framework/Moon_Execution_Mapping.md
+docs/02_Investment_Framework/Moon/Moon_Execution_Mapping.md
 
 Examples:
 
@@ -272,9 +308,12 @@ Example
 Strategy:
 HAA
 
-Current Assets:
+Selected Assets:
+
 SPY
+
 QQQ
+
 DBC
 
 State:
@@ -301,14 +340,18 @@ Example
 
 HAA
 
-State: Risk On
+State:
+Risk On
 
-Canary: Healthy
+Canary:
+Healthy
 
 Selected Assets:
 
 SPY
+
 QQQ
+
 DBC
 
 Next Rebalance:
@@ -360,6 +403,7 @@ Not Allowed
 Every rebalance event must store:
 
 * Date
+* StrategyResult
 * Selected Assets
 * Previous Assets
 * Canary Status
@@ -401,7 +445,7 @@ Open
 
 OI-304
 
-Validation against Easy Investing implementation.
+Validation against the Easy Investing implementation.
 
 Status:
 
@@ -423,3 +467,13 @@ Draft
 
 Coding:
 Not Started
+
+---
+
+# Related Documents
+
+* Moon_Current_Production.md
+* Moon_Object_Model.md
+* Moon_Interface.md
+* Moon_Execution_Mapping.md
+* Moon_Scoring_Framework.md

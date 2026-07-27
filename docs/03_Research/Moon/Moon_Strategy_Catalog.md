@@ -1,48 +1,70 @@
 # Moon Strategy Catalog
 
-Version: 1.0
+Version: 1.1
 
 Status: Active
 
-Last Updated: 2026-06-21
+Last Updated: 2026-07-27
+
+Depends On:
+
+* Moon_Object_Model.md
+* Moon_Current_Production.md
 
 ---
 
-# Overview
+# Purpose
 
-Moon is the tactical asset allocation engine of Orion OS.
+This document catalogs all tactical asset allocation strategies implemented by Moon.
 
-Moon implements academically researched and publicly validated investment strategies.
+It defines the research status, implementation status, and operational role of each strategy within Orion OS.
 
-Moon does not create proprietary investment strategies.
+Moon implements academically researched investment methodologies using a standardized execution framework.
 
-Principle:
+---
 
-Original First
+# Strategy Architecture
 
-Customization Later
+All Moon strategies implement the common Moon Strategy Interface defined in:
+
+docs/02_Investment_Framework/Moon/Moon_Object_Model.md
+
+Each strategy must provide:
+
+- Strategy metadata
+- Signal generation
+- Asset selection
+- Allocation output
+
+Individual strategy documents define only their strategy-specific rules.
 
 ---
 
 # Strategy Status
 
-| Strategy | Research | Orion Spec | Coding      | Status |
-| -------- | -------- | ---------- | ----------- | ------ |
-| ADM      | Complete | Complete   | Not Started | Active |
-| BAA      | Complete | Complete   | Not Started | Active |
-| VAA      | Complete | Complete   | Not Started | Active |
-| HAA      | Complete | Complete   | Not Started | Active |
-| BDA      | Complete | Complete   | Not Started | Active |
+| Strategy | Research | Orion Spec | Coding | Status |
+|----------|----------|------------|---------|--------|
+| ADM | Complete | Complete | Not Started | Active |
+| BAA | Complete | Complete | Not Started | Active |
+| VAA | Complete | Complete | Not Started | Active |
+| HAA | Complete | Complete | Not Started | Active |
+| BDA | Complete | Complete | Not Started | Active |
 
 ---
 
 # Priority Order
+
+Current implementation priority:
 
 1. ADM
 2. BAA
 3. VAA
 4. HAA
 5. BDA
+
+This order reflects implementation priority only.
+
+It does not imply portfolio weighting or investment preference.
 
 ---
 
@@ -64,10 +86,14 @@ Select the strongest equity market while avoiding major drawdowns through relati
 
 Characteristics:
 
-* Simple
-* Transparent
-* Monthly Rebalancing
-* Equity Rotation
+- Relative Momentum
+- Absolute Momentum
+- Monthly Rebalancing
+- Single Asset Selection
+
+Output:
+
+One selected asset.
 
 ---
 
@@ -83,14 +109,18 @@ Wouter Keller
 
 Purpose:
 
-Allocate capital between offensive and defensive universes using canary assets.
+Allocate between offensive and defensive universes using Canary assets.
 
 Characteristics:
 
-* Canary System
-* Offensive / Defensive Allocation
-* Momentum Ranking
-* Monthly Rebalancing
+- Canary Filter
+- Offensive / Defensive Allocation
+- Momentum Ranking
+- Multiple Asset Selection
+
+Output:
+
+Multiple selected assets.
 
 ---
 
@@ -106,14 +136,17 @@ Wouter Keller
 
 Purpose:
 
-Adjust portfolio risk based on market breadth deterioration.
+Adjust risk exposure according to market breadth deterioration.
 
 Characteristics:
 
-* Breadth-Based Risk Control
-* Momentum Ranking
-* Progressive Defense
-* Monthly Rebalancing
+- Breadth Evaluation
+- Progressive Defense
+- Momentum Ranking
+
+Output:
+
+Multiple selected assets.
 
 ---
 
@@ -129,14 +162,17 @@ Wouter Keller
 
 Purpose:
 
-Combine momentum and canary-based risk management into a hybrid tactical allocation framework.
+Combine momentum ranking with Canary-based market evaluation.
 
 Characteristics:
 
-* Hybrid Allocation
-* Momentum Ranking
-* Risk Management Focus
-* Monthly Rebalancing
+- Hybrid Allocation
+- Canary Filter
+- Momentum Ranking
+
+Output:
+
+Multiple selected assets.
 
 ---
 
@@ -148,69 +184,68 @@ Bond Dynamic Allocation
 
 Purpose:
 
-Rotate among bond asset classes based on momentum and trend conditions.
+Allocate among bond asset classes using momentum-based selection.
 
 Characteristics:
 
-* Bond Rotation
-* Duration Management
-* Defensive Allocation
-* Monthly Rebalancing
+- Bond Rotation
+- Duration Management
+- Defensive Focus
+
+Output:
+
+One selected asset.
 
 Status:
 
-Research Validation Required
+Research Validation Required.
 
 ---
 
-# Strategy Categories
+# Common Strategy Interface
 
-## Equity Momentum
+Every Moon strategy implements the standardized interface.
 
-* ADM
+Each strategy produces a StrategyResult object containing:
 
----
+- Strategy Name
+- Evaluation Date
+- State
+- Selected Assets
+- Target Weights
+- Supporting Metrics
 
-## Multi-Asset Tactical Allocation
-
-* BAA
-* VAA
-* HAA
-
----
-
-## Bond Tactical Allocation
-
-* BDA
+Moon aggregates all StrategyResult objects into a Consensus Allocation.
 
 ---
 
 # Implementation Principle
 
+Moon separates signal generation from execution.
+
 Signal generation uses the original research universe whenever possible.
 
-Execution ETFs may differ from research ETFs.
-
-Reference:
+Execution assets may differ according to:
 
 Moon_Execution_Mapping.md
 
 Principle:
 
-Signal Integrity Has Priority Over Execution Convenience
+Signal Integrity Has Priority Over Execution Convenience.
 
 ---
 
-# Current Production Candidate
+# Consensus Allocation
 
-ADM
+Each strategy contributes equally to the final Moon portfolio unless explicitly changed by governance.
 
-Reason:
+Final portfolio allocation is calculated using StrategyResult objects.
 
-* Simplest implementation
-* Strong academic foundation
-* Easy validation
-* Clear signal structure
+Reference:
+
+Moon_Current_Production.md
+
+Moon_Object_Model.md
 
 ---
 
@@ -218,10 +253,10 @@ Reason:
 
 Potential future additions:
 
-* GTAA
-* KDAA
-* Accelerating Dual Momentum
-* Trend Following Models
+- GTAA
+- KDAA
+- Accelerating Dual Momentum
+- Trend Following Models
 
 Status:
 
@@ -233,16 +268,13 @@ Not Approved
 
 # Related Documents
 
-* Orion_IPS.md
+* Moon_Object_Model.md
+* Moon_Current_Production.md
 * Moon_Execution_Mapping.md
-* Decision_Log.md
-* ADM_Research.md
+* Orion_IPS.md
 * ADM_Orion.md
-* BAA_Research.md
 * BAA_Orion.md
-* VAA_Research.md
 * VAA_Orion.md
-* HAA_Research.md
 * HAA_Orion.md
-* BDA_Research.md
 * BDA_Orion.md
+* Decision_Log.md

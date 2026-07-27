@@ -1,192 +1,356 @@
 # Moon Scoring Framework
 
-Version: 0.1
+Version: 1.0
 
 Status: Draft
 
-Last Updated: 2026-06-21
+Last Updated: 2026-07-27
+
+Depends On:
+
+* Moon_Object_Model.md
+* Moon_Current_Production.md
 
 ---
 
 # Purpose
 
-This document defines how Moon generates strategy health scores.
+This document defines how Moon evaluates the health of strategy outputs.
 
-The objective is not to predict returns.
+Moon Scoring measures the quality and consistency of current strategy signals.
 
-The objective is to measure the current quality of strategy signals.
+The objective is consistency rather than prediction.
+
+Moon does not forecast future returns.
 
 ---
 
 # Scoring Philosophy
 
-Moon evaluates:
+## Consistency Over Prediction
 
-* Signal Strength
-* Signal Breadth
-* Asset Participation
-* Risk State
+Moon evaluates the current state of strategy outputs using observable data.
 
-Moon does not evaluate:
+Scores should be:
 
-* Future returns
-* Price targets
-* Forecasts
+- Observable
+- Repeatable
+- Explainable
 
 ---
 
-# Score Range
+## Strategy-Centric Evaluation
 
-0 – 100
+Moon evaluates the quality of strategy signals rather than market forecasts.
+
+Each strategy produces its own evaluation before participating in the Consensus Allocation.
 
 ---
 
-# Score Bands
+# Moon Score Structure
 
-90 – 100
+Moon Score consists of four components.
+
+| Component | Weight |
+|-----------|-------:|
+| Signal Strength | 30% |
+| Breadth | 25% |
+| Risk State | 25% |
+| Signal Stability | 20% |
+
+Total:
+
+100%
+
+---
+
+# Signal Strength
+
+Purpose:
+
+Measure the strength of selected strategy signals.
+
+Candidate Inputs:
+
+- Relative Momentum
+- Absolute Momentum
+- Composite Momentum Score
+
+Output:
+
+0–100
+
+Status:
+
+Research Draft
+
+---
+
+# Breadth
+
+Purpose:
+
+Measure participation across the selected asset universe.
+
+Candidate Inputs:
+
+- Number of Positive Assets
+- Participation Ratio
+- Breadth Score
+
+Output:
+
+0–100
+
+Status:
+
+Research Draft
+
+---
+
+# Risk State
+
+Purpose:
+
+Measure the defensive posture of the strategy.
+
+Candidate Inputs:
+
+- Defensive Allocation Ratio
+- Cash Allocation
+- Bond Allocation
+
+Output:
+
+0–100
+
+Higher scores indicate healthier offensive positioning.
+
+Status:
+
+Research Draft
+
+---
+
+# Signal Stability
+
+Purpose:
+
+Measure the consistency of strategy outputs over time.
+
+Candidate Inputs:
+
+- Turnover Frequency
+- Signal Persistence
+- Rebalance Stability
+
+Output:
+
+0–100
+
+Higher scores indicate more stable signals.
+
+Status:
+
+Research Draft
+
+---
+
+# Component Bands
+
+All components use the same interpretation scale.
+
+90–100
 
 Exceptional
 
 ---
 
-80 – 89
+80–89
 
 Strong
 
 ---
 
-70 – 79
+70–79
 
 Healthy
 
 ---
 
-60 – 69
+60–69
 
 Stable
 
 ---
 
-50 – 59
+50–59
 
 Neutral
 
 ---
 
-40 – 49
+40–49
 
 Weak
 
 ---
 
-30 – 39
+30–39
 
 Danger
 
 ---
 
-0 – 29
+0–29
 
 Critical
 
 ---
 
-# Candidate Inputs
+# Moon Score Formula
 
-## Momentum Strength
+Moon Score
 
-Measures the magnitude of positive momentum.
+=
 
-Weight:
+(Signal Strength × 0.30)
 
-Pending
++
 
----
+(Breadth × 0.25)
 
-## Breadth
++
 
-Measures participation across selected assets.
+(Risk State × 0.25)
 
-Weight:
++
 
-Pending
+(Signal Stability × 0.20)
 
----
+Output:
 
-## Risk State
-
-Measures current defensive posture.
-
-Weight:
-
-Pending
+0–100
 
 ---
 
-## Signal Stability
+# Strategy Score
 
-Measures turnover frequency.
+Each Moon strategy may produce an individual Strategy Score.
 
-Weight:
+Examples:
 
-Pending
+- ADM Score
+- BAA Score
+- VAA Score
+- HAA Score
+- BDA Score
 
----
-
-# Example Interpretation
-
-Score: 92
-
-Meaning:
-
-Strong momentum
-
-Broad participation
-
-Low defensive allocation
+Strategy Scores provide diagnostic information and do not directly determine portfolio allocation.
 
 ---
 
-Score: 55
+# Consensus Score
 
-Meaning:
+Moon may calculate an overall Consensus Score from all active Strategy Results.
 
-Mixed signals
+Purpose:
 
-Neutral conditions
+Measure the overall health of the tactical allocation system.
 
----
+Status:
 
-Score: 25
-
-Meaning:
-
-Defensive posture
-
-Weak participation
-
-Elevated risk
+Future Enhancement
 
 ---
 
-# Future Research
+# Dashboard Presentation
 
-Potential future scoring inputs:
+Moon Dashboard may display:
 
-* Relative Momentum Rank
-* Absolute Momentum Rank
-* Canary Health
-* Breadth Deterioration
-* Defensive Allocation Ratio
+- Overall Moon Score
+- Strategy Scores
+- Selected Assets
+- Current State
+- Consensus Allocation
+
+Moon Score is informational and does not replace strategy outputs.
+
+---
+
+# Future Enhancements
+
+Potential future additions:
+
+- Dynamic Component Weights
+- Strategy Confidence Score
+- Consensus Confidence Score
+- Historical Score Trends
+- Strategy Agreement Index
 
 Status:
 
 Research Only
 
+Not Approved
+
+---
+
+# Open Questions
+
+RQ-301
+
+How should Signal Strength be standardized?
+
+Status:
+
+Open
+
+---
+
+RQ-302
+
+How should Breadth be measured consistently across strategies?
+
+Status:
+
+Open
+
+---
+
+RQ-303
+
+How should Risk State be quantified?
+
+Status:
+
+Open
+
+---
+
+RQ-304
+
+How should Signal Stability be measured?
+
+Status:
+
+Open
+
+---
+
+RQ-305
+
+Should Strategy Scores influence Dashboard ranking only, or future allocation decisions?
+
+Status:
+
+Open
+
 ---
 
 # Related Documents
 
-* Orion_Technical_Architecture.md
+* Moon_Object_Model.md
 * Moon_Current_Production.md
-* Moon_Governance.md
+* Moon_Interface.md
+* Orion_Glossary.md

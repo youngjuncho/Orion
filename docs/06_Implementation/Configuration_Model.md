@@ -1,46 +1,71 @@
 # Orion Configuration Model
 
-Version: 1.0
+Version: 1.1
 
 Status: Draft
 
-Last Updated: 2026-06-23
+Last Updated: 2026-07-27
+
+Depends On:
+
+* Orion_Data_Model.md
+* Orion_Technical_Architecture.md
 
 ---
 
 # Purpose
 
-Defines configuration management within Orion OS.
+This document defines how Orion OS manages configuration.
+
+Configuration controls system behavior without changing application code.
+
+Investment logic should remain independent of configuration.
 
 ---
 
-# Principles
+# Configuration Principles
 
-Configuration should be externalized.
+## Externalized Configuration
 
-Investment logic must not be hardcoded.
+Configuration should be stored outside application code.
+
+Investment rules should be configurable whenever practical.
 
 ---
 
-# Configuration Categories
+## Separation of Responsibilities
 
-System
+Research documents define methodology.
 
-Data
+Configuration defines operational parameters.
 
-Moon
+Implementation consumes configuration.
 
-Aurora
+---
 
-Supernova
+## Environment Independence
 
-Phoenix
+The same application code should support multiple environments by loading different configuration files.
+
+---
+
+# Configuration Hierarchy
+
+```text
+Configuration
+
+├── System
+├── Moon
+├── Aurora
+├── Supernova
+└── Phoenix
+```
 
 ---
 
 # Directory Structure
 
-```text id="hzzlzy"
+```text
 config/
 
 system.yaml
@@ -58,68 +83,208 @@ phoenix.yaml
 
 # System Configuration
 
+Controls global application behavior.
+
 Examples:
 
-* Log level
-* Data directory
-* Cache settings
+- Logging
+- Data Directory
+- Cache
+- Time Zone
+
+Example Fields:
+
+```yaml
+log_level: INFO
+timezone: UTC
+cache_enabled: true
+data_directory: ./data
+```
 
 ---
 
 # Moon Configuration
 
-Examples:
+Controls Moon execution.
 
-* Active strategies
-* Rebalance frequency
+Typical Settings:
+
+- Active Strategies
+- Rebalance Frequency
+- Execution Mapping
+- Portfolio Constraints
+
+Example:
+
+```yaml
+strategies:
+  - ADM
+  - BAA
+  - VAA
+  - HAA
+  - BDA
+
+rebalance_frequency: monthly
+```
 
 ---
 
 # Aurora Configuration
 
-Examples:
+Controls market monitoring.
 
-* Indicator weights
-* Regime thresholds
+Typical Settings:
+
+- Component Weights
+- Regime Thresholds
+- Indicator Enable Flags
+
+Example:
+
+```yaml
+weights:
+  trend: 30
+  liquidity: 30
+  credit: 20
+  volatility: 20
+
+risk_on: 70
+risk_off: 50
+```
 
 ---
 
 # Supernova Configuration
 
-Examples:
+Controls company evaluation.
 
-* Theme settings
-* Review frequency
+Typical Settings:
+
+- Review Frequency
+- Theme Activation
+- Scoring Thresholds
 
 ---
 
 # Phoenix Configuration
 
-Examples:
+Controls digital asset evaluation.
 
-* Category settings
-* Review frequency
+Typical Settings:
+
+- Active Categories
+- Review Frequency
+- Leadership Thresholds
 
 ---
 
-# Secrets
+# Object Configuration
 
-API keys must never be stored in repository configuration files.
+Configuration should map directly to Orion object models.
+
+Examples:
+
+Strategy
+
+```yaml
+name: ADM
+enabled: true
+rebalance: monthly
+```
+
+StrategyResult
+
+No persistent configuration.
+
+Generated at runtime.
+
+Portfolio
+
+```yaml
+max_position_size: 0.30
+min_position_size: 0.05
+```
+
+Aurora
+
+```yaml
+indicator_refresh: daily
+```
+
+---
+
+# Runtime Configuration
+
+Configuration is loaded during application startup.
+
+Each Framework receives only its own configuration.
+
+Example:
+
+```text
+System
+    │
+    ├── Moon Config
+    ├── Aurora Config
+    ├── Supernova Config
+    └── Phoenix Config
+```
+
+---
+
+# Configuration Validation
+
+Every configuration file should support validation.
+
+Validation includes:
+
+- Required Fields
+- Allowed Value Ranges
+- Duplicate Detection
+- Schema Compatibility
+
+Invalid configuration should prevent execution.
+
+---
+
+# Secrets Management
+
+Sensitive information must never be stored in repository configuration files.
 
 Use:
 
-```text id="aj1k78"
+```text
 .env
 ```
 
-for secrets management.
+Examples:
+
+- API Keys
+- Database Credentials
+- Authentication Tokens
 
 ---
 
-# Future Extensions
+# Future Enhancements
 
-Database configuration
+Potential future additions:
 
-Cloud configuration
+- Environment Profiles
+- Remote Configuration
+- Dynamic Reloading
+- Configuration Versioning
 
-Notification settings
+Status:
+
+Research Only
+
+Not Approved
+
+---
+
+# Related Documents
+
+* Orion_Data_Model.md
+* Orion_Technical_Architecture.md
+* Moon_Object_Model.md
+* Decision_Log.md

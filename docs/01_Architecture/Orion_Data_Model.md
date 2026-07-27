@@ -1,16 +1,17 @@
 # Orion Data Model
 
-Version: 1.0
+Version: 1.1
 
 Status: Draft
 
-Last Updated: 2026-06-23
+Last Updated: 2026-07-27
 
 Depends On:
 
 * Orion_Operating_Architecture.md
 * Orion_Technical_Architecture.md
 * Orion_Glossary.md
+* Moon_Object_Model.md
 
 ---
 
@@ -18,14 +19,9 @@ Depends On:
 
 This document defines the core logical data model used throughout Orion OS.
 
-The objective is to provide a consistent structure across:
+The objective is to provide a consistent object model across all Orion frameworks.
 
-* Moon
-* Aurora
-* Supernova
-* Phoenix
-
-The data model serves as the bridge between research frameworks and software implementation.
+The logical data model serves as the bridge between research documentation and software implementation.
 
 ---
 
@@ -33,35 +29,29 @@ The data model serves as the bridge between research frameworks and software imp
 
 Orion is state-driven.
 
-Orion evaluates entities and reports states.
+Frameworks evaluate observable entities.
+
+Entities produce normalized results.
+
+Dashboards consume standardized outputs.
 
 The system does not generate forecasts.
 
 ---
 
-# Core Entity Hierarchy
+# Core Object Hierarchy
 
+```text
 Orion
 
-↓
-
-Framework
-
-↓
-
-Engine
-
-↓
-
-Entity
-
-↓
-
-Score
-
-↓
-
-State
+└── Framework
+      ├── Engine
+      │     ├── Input
+      │     ├── Result
+      │     └── Score
+      │
+      └── Dashboard
+```
 
 ---
 
@@ -71,24 +61,40 @@ A major investment domain.
 
 Examples:
 
-* Moon
-* Aurora
-* Supernova
-* Phoenix
+- Aurora
+- Moon
+- Supernova
+- Phoenix
 
 ---
 
 ## Framework Fields
 
-Name
+- Name
+- Version
+- Status
+- Description
+- Last Updated
 
-Description
+---
 
-Status
+# Engine
 
-Version
+An Engine performs calculations within a Framework.
 
-Last Updated
+Examples:
+
+- Aurora Trend Engine
+- Moon Strategy Engine
+- Phoenix Scoring Engine
+
+---
+
+## Engine Fields
+
+- Name
+- Version
+- Status
 
 ---
 
@@ -156,82 +162,104 @@ Critical
 
 Represents the current condition of an entity.
 
-States are framework-specific.
+State values are framework-specific.
 
 Examples:
 
-Aurora:
+Aurora
 
-* Bull
-* Neutral
-* Bear
+- Risk On
+- Neutral
+- Risk Off
 
-Phoenix:
+Moon
 
-* Dominant
-* Stable
-* Competitive
-* Transition
-* Disrupted
+- Risk On
+- Risk Off
+- Defensive
+- Partial Defense
 
-Supernova:
+Supernova
 
-* Leader
-* Watch
-* Review
-* Replacement Candidate
+- Approved
+- Watch
+- Review
+
+Phoenix
+
+- Leader
+- Challenger
+- Watchlist
 
 ---
 
 # Moon Data Model
 
-Moon evaluates strategies.
+Moon follows the object model defined in:
+
+Moon_Object_Model.md
 
 ---
 
 ## Strategy
 
-Fields:
-
-Name
-
-Version
-
-Status
-
----
-
-Example
-
-ADM
-
-BAA
-
-BDA
-
-HAA
-
-VAA
-
----
-
-## Strategy Result
+Represents one tactical allocation methodology.
 
 Fields:
 
-Strategy Name
+- Name
+- Version
+- Status
 
-Selected Asset
+Methods:
 
-Weight
+- load_data()
+- calculate_signal()
+- generate_result()
 
-Signal Date
+---
+
+## StrategyResult
+
+Represents the output of one strategy evaluation.
+
+Fields:
+
+- Strategy Name
+- Evaluation Date
+- State
+- Selected Assets
+- Target Weights
+- Metrics
+
+---
+
+## Allocation
+
+Represents normalized portfolio weights.
+
+Fields:
+
+- Asset
+- Weight
+
+---
+
+## Portfolio
+
+Represents the aggregated Moon portfolio.
+
+Fields:
+
+- Holdings
+- Allocation
+- Rebalance Date
 
 ---
 
 # Aurora Data Model
 
-Aurora evaluates indicators and regimes.
+Aurora evaluates market conditions.
 
 ---
 
@@ -239,15 +267,22 @@ Aurora evaluates indicators and regimes.
 
 Fields:
 
-Name
+- Name
+- Category
+- Value
+- Score
+- State
 
-Category
+---
 
-Value
+## Component Score
 
-Score
+Fields:
 
-Status
+- Trend
+- Liquidity
+- Credit
+- Volatility
 
 ---
 
@@ -255,97 +290,13 @@ Status
 
 Fields:
 
-Regime Name
-
-Score
-
-Direction
-
-Confidence
-
----
-
-# Phoenix Data Model
-
-Phoenix evaluates categories and digital assets.
-
----
-
-## Category
-
-Fields:
-
-Category Name
-
-State
-
-Score
-
-Trend
-
----
-
-Examples:
-
-AI Infrastructure
-
-Oracle Networks
-
-RWA
-
-DePIN
-
----
-
-## Candidate Asset
-
-Fields:
-
-Ticker
-
-Name
-
-Category
-
-Status
-
-Score
-
----
-
-## Leader
-
-Fields:
-
-Asset
-
-Category
-
-Leadership Score
-
-Replacement Risk
-
-Trend
-
----
-
-## Challenger
-
-Fields:
-
-Asset
-
-Category
-
-Challenge Score
-
-Distance To Leader
+- Score
+- Regime
+- State Momentum
 
 ---
 
 # Supernova Data Model
-
-Supernova evaluates themes and companies.
 
 ---
 
@@ -353,129 +304,62 @@ Supernova evaluates themes and companies.
 
 Fields:
 
-Theme Name
-
-State
-
-Score
-
-Trend
+- Name
+- Score
+- State
 
 ---
 
-Examples:
-
-Digital Transformation
-
-Decarbonization
-
-Demographics
-
-Decoupling
-
-Deglobalization
-
----
-
-## Candidate Company
+## Company
 
 Fields:
 
-Ticker
-
-Company Name
-
-Theme
-
-Status
-
-Score
+- Ticker
+- Name
+- Theme
+- Status
+- Score
 
 ---
 
-## Approved Company
+# Phoenix Data Model
+
+---
+
+## Category
 
 Fields:
 
-Ticker
-
-Theme
-
-Leadership Score
-
-Replacement Risk
-
-Trend
+- Name
+- Score
+- State
 
 ---
 
-# Review Model
-
-All frameworks support reviews.
-
----
-
-## Review Record
+## Asset
 
 Fields:
 
-Date
-
-Framework
-
-Entity
-
-Review Type
-
-Outcome
-
-Notes
+- Ticker
+- Category
+- Status
+- Score
 
 ---
 
-Review Types:
-
-Monthly
-
-Quarterly
-
-Annual
-
----
-
-# Decision Model
-
-Material framework changes must be recorded.
-
----
-
-## Decision Record
+## Leadership
 
 Fields:
 
-Decision ID
-
-Date
-
-Status
-
-Category
-
-Title
-
-Description
-
----
-
-Reference:
-
-Decision_Log.md
+- Leader
+- Challenger
+- Replacement Risk
 
 ---
 
 # Dashboard Model
 
-All dashboards consume normalized entities.
+All dashboards consume standardized objects.
 
 ---
 
@@ -483,38 +367,67 @@ All dashboards consume normalized entities.
 
 Fields:
 
-Entity Name
-
-Score
-
-State
-
-Trend
-
-Last Updated
+- Entity Name
+- Score
+- State
+- Last Updated
 
 ---
 
-# Future Extensions
+# Review Model
 
-Planned support:
+Every framework supports periodic reviews.
 
-* Historical state tracking
-* Event records
-* Alert system
-* Portfolio linkage
-* Automated scoring pipelines
+---
+
+## Review Record
+
+Fields:
+
+- Date
+- Framework
+- Entity
+- Review Type
+- Outcome
+- Notes
+
+---
+
+# Decision Model
+
+Material architectural changes require governance.
+
+---
+
+## Decision Record
+
+Fields:
+
+- Decision ID
+- Date
+- Category
+- Status
+- Title
+- Description
+
+Reference:
+
+Decision_Log.md
 
 ---
 
 # Relationship With Implementation
 
-Python models should map directly to this document whenever possible.
+Python classes should map directly to this logical data model whenever practical.
 
-Changes to the logical model should be documented before implementation.
+Logical model changes should be documented before implementation.
 
 ---
 
-# Next Document
+# Related Documents
 
-Orion_Technical_Architecture.md
+* Moon_Object_Model.md
+* Orion_Glossary.md
+* Orion_Technical_Architecture.md
+* Orion_Operating_Architecture.md
+* Decision_Log.md

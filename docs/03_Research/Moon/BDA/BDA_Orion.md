@@ -9,6 +9,9 @@ Last Updated: 2026-06-20
 Depends On:
 
 * BDA_Research.md
+* docs/02_Investment_Framework/Moon/Moon_Current_Production.md
+* docs/02_Investment_Framework/Moon/Moon_Object_Model.md
+* docs/06_Implementation/Moon_Interface.md
 
 ---
 
@@ -154,6 +157,27 @@ Next Trading Day
 
 ---
 
+# Strategy Interface
+
+BDA implements the standard Moon Strategy interface.
+
+Input:
+
+* Market Data
+* Strategy Configuration
+
+Output:
+
+* StrategyResult
+
+The StrategyResult is consumed by the Moon Consensus Allocation engine.
+
+Reference:
+
+docs/06_Implementation/Moon_Interface.md
+
+---
+
 # Momentum Calculation
 
 Current Status:
@@ -172,7 +196,9 @@ RQ-201
 
 Purpose:
 
-Select the strongest bond asset based on momentum characteristics.
+Generate a StrategyResult containing the highest-ranked eligible bond asset.
+
+The StrategyResult is passed to the Moon Consensus Allocation engine.
 
 Current Selection Method:
 
@@ -257,7 +283,7 @@ Example
 Strategy:
 BDA
 
-Current Asset:
+Selected Asset:
 VGIT
 
 State:
@@ -284,7 +310,7 @@ Example
 
 BDA
 
-Current Asset: VGIT
+Selected Asset: VGIT
 
 State: Allocated
 
@@ -335,6 +361,7 @@ Not Allowed
 Every rebalance event must store:
 
 * Date
+* StrategyResult
 * Selected Asset
 * Previous Asset
 * Momentum Values
@@ -383,3 +410,10 @@ Draft
 
 Coding:
 Not Started
+
+# Related Documents
+
+* Moon_Current_Production.md
+* Moon_Object_Model.md
+* Moon_Interface.md
+* Moon_Execution_Mapping.md

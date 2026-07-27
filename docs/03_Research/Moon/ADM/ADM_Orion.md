@@ -1,49 +1,79 @@
 # ADM Orion Implementation Specification
 
-Version: 0.1
+Version: 1.0
 
 Status: Draft
 
-Last Updated: 2026-06-14
+Last Updated: 2026-07-27
 
 Depends On:
 
 * ADM_Research.md
+* Moon_Current_Production.md
+* Moon_Object_Model.md
 
 ---
 
 # Purpose
 
-This document defines the Orion-specific implementation of the ADM strategy.
+This document defines the Orion implementation of the Accelerating Dual Momentum (ADM) strategy.
 
-While ADM_Research.md preserves the original Gary Antonacci methodology, this document specifies how ADM will be implemented within Orion OS.
+While ADM_Research.md preserves the original Gary Antonacci methodology, this document specifies how ADM is implemented as a Moon Strategy within Orion OS.
 
----
-
-# Implementation Principles
-
-## Original First
-
-The original ADM methodology remains the reference implementation.
+The document focuses on implementation behavior rather than investment research.
 
 ---
 
-## Practical Execution
+# Role Within Moon
 
-The Orion implementation prioritizes:
+ADM is an independent Moon strategy.
 
-* Simplicity
-* ETF availability
-* Low maintenance
-* Monthly execution
+Its responsibility is to:
+
+* Load market data
+* Evaluate momentum signals
+* Select target assets
+* Produce a StrategyResult
+
+ADM does not:
+
+* Aggregate portfolio allocations
+* Execute trades
+* Apply execution asset mappings
+
+Those responsibilities belong to the Moon Engine.
 
 ---
 
-# Orion ADM Universe
+# Strategy Lifecycle
+
+```text
+Load Market Data
+
+↓
+
+Calculate Relative Momentum
+
+↓
+
+Calculate Absolute Momentum
+
+↓
+
+Select Target Asset
+
+↓
+
+Generate StrategyResult
+```
+
+---
+
+# Investment Universe
 
 ## Risk Assets
 
-US Equity
+### US Equity
 
 Ticker:
 
@@ -55,7 +85,7 @@ US Total Stock Market
 
 ---
 
-International Equity
+### International Equity
 
 Ticker:
 
@@ -77,14 +107,14 @@ SGOV
 
 Description:
 
-0-3 Month US Treasury ETF
+0–3 Month US Treasury ETF
 
-Backup Candidates:
+Backup Candidates
 
 * BIL
 * SHY
 
-Current Status:
+Status:
 
 Pending Final Approval
 
@@ -96,13 +126,11 @@ Primary Source
 
 Yahoo Finance
 
-Reason:
+Reasons
 
 * Free
 * Reliable
 * Python ecosystem support
-
----
 
 Backup Sources
 
@@ -116,124 +144,155 @@ Future Review
 
 ---
 
-# Signal Calculation
+# Evaluation Schedule
 
-## Evaluation Frequency
+Evaluation Frequency
 
 Monthly
 
----
-
-## Evaluation Date
+Evaluation Date
 
 Last Trading Day
 
-Example:
-
-2026-06-30
-
----
-
-## Execution Date
+Execution Date
 
 Next Trading Day
 
-Example:
-
-2026-07-01
-
 ---
 
-# Momentum Calculation
+# Signal Calculation
+
+ADM evaluates:
+
+1. Relative Momentum
+2. Absolute Momentum
 
 Initial Orion Standard
 
-Trailing 12-Month Return
+Trailing 12-Month Total Return
 
-Formula:
+Formula
 
-Current Price / Price 12 Months Ago - 1
+Current Price / Price 12 Months Ago − 1
 
-Status:
+Status
 
 Pending Validation
 
 ---
 
-# State Model
+# Selection Rules
 
-## Risk On
+The strategy selects exactly one asset.
 
-Condition:
+Selection priority:
 
-VTI selected
+1. Highest Relative Momentum
+2. Absolute Momentum confirmation
+3. Defensive Asset if momentum is negative
 
-Output:
-
-State:
-Risk On
-
-Asset:
-VTI
+The selected asset receives 100% allocation within ADM.
 
 ---
 
-## International Risk On
+# Strategy Output
 
-Condition:
+ADM produces a StrategyResult object.
 
-VEU selected
+Required Fields
 
-Output:
+* Strategy Name
+* Signal Date
+* Selected Assets
+* Target Weights
+* Metadata
+
+Example
+
+```text
+Strategy: ADM
+
+Signal Date:
+2026-06-30
+
+Selected Asset:
+VTI
+
+Weight:
+100%
 
 State:
 Risk On
+```
 
-Asset:
-VEU
+---
+
+# State Model
+
+ADM exposes a simplified operational state.
+
+## Risk On
+
+Selected Asset
+
+* VTI
+* VEU
 
 ---
 
 ## Risk Off
 
-Condition:
+Selected Asset
 
-Defensive Asset selected
+* SGOV
 
-Output:
+The state is informational only.
 
-State:
-Risk Off
-
-Asset:
-SGOV
+Portfolio construction remains the responsibility of the Moon Engine.
 
 ---
 
-# Moon Dashboard Output
+# Integration With Moon
 
-Example
+The Moon Engine executes the following workflow.
 
-Strategy:
+```text
 ADM
 
-Current Asset:
-VTI
+↓
 
-State:
-Risk On
+StrategyResult
 
-Relative Momentum:
-Positive
+↓
 
-Absolute Momentum:
-Positive
+Consensus Allocation
 
-Rebalance Date:
-2026-06-30
+↓
 
-Next Action:
-Hold
+Execution Mapping
+
+↓
+
+Portfolio
+```
+
+ADM is unaware of other Moon strategies.
+
+ADM never performs portfolio aggregation.
+
+---
+
+# Dashboard Output
+
+Moon Dashboard displays:
+
+* Current State
+* Selected Asset
+* Relative Momentum
+* Absolute Momentum
+* Next Rebalance Date
+
+Dashboard presentation is separate from strategy logic.
 
 ---
 
@@ -241,53 +300,33 @@ Hold
 
 Command
 
+```text
 orion moon adm
+```
 
 Example
 
-ADM
-
-Current Asset: VTI
+```text
+Strategy: ADM
 
 State: Risk On
 
-Momentum: Positive
+Selected Asset: VTI
 
 Next Rebalance: 2026-06-30
-
----
-
-# Dashboard Score
-
-ADM contributes to the Moon Dashboard.
-
-Score Calculation:
-
-Not Yet Defined
-
-Future Document:
-
-Moon_Scoring_Framework.md
-
-Status:
-
-Pending
+```
 
 ---
 
 # Rebalancing Policy
 
-Default Frequency
+Frequency
 
 Monthly
-
----
 
 Forced Rebalance
 
 Not Allowed
-
----
 
 Manual Override
 
@@ -297,17 +336,14 @@ Not Allowed
 
 # Logging Requirements
 
-Every rebalance event must store:
+Each execution stores:
 
-Date
-
-Selected Asset
-
-Previous Asset
-
-Signal
-
-Momentum Values
+* Signal Date
+* Selected Asset
+* Previous Asset
+* Relative Momentum
+* Absolute Momentum
+* Strategy Version
 
 ---
 
@@ -315,15 +351,12 @@ Momentum Values
 
 Potential Orion Variants
 
-ADM-US
+* ADM-US
+* ADM-Global
+* ADM-Leveraged
+* ADM-Rotation
 
-ADM-Global
-
-ADM-Leveraged
-
-ADM-Rotation
-
-Status:
+Status
 
 Research Only
 
@@ -337,13 +370,13 @@ OI-001
 
 Final defensive asset selection
 
-Candidates:
+Candidates
 
 * SGOV
 * BIL
 * SHY
 
-Status:
+Status
 
 Open
 
@@ -353,9 +386,7 @@ OI-002
 
 Total return calculation methodology
 
-Need verification against original research.
-
-Status:
+Status
 
 Open
 
@@ -363,23 +394,17 @@ Open
 
 OI-003
 
-Dividend adjustment handling
+Dividend adjustment methodology
 
-Need validation.
-
-Status:
+Status
 
 Open
 
 ---
 
-# Approval Status
+# Related Documents
 
-Research:
-Completed
-
-Implementation:
-Draft
-
-Coding:
-Not Started
+* ADM_Research.md
+* Moon_Current_Production.md
+* Moon_Object_Model.md
+* Moon_Interface.md

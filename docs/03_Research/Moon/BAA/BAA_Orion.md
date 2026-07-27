@@ -1,67 +1,102 @@
 # BAA Orion Implementation Specification
 
-Version: 0.1
+Version: 1.0
 
 Status: Draft
 
-Last Updated: 2026-06-20
+Last Updated: 2026-07-27
 
 Depends On:
 
 * BAA_Research.md
+* Moon_Current_Production.md
+* Moon_Object_Model.md
 
 ---
 
 # Purpose
 
-This document defines the Orion-specific implementation of the BAA strategy.
+This document defines the Orion implementation of the Bold Asset Allocation (BAA) strategy.
 
-While BAA_Research.md preserves the original Wouter Keller methodology, this document specifies how BAA will be implemented within Orion OS.
+While BAA_Research.md preserves the original Wouter Keller methodology, this document specifies how BAA is implemented as a Moon Strategy within Orion OS.
 
----
-
-# Implementation Principles
-
-## Original First
-
-The original BAA methodology remains the reference implementation.
+The document focuses on implementation behavior rather than investment research.
 
 ---
 
-## Practical Execution
+# Role Within Moon
 
-The Orion implementation prioritizes:
+BAA is an independent Moon strategy.
 
-* Simplicity
-* ETF availability
-* Monthly execution
-* Research reproducibility
+Its responsibility is to:
+
+* Load market data
+* Evaluate Canary conditions
+* Rank candidate assets
+* Select target assets
+* Produce a StrategyResult
+
+BAA does not:
+
+* Aggregate portfolio allocations
+* Execute trades
+* Apply execution asset mappings
+
+Those responsibilities belong to the Moon Engine.
 
 ---
 
-# Orion BAA Universe
+# Strategy Lifecycle
+
+```text
+Load Market Data
+
+↓
+
+Evaluate Canary Conditions
+
+↓
+
+Calculate Momentum
+
+↓
+
+Rank Candidate Assets
+
+↓
+
+Select Target Assets
+
+↓
+
+Generate StrategyResult
+```
+
+---
+
+# Investment Universe
 
 ## Canary Universe
 
-Purpose:
+Purpose
 
-Detect deterioration in market conditions before allocating capital to offensive assets.
+Detect deterioration in market conditions before allocating capital.
 
-Current Status:
+Status
 
 Research In Progress
 
-Final universe pending validation against original methodology.
+Final universe pending validation against the original methodology.
 
 ---
 
 ## Offensive Universe
 
-Purpose:
+Purpose
 
-Primary growth allocation during Risk-On conditions.
+Primary growth allocation during Risk On conditions.
 
-Candidate Assets:
+Candidate Assets
 
 * SPY
 * QQQ
@@ -71,7 +106,7 @@ Candidate Assets:
 * VNQ
 * DBC
 
-Status:
+Status
 
 Pending Final Approval
 
@@ -79,18 +114,18 @@ Pending Final Approval
 
 ## Defensive Universe
 
-Purpose:
+Purpose
 
-Capital preservation during Risk-Off conditions.
+Capital preservation during Risk Off conditions.
 
-Candidate Assets:
+Candidate Assets
 
 * BIL
 * IEF
 * TLT
 * LQD
 
-Status:
+Status
 
 Pending Final Approval
 
@@ -102,13 +137,11 @@ Primary Source
 
 Yahoo Finance
 
-Reason:
+Reasons
 
 * Free
 * Reliable
 * Python ecosystem support
-
----
 
 Backup Sources
 
@@ -116,91 +149,62 @@ Backup Sources
 * Alpha Vantage
 * Polygon
 
-Status:
+Status
 
 Future Review
 
 ---
 
-# Signal Calculation
+# Evaluation Schedule
 
-## Evaluation Frequency
+Evaluation Frequency
 
 Monthly
 
----
-
-## Evaluation Date
+Evaluation Date
 
 Last Trading Day
 
----
-
-## Execution Date
+Execution Date
 
 Next Trading Day
 
 ---
 
-# Canary Evaluation
+# Signal Calculation
 
-Purpose:
+BAA evaluates:
 
-Determine whether the market environment supports offensive positioning.
+1. Canary Conditions
+2. Relative Momentum Ranking
 
-Methodology:
+Status
 
-To be finalized after validation of original BAA research.
+Pending validation against the original methodology.
 
-Status:
+Related Research Questions
 
-Open
-
-Related Research Question:
-
-RQ-101
+* RQ-101
+* RQ-102
 
 ---
 
-# Momentum Calculation
+# Selection Rules
 
-Purpose:
+If Canary Conditions are healthy:
 
-Rank candidate assets.
+* Rank the Offensive Universe
+* Select the highest-ranked assets
 
-Current Status:
+If Canary Conditions deteriorate:
 
-Pending validation against original methodology.
+* Select assets from the Defensive Universe
 
-Related Research Question:
-
-RQ-102
-
----
-
-# Asset Selection
-
-If Canary Conditions are Healthy:
-
-Select top-ranked assets from the Offensive Universe.
-
----
-
-If Canary Conditions are Deteriorating:
-
-Select assets from the Defensive Universe.
-
----
-
-Number of Selected Assets:
+Number of selected assets
 
 Pending validation.
 
-Status:
-
-Open
-
-Related Research Question:
+Related Research Question
 
 RQ-105
 
@@ -210,7 +214,7 @@ RQ-105
 
 Signal generation uses the original research ETF universe whenever possible.
 
-Examples:
+Examples
 
 * SPY
 * QQQ
@@ -226,9 +230,9 @@ Signal integrity has priority over execution convenience.
 
 Execution assets follow:
 
-docs/02_Investment_Framework/Moon_Execution_Mapping.md
+Moon_Execution_Mapping.md
 
-Examples:
+Examples
 
 * SPY → SPYM
 * QQQ → QQQM
@@ -236,64 +240,119 @@ Examples:
 * DBC → BCI
 * BIL → SGOV
 
+Execution mapping is performed by the Moon Engine after StrategyResult generation.
+
+---
+
+# Strategy Output
+
+BAA produces a StrategyResult object.
+
+Required Fields
+
+* Strategy Name
+* Signal Date
+* Selected Assets
+* Target Weights
+* Metadata
+
+Example
+
+```text
+Strategy: BAA
+
+Signal Date:
+2026-06-30
+
+Selected Assets:
+
+SPY
+QQQ
+
+Weights:
+
+50%
+50%
+
+State:
+Risk On
+```
+
 ---
 
 # State Model
 
+BAA exposes an operational state.
+
 ## Risk On
 
-Condition:
+Condition
 
-Healthy Canary Signals
+Healthy Canary Conditions
 
-Output:
+Universe
 
-State:
-Risk On
-
-Universe:
 Offensive
 
 ---
 
 ## Risk Off
 
-Condition:
+Condition
 
-Negative Canary Signals
+Negative Canary Conditions
 
-Output:
+Universe
 
-State:
-Risk Off
-
-Universe:
 Defensive
+
+The state is informational only.
+
+Portfolio construction remains the responsibility of the Moon Engine.
 
 ---
 
-# Moon Dashboard Output
+# Integration With Moon
 
-Example
+The Moon Engine executes the following workflow.
 
-Strategy:
+```text
 BAA
 
-Current Assets:
-SPY
-QQQ
+↓
 
-State:
-Risk On
+StrategyResult
 
-Canary Status:
-Healthy
+↓
 
-Rebalance Date:
-2026-06-30
+Consensus Allocation
 
-Next Action:
-Hold
+↓
+
+Execution Mapping
+
+↓
+
+Portfolio
+```
+
+BAA is independent of all other Moon strategies.
+
+Portfolio aggregation is performed only by the Moon Engine.
+
+---
+
+# Dashboard Output
+
+Moon Dashboard displays:
+
+* Current State
+* Canary Status
+* Selected Assets
+* Target Weights
+* Next Rebalance Date
+
+Dashboard presentation is separate from strategy logic.
 
 ---
 
@@ -301,11 +360,14 @@ Hold
 
 Command
 
+```text
 orion moon baa
+```
 
 Example
 
-BAA
+```text
+Strategy: BAA
 
 State: Risk On
 
@@ -319,40 +381,19 @@ QQQ
 Next Rebalance:
 
 2026-06-30
-
----
-
-# Dashboard Score
-
-BAA contributes to the Moon Dashboard.
-
-Score Calculation:
-
-Not Yet Defined
-
-Future Document:
-
-Moon_Scoring_Framework.md
-
-Status:
-
-Pending
+```
 
 ---
 
 # Rebalancing Policy
 
-Default Frequency
+Frequency
 
 Monthly
-
----
 
 Forced Rebalance
 
 Not Allowed
-
----
 
 Manual Override
 
@@ -362,13 +403,14 @@ Not Allowed
 
 # Logging Requirements
 
-Every rebalance event must store:
+Each execution stores:
 
-* Date
+* Signal Date
 * Selected Assets
 * Previous Assets
 * Canary Status
 * Momentum Values
+* Strategy Version
 
 ---
 
@@ -378,7 +420,7 @@ OI-101
 
 Final Canary Universe
 
-Status:
+Status
 
 Open
 
@@ -388,7 +430,7 @@ OI-102
 
 Final Momentum Formula
 
-Status:
+Status
 
 Open
 
@@ -398,7 +440,7 @@ OI-103
 
 Number of Selected Assets
 
-Status:
+Status
 
 Open
 
@@ -408,23 +450,19 @@ OI-104
 
 Validation against Easy Investing implementation
 
-Status:
+Status
 
 Open
 
-Related Research Question:
+Related Research Question
 
 RQ-106
 
 ---
 
-# Approval Status
+# Related Documents
 
-Research:
-In Progress
-
-Implementation:
-Draft
-
-Coding:
-Not Started
+* BAA_Research.md
+* Moon_Current_Production.md
+* Moon_Object_Model.md
+* Moon_Interface.md
