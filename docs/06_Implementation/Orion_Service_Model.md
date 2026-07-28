@@ -328,4 +328,4 @@ Not Approved
 * Orion_State_Model.md
 * Orion_Event_Model.md
 * Orion_Configuration_Model.md
-* Orion_Data_Model.md
+* Orion_Dmoain_Model.md

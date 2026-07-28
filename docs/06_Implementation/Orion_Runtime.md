@@ -9,7 +9,7 @@ Last Updated: 2026-07-27
 Depends On:
 
 * Orion_Engine.md
-* Orion_Data_Model.md
+* Orion_Dmoain_Model.md
 * Orion_Configuration_Model.md
 * Moon_Object_Model.md
 
@@ -377,7 +377,7 @@ Not Approved
 # Related Documents
 
 * Orion_Engine.md
-* Orion_Data_Model.md
+* Orion_Dmoain_Model.md
 * Orion_Configuration_Model.md
 * Moon_Object_Model.md
 * Aurora_Interface.md

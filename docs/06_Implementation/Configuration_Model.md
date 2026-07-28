@@ -8,7 +8,7 @@ Last Updated: 2026-07-27
 
 Depends On:
 
-* Orion_Data_Model.md
+* Orion_Dmoain_Model.md
 * Orion_Technical_Architecture.md
 
 ---
@@ -284,7 +284,7 @@ Not Approved
 
 # Related Documents
 
-* Orion_Data_Model.md
+* Orion_Dmoain_Model.md
 * Orion_Technical_Architecture.md
 * Moon_Object_Model.md
 * Decision_Log.md

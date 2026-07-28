@@ -10,7 +10,7 @@ Depends On:
 
 * Moon_Current_Production.md
 * Moon_Interface.md
-* Orion_Data_Model.md
+* Orion_Dmoain_Model.md
 
 ---
 
@@ -314,5 +314,5 @@ Reporting
 
 * Moon_Current_Production.md
 * Moon_Interface.md
-* Orion_Data_Model.md
+* Orion_Dmoain_Model.md
 * Orion_Configuration_Schema.md

@@ -10,7 +10,7 @@ Depends On:
 
 * Orion_Operating_Architecture.md
 * Orion_Technical_Architecture.md
-* Orion_Data_Model.md
+* Orion_Dmoain_Model.md
 
 ---
 
