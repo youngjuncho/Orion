@@ -158,6 +158,7 @@ Implemented:
 * ADM signal selection from precomputed momentum inputs
 * Equal-weight strategy consensus allocation
 * Documented signal-to-execution asset mapping
+* Moon allocation orchestration from strategy results to executable assets
 * Moon engine scaffold
 * Moon report entry point
 
@@ -167,6 +168,10 @@ ADM selection follows the documented relative and absolute momentum rules.
 
 Consensus allocation applies equal strategy weighting, aggregates overlapping
 assets, and produces normalized allocation output.
+
+Moon Engine orchestration now connects consensus allocation to execution
+mapping. It deliberately surfaces an error when a signal asset has no approved
+execution mapping.
 
 Market data loading, total-return calculation, defensive-asset approval,
 consensus allocation, and rebalance logic are not implemented.
@@ -231,7 +236,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-45 passed
+47 passed
 ```
 
 ---

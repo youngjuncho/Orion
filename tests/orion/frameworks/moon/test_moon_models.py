@@ -118,3 +118,18 @@ def test_execution_mapper_applies_documented_mapping() -> None:
 def test_execution_mapper_rejects_unmapped_signal_assets() -> None:
     with pytest.raises(ValueError, match="VTI"):
         ExecutionMapper().map_allocations((Allocation("VTI", 1.0),))
+
+
+def test_moon_engine_builds_executable_allocation_from_strategy_results() -> None:
+    results = (StrategyResult("Test", ("SPY",), (1.0,), "2026-07-31"),)
+
+    allocation = MoonEngine().build_allocation(results)
+
+    assert allocation == (Allocation("SPYM", 1.0),)
+
+
+def test_moon_engine_surfaces_unmapped_strategy_assets() -> None:
+    results = (StrategyResult("ADM", ("VTI",), (1.0,), "2026-07-31"),)
+
+    with pytest.raises(ValueError, match="VTI"):
+        MoonEngine().build_allocation(results)
