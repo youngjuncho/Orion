@@ -1,3 +1,5 @@
+import pytest
+
 from orion.core import Score
 from orion.frameworks.phoenix import CandidateAsset, Challenger, Category, Leader, PhoenixEngine, PhoenixReport
 
@@ -25,3 +27,8 @@ def test_phoenix_engine_build_report() -> None:
 
     assert report.phoenix_score.value == 0
     assert len(report.categories) == 5
+
+
+def test_phoenix_models_reject_empty_required_values() -> None:
+    with pytest.raises(ValueError, match="asset"):
+        Leader("", "Smart Contracts", "Low", "Stable", Score(70))

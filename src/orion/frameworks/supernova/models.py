@@ -16,6 +16,11 @@ class Theme:
     score: Score
     trend: str
 
+    def __post_init__(self) -> None:
+        for name, value in (("theme_name", self.theme_name), ("state", self.state), ("trend", self.trend)):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
+
 
 @dataclass(frozen=True)
 class CandidateCompany:
@@ -26,6 +31,16 @@ class CandidateCompany:
     theme: str
     status: str
     score: Score
+
+    def __post_init__(self) -> None:
+        for name, value in (
+            ("ticker", self.ticker),
+            ("company_name", self.company_name),
+            ("theme", self.theme),
+            ("status", self.status),
+        ):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
 
 
 @dataclass(frozen=True)
@@ -38,6 +53,11 @@ class ApprovedCompany:
     replacement_risk: str
     trend: str
 
+    def __post_init__(self) -> None:
+        for name, value in (("ticker", self.ticker), ("theme", self.theme), ("replacement_risk", self.replacement_risk), ("trend", self.trend)):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
+
 
 @dataclass(frozen=True)
 class SupernovaReport:
@@ -48,3 +68,12 @@ class SupernovaReport:
     leadership_status: str
     replacement_risk: str
     watchlist: tuple[CandidateCompany, ...] = ()
+
+    def __post_init__(self) -> None:
+        for name, value in (
+            ("theme_health", self.theme_health),
+            ("leadership_status", self.leadership_status),
+            ("replacement_risk", self.replacement_risk),
+        ):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")

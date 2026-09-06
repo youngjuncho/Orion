@@ -17,6 +17,11 @@ class AuroraIndicator:
     score: Score
     state: str
 
+    def __post_init__(self) -> None:
+        for name, value in (("name", self.name), ("category", self.category), ("state", self.state)):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
+
 
 @dataclass(frozen=True)
 class AuroraRegime:
@@ -26,6 +31,11 @@ class AuroraRegime:
     score: Score
     direction: str
     confidence: Score
+
+    def __post_init__(self) -> None:
+        for name, value in (("regime", self.regime), ("direction", self.direction)):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
 
 
 @dataclass(frozen=True)
@@ -38,3 +48,13 @@ class AuroraReport:
     risk_state: str
     transition_risk: str
     indicators: tuple[AuroraIndicator, ...] = ()
+
+    def __post_init__(self) -> None:
+        for name, value in (
+            ("current_regime", self.current_regime),
+            ("regime_direction", self.regime_direction),
+            ("risk_state", self.risk_state),
+            ("transition_risk", self.transition_risk),
+        ):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")

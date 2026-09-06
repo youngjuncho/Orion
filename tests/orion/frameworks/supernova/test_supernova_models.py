@@ -1,3 +1,5 @@
+import pytest
+
 from orion.core import Score
 from orion.frameworks.supernova import ApprovedCompany, CandidateCompany, SupernovaEngine, SupernovaReport, Theme
 
@@ -24,3 +26,8 @@ def test_supernova_engine_build_report() -> None:
 
     assert len(report.approved_companies) == 5
     assert report.approved_companies[0].ticker == "NVDA"
+
+
+def test_supernova_models_reject_empty_required_values() -> None:
+    with pytest.raises(ValueError, match="ticker"):
+        CandidateCompany("", "NVIDIA", "AI", "Approved", Score(80))

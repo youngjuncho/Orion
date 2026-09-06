@@ -43,6 +43,14 @@ def test_moon_engine_build_report() -> None:
     assert report.momentum_state == "Unknown"
 
 
+def test_moon_models_reject_invalid_required_values() -> None:
+    with pytest.raises(ValueError, match="asset"):
+        Allocation("", 1.0)
+
+    with pytest.raises(ValueError, match="weight"):
+        Allocation("SPY", -0.1)
+
+
 def test_adm_selects_relative_momentum_winner_when_absolute_momentum_is_positive() -> None:
     result = ADMStrategy("SGOV").generate_result(
         ADMSignalInput(

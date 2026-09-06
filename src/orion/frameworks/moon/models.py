@@ -18,6 +18,11 @@ class Strategy:
     version: str
     status: str
 
+    def __post_init__(self) -> None:
+        for name, value in (("name", self.name), ("version", self.version), ("status", self.status)):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
+
 
 @dataclass(frozen=True)
 class StrategyResult:
@@ -55,6 +60,12 @@ class Allocation:
     asset: str
     weight: float
 
+    def __post_init__(self) -> None:
+        if not self.asset.strip():
+            raise ValueError("asset must not be empty")
+        if not isfinite(self.weight) or self.weight < 0:
+            raise ValueError("weight must be finite and non-negative")
+
 
 @dataclass(frozen=True)
 class Portfolio:
@@ -62,6 +73,10 @@ class Portfolio:
 
     current_holdings: tuple[Allocation, ...]
     next_rebalance_date: str
+
+    def __post_init__(self) -> None:
+        if not self.next_rebalance_date.strip():
+            raise ValueError("next_rebalance_date must not be empty")
 
 
 @dataclass(frozen=True)

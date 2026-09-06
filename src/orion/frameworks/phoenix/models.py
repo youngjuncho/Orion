@@ -16,6 +16,11 @@ class Category:
     state: str
     trend: str
 
+    def __post_init__(self) -> None:
+        for name, value in (("category_name", self.category_name), ("state", self.state), ("trend", self.trend)):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
+
 
 @dataclass(frozen=True)
 class CandidateAsset:
@@ -26,6 +31,11 @@ class CandidateAsset:
     category: str
     score: Score
     status: str
+
+    def __post_init__(self) -> None:
+        for name, value in (("ticker", self.ticker), ("name", self.name), ("category", self.category), ("status", self.status)):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
 
 
 @dataclass(frozen=True)
@@ -38,6 +48,11 @@ class Leader:
     trend: str
     score: Score
 
+    def __post_init__(self) -> None:
+        for name, value in (("asset", self.asset), ("category", self.category), ("replacement_risk", self.replacement_risk), ("trend", self.trend)):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
+
 
 @dataclass(frozen=True)
 class Challenger:
@@ -47,6 +62,11 @@ class Challenger:
     category: str
     score: Score
     distance_to_leader: int
+
+    def __post_init__(self) -> None:
+        for name, value in (("asset", self.asset), ("category", self.category)):
+            if not value.strip():
+                raise ValueError(f"{name} must not be empty")
 
 
 @dataclass(frozen=True)
@@ -58,3 +78,7 @@ class PhoenixReport:
     challengers: tuple[Challenger, ...]
     phoenix_score: Score
     replacement_risk: str
+
+    def __post_init__(self) -> None:
+        if not self.replacement_risk.strip():
+            raise ValueError("replacement_risk must not be empty")

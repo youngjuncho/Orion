@@ -103,6 +103,7 @@ Implemented:
 * In-memory Framework Registry for one execution
 * Minimal Runtime lifecycle state transitions
 * Typed Orion API result contracts
+* Required-field validation across framework domain models
 * Basic logging configuration utility
 
 Status:
@@ -249,7 +250,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-80 passed
+84 passed
 ```
 
 ---

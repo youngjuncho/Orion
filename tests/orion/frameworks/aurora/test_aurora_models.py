@@ -1,3 +1,5 @@
+import pytest
+
 from orion.frameworks.aurora import AuroraEngine, AuroraIndicator, AuroraReport, AuroraRegime
 from orion.core import Score
 
@@ -24,3 +26,8 @@ def test_aurora_engine_build_report() -> None:
 
     assert report.score.value == 0
     assert report.current_regime == "Unknown"
+
+
+def test_aurora_models_reject_empty_required_fields() -> None:
+    with pytest.raises(ValueError, match="name"):
+        AuroraIndicator("", "Trend", 1.0, Score(0), "Neutral")
