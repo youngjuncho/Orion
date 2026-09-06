@@ -3,6 +3,7 @@
 from .adm import ADM_RISK_ASSETS, ADMSignalInput, ADMStrategy
 from .consensus import ConsensusAllocator
 from .engine import MoonEngine
+from .execution import DOCUMENTED_EXECUTION_MAPPING, ExecutionMapper
 from .main import run_report
 from .models import Allocation, MoonReport, Portfolio, Strategy, StrategyResult
 
@@ -11,6 +12,8 @@ __all__ = [
     "ADMSignalInput",
     "ADMStrategy",
     "ConsensusAllocator",
+    "DOCUMENTED_EXECUTION_MAPPING",
+    "ExecutionMapper",
     "Allocation",
     "MoonEngine",
     "MoonReport",

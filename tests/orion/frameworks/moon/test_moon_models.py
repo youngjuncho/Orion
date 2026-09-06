@@ -5,6 +5,7 @@ from orion.frameworks.moon import (
     ADMStrategy,
     Allocation,
     ConsensusAllocator,
+    ExecutionMapper,
     MoonEngine,
     MoonReport,
     Portfolio,
@@ -106,3 +107,14 @@ def test_consensus_allocator_rejects_zero_weight_strategy_result() -> None:
 
     with pytest.raises(ValueError, match="positive"):
         ConsensusAllocator().allocate((result,))
+
+
+def test_execution_mapper_applies_documented_mapping() -> None:
+    allocation = ExecutionMapper().map_allocations((Allocation("SPY", 1.0),))
+
+    assert allocation == (Allocation("SPYM", 1.0),)
+
+
+def test_execution_mapper_rejects_unmapped_signal_assets() -> None:
+    with pytest.raises(ValueError, match="VTI"):
+        ExecutionMapper().map_allocations((Allocation("VTI", 1.0),))

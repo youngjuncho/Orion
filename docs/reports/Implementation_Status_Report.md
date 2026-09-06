@@ -157,6 +157,7 @@ Implemented:
 * Strategy, allocation, and portfolio models
 * ADM signal selection from precomputed momentum inputs
 * Equal-weight strategy consensus allocation
+* Documented signal-to-execution asset mapping
 * Moon engine scaffold
 * Moon report entry point
 
@@ -230,7 +231,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-43 passed
+45 passed
 ```
 
 ---
@@ -352,6 +353,24 @@ Severity:
 
 Major
 
+## ADM Execution Mapping Is Incomplete
+
+Current State:
+
+The approved execution mapping document does not define mappings for ADM's
+current signal assets `VTI` and `VEU`, and defines `SGOV` only as the execution
+asset for `BIL`. The mapper therefore rejects unmapped assets instead of
+silently treating signal assets as executable assets.
+
+Recommended Next Step:
+
+Approve the missing ADM execution mappings through the Moon governance process
+before connecting ADM output to portfolio execution.
+
+Severity:
+
+Major
+
 ## Data Layer Has Input Contracts But No Collectors
 
 Current State:
@@ -388,11 +407,11 @@ Minor
 
 # Recommended Next Work Order
 
-1. Begin Moon Phase 1 implementation only from documented Moon and ADM specifications.
-2. Keep Aurora, Supernova, and Phoenix at scaffold level until their implementation rules are fully specified.
-3. Implement data collection and normalization only after their source contracts are documented.
-4. Wire non-report CLI commands only after their framework output contracts are documented.
-5. Continue documentation cleanup only when implementation changes create new documented behavior.
+1. Approve ADM execution mappings through Moon governance.
+2. Resolve ADM total-return and dividend methodology before implementing market-data calculations.
+3. Keep Aurora, Supernova, and Phoenix at scaffold level until their implementation rules are fully specified.
+4. Implement data collection and normalization only after their source contracts are documented.
+5. Wire non-report CLI commands only after their framework output contracts are documented.
 
 ---
 
