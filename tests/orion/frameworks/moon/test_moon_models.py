@@ -4,6 +4,7 @@ from orion.frameworks.moon import (
     ADMSignalInput,
     ADMStrategy,
     Allocation,
+    ConsensusAllocator,
     MoonEngine,
     MoonReport,
     Portfolio,
@@ -79,3 +80,29 @@ def test_adm_rejects_undefined_relative_momentum_tie() -> None:
 
     with pytest.raises(ValueError, match="tie"):
         ADMStrategy("SGOV").calculate_signal(inputs)
+
+
+def test_consensus_allocator_applies_equal_strategy_weight_and_aggregates_assets() -> None:
+    results = (
+        StrategyResult("ADM", ("VTI",), (1.0,), "2026-07-31"),
+        StrategyResult("BAA", ("VTI", "QQQ"), (0.5, 0.5), "2026-07-31"),
+    )
+
+    allocation = ConsensusAllocator().allocate(results)
+
+    assert allocation == (
+        Allocation("VTI", 0.75),
+        Allocation("QQQ", 0.25),
+    )
+
+
+def test_consensus_allocator_requires_strategy_results() -> None:
+    with pytest.raises(ValueError, match="at least one"):
+        ConsensusAllocator().allocate(())
+
+
+def test_consensus_allocator_rejects_zero_weight_strategy_result() -> None:
+    result = StrategyResult("ADM", ("VTI",), (0.0,), "2026-07-31")
+
+    with pytest.raises(ValueError, match="positive"):
+        ConsensusAllocator().allocate((result,))

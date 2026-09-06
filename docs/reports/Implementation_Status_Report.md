@@ -156,12 +156,16 @@ Implemented:
 * Moon report model
 * Strategy, allocation, and portfolio models
 * ADM signal selection from precomputed momentum inputs
+* Equal-weight strategy consensus allocation
 * Moon engine scaffold
 * Moon report entry point
 
 Status:
 
 ADM selection follows the documented relative and absolute momentum rules.
+
+Consensus allocation applies equal strategy weighting, aggregates overlapping
+assets, and produces normalized allocation output.
 
 Market data loading, total-return calculation, defensive-asset approval,
 consensus allocation, and rebalance logic are not implemented.
@@ -226,7 +230,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-40 passed
+43 passed
 ```
 
 ---
