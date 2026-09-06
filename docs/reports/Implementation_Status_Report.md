@@ -371,6 +371,30 @@ Severity:
 
 Major
 
+## ADM Specification Has Unresolved Methodology Decisions
+
+Current State:
+
+`ADM_Orion.md` still contains three open implementation issues:
+
+* OI-001: Final defensive asset selection among `SGOV`, `BIL`, and `SHY`
+* OI-002: Total-return calculation methodology
+* OI-003: Dividend adjustment methodology
+
+The current ADM implementation therefore accepts precomputed momentum inputs
+and an explicitly supplied defensive asset. It does not select a defensive
+asset or calculate momentum from market prices.
+
+Recommended Next Step:
+
+Resolve OI-001, OI-002, and OI-003 through approved Moon documentation and
+governance decisions before implementing ADM market-data calculations or
+connecting ADM to an operational CLI execution path.
+
+Severity:
+
+Major
+
 ## Data Layer Has Input Contracts But No Collectors
 
 Current State:
@@ -408,7 +432,7 @@ Minor
 # Recommended Next Work Order
 
 1. Approve ADM execution mappings through Moon governance.
-2. Resolve ADM total-return and dividend methodology before implementing market-data calculations.
+2. Resolve ADM defensive-asset, total-return, and dividend methodology before implementing market-data calculations.
 3. Keep Aurora, Supernova, and Phoenix at scaffold level until their implementation rules are fully specified.
 4. Implement data collection and normalization only after their source contracts are documented.
 5. Wire non-report CLI commands only after their framework output contracts are documented.
