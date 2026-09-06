@@ -23,6 +23,7 @@ class RuntimeContext:
     execution: ExecutionMetadata
     market_data: MarketDataSet | None = None
     registered_frameworks: tuple[str, ...] = DEFAULT_FRAMEWORKS
+    services: Mapping[str, object] = field(default_factory=dict)
     framework_results: Mapping[str, object] = field(default_factory=dict)
     system_state: OrionStateSnapshot | None = None
     dashboard_data: Mapping[str, object] = field(default_factory=dict)
@@ -35,5 +36,6 @@ class RuntimeContext:
         if len(self.registered_frameworks) != len(set(self.registered_frameworks)):
             raise ValueError("registered framework names must be unique")
 
+        object.__setattr__(self, "services", MappingProxyType(dict(self.services)))
         object.__setattr__(self, "framework_results", MappingProxyType(dict(self.framework_results)))
         object.__setattr__(self, "dashboard_data", MappingProxyType(dict(self.dashboard_data)))

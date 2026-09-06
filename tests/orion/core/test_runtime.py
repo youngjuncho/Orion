@@ -17,12 +17,14 @@ def test_runtime_context_preserves_shared_execution_inputs() -> None:
         configuration=config,
         execution=execution,
         market_data=market_data,
+        services={"Configuration": "service"},
         framework_results={"Moon": "result"},
         dashboard_data={"status": "ready"},
     )
 
     assert context.configuration is config
     assert context.market_data == market_data
+    assert context.services["Configuration"] == "service"
     assert context.framework_results["Moon"] == "result"
 
 

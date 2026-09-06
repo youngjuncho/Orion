@@ -45,6 +45,10 @@ Frameworks should not communicate directly with one another.
 
 All shared information flows through the runtime.
 
+The read-only `RuntimeContext` exposes configuration, normalized market data,
+registered services, framework results, system state, and dashboard data.
+Frameworks may consume these values but must not mutate the shared context.
+
 ---
 
 ## Stateless Frameworks
