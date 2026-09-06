@@ -94,6 +94,7 @@ Implemented:
 * Required configuration file validation
 * Typed configuration dataclasses
 * Core score, state, regime, review, decision, and dashboard card models
+* Immutable domain event contract
 * Basic logging configuration utility
 
 Status:
@@ -240,7 +241,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-51 passed
+55 passed
 ```
 
 ---
@@ -440,6 +441,23 @@ Implement collection and normalization only after source-specific fields, freshn
 Severity:
 
 Minor
+
+## Event Processing Is Not Implemented
+
+Current State:
+
+The core Event contract now validates immutable event records. Event
+collection, persistence, state updates, event replay, and notification
+publishing are not implemented.
+
+Recommended Next Step:
+
+Define the Runtime and Event Service boundaries before implementing event
+storage or processing behavior.
+
+Severity:
+
+Major
 
 ## Dashboard Is Textual Only
 

@@ -1,5 +1,6 @@
 """Shared Orion OS core utilities."""
 
+from .events import EVENT_CATEGORIES, EVENT_SEVERITIES, Event
 from .config_loader import (
     AuroraConfig,
     CandidateUniverseConfig,
@@ -36,6 +37,8 @@ from .models import (
 )
 
 __all__ = [
+    "EVENT_CATEGORIES",
+    "EVENT_SEVERITIES",
     "AuroraConfig",
     "CandidateUniverseConfig",
     "CategoryLeadershipConfig",
@@ -46,6 +49,7 @@ __all__ = [
     "DashboardCard",
     "DashboardConfig",
     "DecisionRecord",
+    "Event",
     "FeatureFlagConfig",
     "IndicatorGroupsConfig",
     "LoggingConfig",
