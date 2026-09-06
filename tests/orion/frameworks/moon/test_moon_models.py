@@ -1,4 +1,15 @@
-from orion.frameworks.moon import Allocation, MoonEngine, MoonReport, Portfolio, Strategy, StrategyResult
+import pytest
+
+from orion.frameworks.moon import (
+    ADMSignalInput,
+    ADMStrategy,
+    Allocation,
+    MoonEngine,
+    MoonReport,
+    Portfolio,
+    Strategy,
+    StrategyResult,
+)
 
 
 def test_moon_model_shapes() -> None:
@@ -27,3 +38,44 @@ def test_moon_engine_build_report() -> None:
 
     assert report.current_asset == "Unknown"
     assert report.momentum_state == "Unknown"
+
+
+def test_adm_selects_relative_momentum_winner_when_absolute_momentum_is_positive() -> None:
+    result = ADMStrategy("SGOV").generate_result(
+        ADMSignalInput(
+            signal_date="2026-07-31",
+            relative_momentum={"VTI": 0.12, "VEU": 0.08},
+            absolute_momentum_positive=True,
+            defensive_asset="SGOV",
+        )
+    )
+
+    assert result.selected_assets == ("VTI",)
+    assert result.weights == (1.0,)
+    assert result.state == "Risk On"
+
+
+def test_adm_selects_defensive_asset_when_absolute_momentum_is_negative() -> None:
+    result = ADMStrategy("SGOV").calculate_signal(
+        ADMSignalInput(
+            signal_date="2026-07-31",
+            relative_momentum={"VTI": 0.12, "VEU": 0.08},
+            absolute_momentum_positive=False,
+            defensive_asset="SGOV",
+        )
+    )
+
+    assert result.selected_assets == ("SGOV",)
+    assert result.state == "Risk Off"
+
+
+def test_adm_rejects_undefined_relative_momentum_tie() -> None:
+    inputs = ADMSignalInput(
+        signal_date="2026-07-31",
+        relative_momentum={"VTI": 0.08, "VEU": 0.08},
+        absolute_momentum_positive=True,
+        defensive_asset="SGOV",
+    )
+
+    with pytest.raises(ValueError, match="tie"):
+        ADMStrategy("SGOV").calculate_signal(inputs)

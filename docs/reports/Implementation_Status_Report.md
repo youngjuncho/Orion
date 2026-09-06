@@ -100,6 +100,19 @@ Status:
 
 Core scaffolding is usable for early implementation.
 
+## Data Layer
+
+Implemented:
+
+* Immutable normalized observation contract
+* Validated market data batch contract
+* Required-field and duplicate-observation checks
+
+Status:
+
+The data layer currently defines input contracts only. It does not collect,
+normalize, persist, or interpret source data.
+
 ## CLI
 
 Implemented:
@@ -142,12 +155,16 @@ Implemented:
 
 * Moon report model
 * Strategy, allocation, and portfolio models
+* ADM signal selection from precomputed momentum inputs
 * Moon engine scaffold
 * Moon report entry point
 
 Status:
 
-Moon contains no final allocation or rebalance logic yet.
+ADM selection follows the documented relative and absolute momentum rules.
+
+Market data loading, total-return calculation, defensive-asset approval,
+consensus allocation, and rebalance logic are not implemented.
 
 TODO comments correctly mark ambiguous or future behavior.
 
@@ -209,7 +226,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-33 passed
+40 passed
 ```
 
 ---
@@ -331,19 +348,21 @@ Severity:
 
 Major
 
-## Data Layer Is Empty
+## Data Layer Has Input Contracts But No Collectors
 
 Current State:
 
-The data layer exists only as an empty package placeholder and has no data collection, normalization, validation, or storage implementation.
+The data layer now exposes immutable contracts for normalized observations and validated input batches.
+
+It still has no data collection, normalization pipeline, persistence, or source-specific adapters.
 
 Recommended Next Step:
 
-Define data interfaces before implementing framework calculations.
+Implement collection and normalization only after source-specific fields, freshness rules, and storage behavior are approved.
 
 Severity:
 
-Major
+Minor
 
 ## Dashboard Is Textual Only
 
@@ -365,9 +384,9 @@ Minor
 
 # Recommended Next Work Order
 
-1. Add a lightweight data contract without investment logic.
-2. Begin Moon Phase 1 implementation only from documented Moon and ADM specifications.
-3. Keep Aurora, Supernova, and Phoenix at scaffold level until their implementation rules are fully specified.
+1. Begin Moon Phase 1 implementation only from documented Moon and ADM specifications.
+2. Keep Aurora, Supernova, and Phoenix at scaffold level until their implementation rules are fully specified.
+3. Implement data collection and normalization only after their source contracts are documented.
 4. Wire non-report CLI commands only after their framework output contracts are documented.
 5. Continue documentation cleanup only when implementation changes create new documented behavior.
 
