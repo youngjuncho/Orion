@@ -95,6 +95,7 @@ Implemented:
 * Typed configuration dataclasses
 * Core score, state, regime, review, decision, and dashboard card models
 * Immutable domain event contract
+* In-memory append-only event store for one execution
 * Immutable Orion state snapshot contract
 * Basic logging configuration utility
 
@@ -242,7 +243,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-58 passed
+61 passed
 ```
 
 ---
@@ -443,18 +444,19 @@ Severity:
 
 Minor
 
-## Event Processing Is Not Implemented
+## Event Processing Is Partially Implemented
 
 Current State:
 
-The core Event contract now validates immutable event records. Event
-collection, persistence, state updates, event replay, and notification
+The core Event contract validates immutable event records, and the runtime
+layer now provides an in-memory append-only EventStore for one execution.
+File or database persistence, state updates, event replay, and notification
 publishing are not implemented.
 
 Recommended Next Step:
 
-Define the Runtime and Event Service boundaries before implementing event
-storage or processing behavior.
+Define the Runtime and Event Service boundaries before implementing persistent
+storage, event replay, or external publishing behavior.
 
 Severity:
 
