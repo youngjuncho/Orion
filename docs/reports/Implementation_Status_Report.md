@@ -102,6 +102,7 @@ Implemented:
 * Shared Runtime context contract for one execution
 * In-memory Framework Registry for one execution
 * Minimal Runtime lifecycle state transitions
+* Typed Orion API result contracts
 * Basic logging configuration utility
 
 Status:
@@ -248,7 +249,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-76 passed
+80 passed
 ```
 
 ---
@@ -500,6 +501,24 @@ Recommended Next Step:
 
 Define the runtime context and lifecycle APIs before connecting framework
 engines or scheduler jobs.
+
+Severity:
+
+Major
+
+## Orion API Execution Is Not Implemented
+
+Current State:
+
+Typed contracts now exist for `FrameworkResult`, `HealthReport`, and
+`OrionResult`. The public API operations, health checks, framework dispatch,
+report formatting, and standardized client-facing error conversion are not
+implemented.
+
+Recommended Next Step:
+
+Define the Orion Engine API boundary and error response contract before wiring
+CLI or future API consumers to runtime execution.
 
 Severity:
 

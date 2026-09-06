@@ -28,6 +28,7 @@ from .config_loader import (
     load_yaml_file,
     validate_required_files,
 )
+from .api_models import FrameworkResult, HealthReport, OrionResult
 from .logging_utils import configure_logging
 from .runtime import DEFAULT_FRAMEWORKS, RuntimeContext
 from .runtime_session import RuntimeSession
@@ -65,6 +66,8 @@ __all__ = [
     "RuntimeSession",
     "StateStore",
     "FeatureFlagConfig",
+    "FrameworkResult",
+    "HealthReport",
     "IndicatorGroupsConfig",
     "LoggingConfig",
     "MoonConfig",
@@ -82,6 +85,7 @@ __all__ = [
     "SystemDataConfig",
     "SYSTEM_STATUSES",
     "OrionStateSnapshot",
+    "OrionResult",
     "configure_logging",
     "load_config",
     "load_yaml_file",
