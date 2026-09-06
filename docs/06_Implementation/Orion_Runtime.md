@@ -75,6 +75,10 @@ Orion Runtime
 
 # Runtime Components
 
+The current `RuntimeSession` owns the in-memory framework registry, service
+registry, event store, and state store for one execution. These components are
+temporary and are not durable persistence.
+
 ## Configuration
 
 Purpose:

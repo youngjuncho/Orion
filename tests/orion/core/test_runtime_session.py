@@ -15,6 +15,9 @@ def test_runtime_session_follows_documented_lifecycle() -> None:
     session = make_session()
 
     assert session.status == "Initializing"
+    service = object()
+    session.services.register("Configuration", service)
+    assert session.services.get("Configuration") is service
     session.start()
     assert session.status == "Running"
     session.complete()

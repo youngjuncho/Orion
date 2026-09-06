@@ -10,6 +10,7 @@ from .execution import ExecutionMetadata
 from .framework_registry import FrameworkRegistry
 from .state import SYSTEM_STATUSES
 from .state_store import StateStore
+from orion.services import ServiceRegistry
 
 
 @dataclass
@@ -19,6 +20,7 @@ class RuntimeSession:
     configuration: OrionConfig
     execution: ExecutionMetadata
     registry: FrameworkRegistry = field(default_factory=FrameworkRegistry)
+    services: ServiceRegistry = field(default_factory=ServiceRegistry)
     events: EventStore = field(default_factory=EventStore)
     states: StateStore = field(default_factory=StateStore)
     status: str = "Initializing"

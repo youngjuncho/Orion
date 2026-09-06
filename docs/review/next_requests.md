@@ -1,5 +1,7 @@
 # Review Follow-up Requests
 
+Blocker 분류와 작업 순서는 `blocker_registry.md`를 먼저 참고합니다.
+
 Date: 2026-09-06
 
 이 문서는 `review_v1.zip` 검토 후, 다음 작업을 시작하기 전에 필요한
