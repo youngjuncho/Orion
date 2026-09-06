@@ -39,3 +39,26 @@ def test_runtime_session_rejects_invalid_transition() -> None:
 
     with pytest.raises(RuntimeError, match="cannot move"):
         session.start()
+
+
+def test_runtime_session_builds_read_only_context_from_registered_components() -> None:
+    session = make_session()
+    framework = object()
+    service = object()
+    session.registry.register("Moon", framework)
+    session.services.register("Configuration", service)
+
+    context = session.build_context(
+        framework_results={"Moon": "result"},
+        dashboard_data={"status": "ready"},
+    )
+
+    assert context.registered_frameworks == ("Moon",)
+    assert context.services["Configuration"] is service
+    assert context.framework_results["Moon"] == "result"
+    assert context.dashboard_data["status"] == "ready"
+
+
+def test_runtime_session_requires_registered_framework_for_context() -> None:
+    with pytest.raises(ValueError, match="at least one framework"):
+        make_session().build_context()

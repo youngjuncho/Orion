@@ -85,6 +85,11 @@ The current `RuntimeSession` owns the in-memory framework registry, service
 registry, event store, and state store for one execution. These components are
 temporary and are not durable persistence.
 
+After frameworks are registered, `RuntimeSession.build_context()` creates the
+read-only `RuntimeContext` consumed by framework code. This helper only
+assembles current in-memory values; it does not execute frameworks, publish
+events, or persist state.
+
 ## Configuration
 
 Purpose:
