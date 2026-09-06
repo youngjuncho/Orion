@@ -39,6 +39,7 @@ from .models import (
     State,
 )
 from .state import SYSTEM_STATUSES, OrionStateSnapshot
+from .state_store import StateStore
 
 __all__ = [
     "EVENT_CATEGORIES",
@@ -58,6 +59,7 @@ __all__ = [
     "ExecutionMetadata",
     "DEFAULT_FRAMEWORKS",
     "RuntimeContext",
+    "StateStore",
     "FeatureFlagConfig",
     "IndicatorGroupsConfig",
     "LoggingConfig",

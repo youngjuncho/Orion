@@ -97,6 +97,7 @@ Implemented:
 * Immutable domain event contract
 * In-memory append-only event store for one execution
 * Immutable Orion state snapshot contract
+* In-memory StateStore for one execution
 * Immutable execution metadata contract
 * Shared Runtime context contract for one execution
 * Basic logging configuration utility
@@ -245,7 +246,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-67 passed
+70 passed
 ```
 
 ---
@@ -464,18 +465,19 @@ Severity:
 
 Major
 
-## State Management Is Not Implemented
+## State Management Is Partially Implemented
 
 Current State:
 
-The core layer now defines an immutable Orion State Snapshot contract with
-system status validation. State transitions, historical snapshots, atomic
-updates, persistence, and state comparison are not implemented.
+The core layer defines an immutable Orion State Snapshot contract and an
+in-memory StateStore that preserves prior snapshots and tracks the current
+snapshot. State transition rules, persistent storage, and state comparison are
+not implemented.
 
 Recommended Next Step:
 
-Define the Runtime State Store and update lifecycle before implementing state
-transitions or historical state management.
+Define the Runtime State Manager and update lifecycle before implementing
+state transitions, persistence, or historical state comparison.
 
 Severity:
 
