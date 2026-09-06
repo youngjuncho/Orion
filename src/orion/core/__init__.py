@@ -3,6 +3,7 @@
 from .events import EVENT_CATEGORIES, EVENT_SEVERITIES, Event
 from .event_store import EventStore
 from .execution import ExecutionMetadata
+from .framework_registry import FrameworkRegistry
 from .config_loader import (
     AuroraConfig,
     CandidateUniverseConfig,
@@ -57,6 +58,7 @@ __all__ = [
     "Event",
     "EventStore",
     "ExecutionMetadata",
+    "FrameworkRegistry",
     "DEFAULT_FRAMEWORKS",
     "RuntimeContext",
     "StateStore",
