@@ -71,6 +71,17 @@ Aurora, Supernova, Phoenix의 scoring/leadership 규칙과 source contract가
 - 기본 configuration loading/validation
 - 현재 source tree와 package 문서 정합성
 
+## 최근 진행 상태
+
+| Blocker | 진행된 범위 | 남은 범위 |
+|---|---|---|
+| B-004~B-006 | RuntimeSession, ServiceRegistry, RuntimeContext, in-memory snapshots, `build_context()` 연결 | persistence, public OrionEngine, API error contract |
+| B-009 | normalized observation/batch contracts와 runtime data handoff | source-specific fields, freshness, collectors |
+| B-003 | consensus allocation과 execution mapping validation | Portfolio target/snapshot/rebalance/order semantics |
+
+현재 구현은 Runtime의 in-memory 조립 경로를 강화한 것이며, 아직 전체
+OrionEngine orchestration을 구현한 것은 아닙니다.
+
 ## 사용자에게 요청할 결정 묶음
 
 가장 먼저 `B-001`과 `B-002`를 함께 결정하면 ADM vertical slice를 진행할 수
