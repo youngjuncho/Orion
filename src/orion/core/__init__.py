@@ -2,6 +2,7 @@
 
 from .events import EVENT_CATEGORIES, EVENT_SEVERITIES, Event
 from .event_store import EventStore
+from .execution import ExecutionMetadata
 from .config_loader import (
     AuroraConfig,
     CandidateUniverseConfig,
@@ -53,6 +54,7 @@ __all__ = [
     "DecisionRecord",
     "Event",
     "EventStore",
+    "ExecutionMetadata",
     "FeatureFlagConfig",
     "IndicatorGroupsConfig",
     "LoggingConfig",

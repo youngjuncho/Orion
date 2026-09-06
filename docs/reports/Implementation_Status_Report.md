@@ -97,6 +97,7 @@ Implemented:
 * Immutable domain event contract
 * In-memory append-only event store for one execution
 * Immutable Orion state snapshot contract
+* Immutable execution metadata contract
 * Basic logging configuration utility
 
 Status:
@@ -243,7 +244,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-61 passed
+64 passed
 ```
 
 ---
@@ -474,6 +475,23 @@ Recommended Next Step:
 
 Define the Runtime State Store and update lifecycle before implementing state
 transitions or historical state management.
+
+Severity:
+
+Major
+
+## Runtime Lifecycle Is Not Implemented
+
+Current State:
+
+The core layer defines execution metadata, but Orion Runtime initialization,
+framework registration, shared execution context, lifecycle coordination,
+shutdown, and scheduler integration are not implemented.
+
+Recommended Next Step:
+
+Define the runtime context and lifecycle APIs before connecting framework
+engines or scheduler jobs.
 
 Severity:
 
