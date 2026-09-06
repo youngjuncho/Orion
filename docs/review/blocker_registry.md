@@ -19,8 +19,8 @@ Date: 2026-09-06
 |---|---|---|---|---|
 | B-001 | D/S | ADM 방어자산·총수익·배당 방식 | ADM 시장데이터 계산 | 사용자 결정 후 ADM 문서와 Decision Log 갱신 |
 | B-002 | D | ADM VTI/VEU 및 방어자산 실행 매핑 | ADM 실행 allocation | 승인된 신호→실행 매핑 추가 |
-| B-003 | S/D | Portfolio Target/Snapshot/RebalancePlan/ExecutionOrder 계약 | 포트폴리오 구성·주문 산출 | 수동 추천 목록인지 실제 주문인지 결정 |
-| B-004 | D | Persistence 기술·저장 범위 | 이벤트·상태 replay와 영속화 | 저장 기술 및 보존 정책 결정 |
+| B-003 | consensus allocation, execution mapping, PortfolioTarget validation | 실제 PortfolioSnapshot 기반 rebalance workflow 및 ExecutionOrder는 MVP 범위 밖 |
+| B-004 | I/F | Moon MVP persistence scope | D-030 resolved the MVP boundary; implement in-memory EventStore/StateStore. Persistent storage, replay, and storage technology remain future scope. |
 | B-005 | S | OrionEngine 공개 계약 | 전체 Runtime orchestration | 입력·출력·실패 격리 계약 확정 |
 | B-006 | S | API 오류 계약 | CLI/API 외부 오류 변환 | 공개 예외와 오류 응답 형식 확정 |
 | B-007 | D/S | Aurora 지표·공식·threshold | Aurora scoring/regime 엔진 | Approved indicator와 계산 규칙 결정 |
@@ -37,15 +37,53 @@ Date: 2026-09-06
 
 ### B-003 — Moon Portfolio
 
-현재 consensus allocation과 실행 매핑 검증까지 진행할 수 있습니다. 현재
-보유수량과 목표수량의 차이, 주문의 의미, broker 연동 여부가 결정되기 전에는
-주문 생성이나 Portfolio 확장을 진행하지 않습니다.
+D-027에서 Moon의 Portfolio domain contract를 결정했습니다.
 
-### B-004~B-006 — Core Runtime/API
+Moon은 다음 개념을 서로 분리하여 관리합니다.
+
+```text
+StrategyResult
+      ↓
+ConsensusAllocation
+      ↓
+PortfolioTarget
+```
+
+현재 Portfolio 상태는 별도로:
+
+```text
+PortfolioSnapshot
+```
+
+으로 표현하며,
+
+```text
+PortfolioTarget + PortfolioSnapshot
+            ↓
+       RebalancePlan
+```
+
+으로 필요한 portfolio changes를 산출할 수 있습니다.
+
+`ExecutionOrder`는 domain concept으로 정의하지만, 실제 broker order
+generation 및 execution은 현재 Moon MVP 범위에 포함하지 않습니다.
+
+따라서 현재 구현에서는 consensus allocation, execution mapping,
+portfolio target 및 validation까지 진행할 수 있습니다.
+
+**Status:** Resolved by D-027
+
+B-004~B-006 — Core Runtime/API
 
 현재 in-memory EventStore, StateStore, RuntimeSession, API result contracts와
-서비스 registry까지가 구현 범위입니다. 저장소·재생·외부 오류 변환은 계약
-확정 후 진행합니다.
+service registry까지가 구현 범위입니다.
+
+D-030에 따라 persistent storage와 event replay는 현재 MVP 범위 밖이며,
+구체적인 storage technology와 retention policy는 향후 별도의 Decision으로
+결정합니다.
+
+저장소·재생·외부 오류 변환은 각각의 계약이 확정된 후 진행합니다.
+
 
 ### B-007~B-009 — 데이터 의존 프레임워크
 
@@ -85,8 +123,9 @@ OrionEngine orchestration을 구현한 것은 아닙니다.
 ## 사용자에게 요청할 결정 묶음
 
 가장 먼저 `B-001`과 `B-002`를 함께 결정하면 ADM vertical slice를 진행할 수
-있습니다. 이후 `B-003`을 결정하면 consensus allocation에서 Portfolio target과
-rebalance plan으로 확장할 수 있습니다. Runtime persistence와 Aurora/
-Supernova/Phoenix 결정은 독립적으로 진행할 수 있습니다.
+있습니다. `B-003`은 D-027에서 이미 결정되었으므로 추가 사용자 결정은 필요하지
+않으며, 정의된 MVP 범위의 Moon portfolio 구현을 진행할 수 있습니다.
+Runtime persistence와 Aurora/Supernova/Phoenix 결정은 독립적으로 진행할 수
+있습니다.
 
 상세 질문은 `next_requests.md`에 기록합니다.

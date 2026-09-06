@@ -1060,6 +1060,64 @@ Approved
 
 ---
 
+## D-030
 
+### Decision
+
+Moon MVP shall use in-memory persistence only.
+
+Historical state persistence and event replay are outside the current Moon MVP scope.
+
+The current in-memory `EventStore` and `StateStore` contracts shall remain
+the runtime persistence boundary for the MVP.
+
+Future persistent storage shall be introduced behind these domain/runtime
+contracts without coupling the domain model to a specific storage technology.
+
+### Details
+
+The following are explicitly outside the current MVP scope:
+
+* Persistent historical state storage
+* Event replay
+* Selection of a specific database or storage engine
+* Definition of a production retention policy
+
+The following remain within the current MVP implementation scope:
+
+* In-memory `EventStore`
+* In-memory `StateStore`
+* Runtime state handling
+* Execution history within the current runtime boundary
+
+A future persistence implementation may define storage technology,
+retention policy, and replay behavior through a separate decision.
+
+### Rationale
+
+The current Orion implementation is focused on validating the runtime
+architecture and portfolio execution flow.
+
+Introducing a specific persistent storage technology before the runtime
+contracts are stabilized would unnecessarily couple implementation details
+to the current architecture.
+
+Keeping persistence behind the existing contracts allows the MVP to proceed
+while preserving a clear migration path to persistent storage.
+
+### Scope
+
+This decision defines the persistence boundary for the current Moon MVP.
+
+It does not select a database, storage engine, retention policy, or future
+event-replay architecture.
+
+### Status
+
+Approved
+
+### Date
+
+2026-09-07
 
 ---

@@ -240,19 +240,122 @@ SPYM
 
 # Portfolio
 
-Represents the executable portfolio target in the current minimal model.
+## Portfolio Domain Model
 
-## Fields
+Moon shall distinguish portfolio decision, portfolio state, and execution
+concepts as separate domain objects.
 
-Target Holdings
+The canonical flow is:
 
-Rebalance Date
+```text
+StrategyResult
+      ↓
+ConsensusAllocation
+      ↓
+PortfolioTarget
+      ↓
+RebalancePlan
+      ↓
+ExecutionOrder
+```
 
-Execution Assets
+Current portfolio state is represented independently:
 
-The full target contract also defines `Portfolio Snapshot`, `Rebalance Plan`,
-and `Execution Order` as separate concepts. The current Python `Portfolio`
-model is a scaffold and does not yet implement those objects.
+```text
+PortfolioSnapshot
+      ↓
+Current Holdings
+```
+
+A `RebalancePlan` is derived from the desired target and the current
+portfolio state:
+
+```text
+PortfolioTarget + PortfolioSnapshot
+            ↓
+       RebalancePlan
+```
+
+### StrategyResult
+
+Represents the output of one Moon strategy.
+
+It contains the strategy's signal and resulting allocation together with
+supporting information required for downstream processing.
+
+`StrategyResult` does not represent the final Moon portfolio.
+
+### ConsensusAllocation
+
+Represents the allocation resulting from aggregation of the active
+strategy results.
+
+It represents strategy-level consensus before translation into the final
+execution portfolio.
+
+`ConsensusAllocation` does not represent current holdings.
+
+### PortfolioTarget
+
+Represents the desired portfolio allocation using the actual execution
+assets.
+
+The target is therefore the portfolio state Moon intends to reach after
+execution-asset mapping.
+
+`PortfolioTarget` does not represent current holdings.
+
+### PortfolioSnapshot
+
+Represents the actual current portfolio holdings at a specific point in
+time.
+
+It is independent from `PortfolioTarget`.
+
+The snapshot is used as the current-state input when determining required
+portfolio changes.
+
+### RebalancePlan
+
+Represents the changes required to move the current portfolio represented
+by `PortfolioSnapshot` toward the desired allocation represented by
+`PortfolioTarget`.
+
+```text
+PortfolioTarget + PortfolioSnapshot
+            ↓
+       RebalancePlan
+```
+
+`RebalancePlan` describes required portfolio changes. It does not execute
+trades.
+
+### ExecutionOrder
+
+Represents a concrete trade instruction derived from a rebalance plan.
+
+`ExecutionOrder` is part of the canonical domain model, but actual broker
+order execution is outside the current Moon MVP scope.
+
+### Portfolio
+
+`Portfolio` shall not be used as a container for all portfolio concepts.
+
+The following concepts remain distinct:
+
+```text
+StrategyResult
+ConsensusAllocation
+PortfolioTarget
+PortfolioSnapshot
+RebalancePlan
+ExecutionOrder
+```
+
+If a higher-level portfolio aggregate is required by the implementation,
+its responsibility must remain consistent with these canonical domain
+boundaries and must not collapse them into a single undifferentiated
+object.
 
 ---
 

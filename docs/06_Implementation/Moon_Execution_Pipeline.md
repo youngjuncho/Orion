@@ -62,10 +62,13 @@ Collect Strategy Results
 Generate Consensus Allocation
     │
     ▼
-Build Portfolio
+Apply Execution Mapping
     │
     ▼
-Validate Portfolio
+Build Portfolio Target
+    │
+    ▼
+Validate Portfolio Target
     │
     ▼
 Publish Results
@@ -182,7 +185,7 @@ Outputs:
 
 Purpose:
 
-Combine multiple strategy outputs into a unified allocation.
+Combine multiple strategy outputs into a unified strategy-level allocation.
 
 Responsibilities:
 
@@ -190,52 +193,110 @@ Responsibilities:
 * Sum duplicated assets
 * Normalize portfolio weights
 
+Inputs:
+
+* StrategyResult Collection
+
 Outputs:
 
-* PortfolioAllocation
+* ConsensusAllocation
+
+`ConsensusAllocation` represents strategy-level consensus.
+
+It does not represent current portfolio holdings and does not yet represent
+the final execution-asset portfolio target.
 
 ---
 
 # Stage 7
 
-## Build Portfolio
+## Apply Execution Mapping
 
 Purpose:
 
-Construct the final Moon portfolio.
+Translate signal or monitoring assets into the approved execution assets.
 
 Responsibilities:
 
-* Create portfolio object
-* Assign normalized weights
-* Validate asset totals
+* Apply explicit execution mappings
+* Preserve the strategy result and consensus semantics
+* Validate that all mapped assets are executable
+
+The execution mapping is explicit and must not be inferred or replaced by
+the implementation.
+
+Inputs:
+
+* ConsensusAllocation
+* Execution Mapping
 
 Outputs:
 
-* Portfolio
+* Execution-asset allocation
+
+Execution Mapping is maintained separately from the strategy calculation.
 
 ---
 
 # Stage 8
 
-## Validate Portfolio
+## Build Portfolio Target
 
 Purpose:
 
-Verify portfolio integrity before publication.
+Construct the desired Moon portfolio using execution assets.
+
+Inputs:
+
+* Execution-asset allocation
+
+Outputs:
+
+* PortfolioTarget
+
+`PortfolioTarget` represents the desired portfolio state.
+
+It does not represent current holdings.
+
+---
+
+# Stage 9
+
+## Validate Portfolio Target
+
+Purpose:
+
+Verify portfolio-target integrity before publication.
 
 Validation includes:
 
 * Total allocation equals 100%
-* No duplicate assets
+* No duplicate execution assets
 * No invalid weights
 * All assets are executable
 
 Execution stops if validation fails.
 
+The current portfolio state is represented independently by
+`PortfolioSnapshot`.
+
+A future rebalance workflow may derive:
+
+```text
+PortfolioTarget + PortfolioSnapshot
+            ↓
+       RebalancePlan
+```
+
+`RebalancePlan` describes required portfolio changes and does not execute
+trades.
+
+Actual `ExecutionOrder` generation and broker execution are outside the
+current Moon MVP scope.
+
 ---
 
-# Stage 9
+# Stage 10
 
 ## Publish Results
 
@@ -253,13 +314,13 @@ Consumers:
 Published Objects:
 
 * StrategyResult
-* PortfolioAllocation
-* Portfolio
+* ConsensusAllocation
+* PortfolioTarget
 * ExecutionReport
 
 ---
 
-# Stage 10
+# Stage 11
 
 ## Store Execution History
 
@@ -271,8 +332,8 @@ Stored Information:
 
 * Execution Timestamp
 * Strategy Results
-* Portfolio Allocation
-* Portfolio
+* Consensus Allocation
+* Portfolio Target
 * Runtime Duration
 * Errors
 * Warnings

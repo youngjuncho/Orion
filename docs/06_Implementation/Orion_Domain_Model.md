@@ -43,24 +43,60 @@ Domain objects should primarily represent data.
 
 # Core Domain Hierarchy
 
+The Orion domain model distinguishes framework structure from portfolio
+decision and execution concepts.
+
+The general framework relationship is:
+
 ```text
 Framework
     │
-    ▼
-Engine
+    ├── Engine
+    │      │
+    │      ▼
+    │    Entity
+    │      │
+    │      ├── Score
+    │      │
+    │      └── State
     │
-    ▼
-Entity
-    │
-    ▼
-Score
-    │
-    ▼
-State
-    │
-    ▼
-Event
+    └── Strategy
 ```
+
+For portfolio-producing frameworks such as Moon, the canonical portfolio
+decision flow is:
+
+```text
+StrategyResult
+      ↓
+ConsensusAllocation
+      ↓
+PortfolioTarget
+      ↓
+RebalancePlan
+      ↓
+ExecutionOrder
+```
+
+Current portfolio state is represented independently:
+
+```text
+PortfolioSnapshot
+      ↓
+Current Holdings
+```
+
+A rebalance plan is derived from the desired portfolio target and the
+current portfolio state:
+
+```text
+PortfolioTarget + PortfolioSnapshot
+            ↓
+       RebalancePlan
+```
+
+`ExecutionOrder` represents a concrete trade instruction. Actual trade
+execution is outside the current Moon MVP scope.
 
 ---
 
@@ -203,11 +239,15 @@ Fields:
 * status
 * configuration
 
+A registered strategy is not necessarily an active strategy.
+
+Only explicitly activated strategies may participate in production execution.
+
 ---
 
 # StrategyResult
 
-Output produced by a strategy execution.
+Represents the output produced by one strategy execution.
 
 Fields:
 
@@ -218,18 +258,237 @@ Fields:
 * score
 * state
 
+A StrategyResult represents the result of one strategy independently.
+It does not represent the final Moon portfolio.
+
 ---
 
-# Portfolio
+# ConsensusAllocation
 
-Represents a framework allocation.
+Represents the allocation produced by aggregating multiple StrategyResults.
+
+It represents strategy-level consensus before execution-asset translation.
+
+Fields:
+
+* allocations
+* source_strategies
+* calculated_at
+
+ConsensusAllocation does not represent current holdings and does not
+represent an execution order.
+
+---
+
+# PortfolioTarget
+
+Represents the desired portfolio allocation using actual execution assets.
+
+It is the target state that the portfolio should reach after applying
+execution mapping.
+
+Fields:
+
+* allocations
+* rebalance_date
+* status
+
+PortfolioTarget represents a desired state, not current holdings.
+
+---
+
+# PortfolioSnapshot
+
+Represents the actual portfolio state at a specific point in time.
+
+Fields:
+
+* holdings
+* captured_at
+* source
+
+PortfolioSnapshot represents current holdings independently from
+PortfolioTarget.
+
+---
+
+# RebalancePlan
+
+Represents the changes required to move from the current portfolio state
+to the desired portfolio target.
+
+It is derived from:
+
+```text
+PortfolioTarget + PortfolioSnapshot
+            ↓
+       RebalancePlan
+```
+
+Fields:
+
+* source_snapshot
+* target
+* changes
+* created_at
+* status
+
+A RebalancePlan describes required changes but does not itself execute trades.
+
+---
+
+# ExecutionOrder
+
+Represents a concrete trade instruction derived from a RebalancePlan.
+
+Fields and execution semantics are implementation concerns.
+
+Actual order execution is outside the current Moon MVP scope.
+
+---
+
+# Allocation
+
+Represents a normalized portfolio allocation.
+
+Fields:
+
+* asset
+* weight
+* source
+
+Allocation may be used as a component of StrategyResult,
+ConsensusAllocation, or PortfolioTarget depending on context.
+
+Example:
+
+SPYM
+
+Weight:
+
+35%
+
+Source:
+
+Moon
+
+---
+
+# Indicator
+
+Aurora-specific entity.
+
+Fields:
+
+* name
+* category
+* value
+* score
+* timestamp
+
+---
+
+# Company
+
+Supernova-specific entity.
+
+Fields:
+
+* ticker
+* name
+* theme
+* score
+* state
+
+---
+
+# Digital Asset
+
+Phoenix-specific entity.
+
+Fields:
+
+* symbol
+* category
+* score
+* state
+
+---
+
+# Theme
+
+Represents a long-term structural investment theme.
+
+Fields:
+
+* name
+* score
+* state
+* trend
+
+---
+
+# Category
+
+Represents a digital asset ecosystem.
+
+Fields:
+
+* name
+* score
+* leader
+* state
+
+---
+
+# Review
+
+Represents a scheduled evaluation.
 
 Fields:
 
 * framework
-* allocations
-* rebalance_date
-* status
+* entity
+* review_type
+* scheduled_date
+* completed_date
+* outcome
+
+---
+
+# Event
+
+Represents a domain event.
+
+Fields:
+
+* id
+* event_type
+* timestamp
+* framework
+* entity
+* payload
+
+Examples:
+
+* ScoreCalculated
+* StateUpdated
+* ReviewCompleted
+* PipelineCompleted
+
+---
+
+# Configuration Reference
+
+Configuration values should not be embedded in domain objects.
+
+Runtime configuration is provided through:
+
+* system.yaml
+* moon.yaml
+* aurora.yaml
+* supernova.yaml
+* phoenix.yaml
 
 ---
 
