@@ -101,6 +101,7 @@ Implemented:
 * Immutable execution metadata contract
 * Shared Runtime context contract for one execution
 * In-memory Framework Registry for one execution
+* Minimal Runtime lifecycle state transitions
 * Basic logging configuration utility
 
 Status:
@@ -247,7 +248,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-73 passed
+76 passed
 ```
 
 ---
@@ -484,15 +485,16 @@ Severity:
 
 Major
 
-## Runtime Lifecycle Is Not Implemented
+## Runtime Lifecycle Is Partially Implemented
 
 Current State:
 
 The core layer defines execution metadata, a read-only Runtime context
-contract, and an in-memory Framework Registry. Runtime initialization,
-lifecycle coordination, shutdown, and scheduler integration are not
-implemented. Portfolio storage remains outside the context until the Portfolio
-output contract is clarified.
+contract, an in-memory Framework Registry, and the basic
+`Initializing -> Running -> Completed/Error` lifecycle transitions.
+Configuration loading within Runtime, framework execution, event publication,
+shutdown, and scheduler integration are not implemented. Portfolio storage
+remains outside the context until the Portfolio output contract is clarified.
 
 Recommended Next Step:
 

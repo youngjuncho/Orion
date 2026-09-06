@@ -30,6 +30,7 @@ from .config_loader import (
 )
 from .logging_utils import configure_logging
 from .runtime import DEFAULT_FRAMEWORKS, RuntimeContext
+from .runtime_session import RuntimeSession
 from .models import (
     DecisionRecord,
     DashboardCard,
@@ -61,6 +62,7 @@ __all__ = [
     "FrameworkRegistry",
     "DEFAULT_FRAMEWORKS",
     "RuntimeContext",
+    "RuntimeSession",
     "StateStore",
     "FeatureFlagConfig",
     "IndicatorGroupsConfig",
