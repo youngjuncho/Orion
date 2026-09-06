@@ -47,6 +47,8 @@ All shared information flows through the runtime.
 
 The read-only `RuntimeContext` exposes configuration, normalized market data,
 registered services, framework results, system state, and dashboard data.
+Framework and service registries provide read-only snapshots when values are
+passed into that context.
 Frameworks may consume these values but must not mutate the shared context.
 
 ---

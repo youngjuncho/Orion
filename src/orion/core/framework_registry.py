@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from types import MappingProxyType
+from typing import Mapping
 
 
 @dataclass
@@ -16,6 +18,12 @@ class FrameworkRegistry:
         """Return registered framework names in registration order."""
 
         return tuple(self._frameworks)
+
+    @property
+    def snapshot(self) -> Mapping[str, object]:
+        """Return a read-only view of the current registry contents."""
+
+        return MappingProxyType(dict(self._frameworks))
 
     def register(self, name: str, framework: object) -> None:
         """Register a framework instance under a non-empty unique name."""

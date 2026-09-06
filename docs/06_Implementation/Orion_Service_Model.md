@@ -38,7 +38,7 @@ they do not imply that a corresponding production service exists.
 |---|---|
 | Configuration | Implemented through the strict core configuration loader |
 | Logging | Implemented through core logging utilities |
-| Service Registry | Implemented in-memory for one execution |
+| Service Registry | Implemented in-memory for one execution, with read-only snapshots for runtime context |
 | Event | Event contract and in-memory EventStore exist; coordinated service not implemented |
 | State / Persistence | In-memory StateStore exists; durable persistence is not implemented |
 | Market Data | Data contracts exist; collection and normalization service not implemented |

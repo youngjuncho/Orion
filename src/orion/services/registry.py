@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from types import MappingProxyType
+from typing import Mapping
 
 
 @dataclass
@@ -16,6 +18,12 @@ class ServiceRegistry:
         """Return registered service names in registration order."""
 
         return tuple(self._services)
+
+    @property
+    def snapshot(self) -> Mapping[str, object]:
+        """Return a read-only view of the current registry contents."""
+
+        return MappingProxyType(dict(self._services))
 
     def register(self, name: str, service: object) -> None:
         """Register a service instance under a non-empty unique name."""

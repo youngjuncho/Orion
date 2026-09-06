@@ -13,6 +13,10 @@ def test_service_registry_preserves_registration_order_and_lookup() -> None:
 
     assert registry.names == ("Configuration", "Logging")
     assert registry.get("Configuration") is configuration
+    assert registry.snapshot["Configuration"] is configuration
+
+    with pytest.raises(TypeError):
+        registry.snapshot["Market Data"] = object()
 
 
 def test_service_registry_rejects_duplicate_names() -> None:

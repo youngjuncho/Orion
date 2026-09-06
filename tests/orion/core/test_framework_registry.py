@@ -13,6 +13,10 @@ def test_framework_registry_preserves_registration_order_and_lookup() -> None:
 
     assert registry.names == ("Moon", "Aurora")
     assert registry.get("Moon") is moon
+    assert registry.snapshot["Moon"] is moon
+
+    with pytest.raises(TypeError):
+        registry.snapshot["Phoenix"] = object()
 
 
 def test_framework_registry_rejects_duplicate_names() -> None:
