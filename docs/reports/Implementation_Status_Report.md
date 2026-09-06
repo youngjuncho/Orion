@@ -95,6 +95,7 @@ Implemented:
 * Typed configuration dataclasses
 * Core score, state, regime, review, decision, and dashboard card models
 * Immutable domain event contract
+* Immutable Orion state snapshot contract
 * Basic logging configuration utility
 
 Status:
@@ -241,7 +242,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-55 passed
+58 passed
 ```
 
 ---
@@ -454,6 +455,23 @@ Recommended Next Step:
 
 Define the Runtime and Event Service boundaries before implementing event
 storage or processing behavior.
+
+Severity:
+
+Major
+
+## State Management Is Not Implemented
+
+Current State:
+
+The core layer now defines an immutable Orion State Snapshot contract with
+system status validation. State transitions, historical snapshots, atomic
+updates, persistence, and state comparison are not implemented.
+
+Recommended Next Step:
+
+Define the Runtime State Store and update lifecycle before implementing state
+transitions or historical state management.
 
 Severity:
 
