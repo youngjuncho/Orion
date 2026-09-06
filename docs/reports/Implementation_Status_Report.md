@@ -104,6 +104,7 @@ Implemented:
 * Minimal Runtime lifecycle state transitions
 * Typed Orion API result contracts
 * Required-field validation across framework domain models
+* In-memory Service Registry for one execution
 * Basic logging configuration utility
 
 Status:
@@ -250,7 +251,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-84 passed
+87 passed
 ```
 
 ---
@@ -520,6 +521,23 @@ Recommended Next Step:
 
 Define the Orion Engine API boundary and error response contract before wiring
 CLI or future API consumers to runtime execution.
+
+Severity:
+
+Major
+
+## Service Layer Implementations Are Not Implemented
+
+Current State:
+
+The repository now has a Service Registry contract for one execution, but the
+documented Configuration, Market Data, Persistence, Logging, Dashboard,
+Reporting, and Event services are not implemented as coordinated services.
+
+Recommended Next Step:
+
+Define each service's public interface and Runtime access rules before adding
+service behavior or framework dependencies.
 
 Severity:
 
