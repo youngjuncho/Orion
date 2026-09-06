@@ -10,7 +10,6 @@ from orion.cli.main import main
         (["health"], "Orion health: not yet implemented"),
         (["config"], "Orion config: loaded"),
         (["data", "update"], "Orion data update: not yet implemented"),
-        (["moon", "report"], "moon report: not yet implemented"),
         (["aurora", "indicators"], "aurora indicators: not yet implemented"),
         (["supernova", "watchlist"], "supernova watchlist: not yet implemented"),
         (["phoenix", "categories"], "phoenix categories: not yet implemented"),
@@ -27,3 +26,53 @@ def test_cli_commands_dispatch(argv, expected, capsys) -> None:
 def test_cli_requires_command() -> None:
     with pytest.raises(SystemExit):
         main([])
+
+
+@pytest.mark.parametrize(
+    ("argv", "expected_lines"),
+    [
+        (
+            ["moon", "report"],
+            (
+                "Current Asset: Unknown",
+                "Momentum State: Unknown",
+                "Risk State: Unknown",
+                "Next Rebalance Date: Unknown",
+            ),
+        ),
+        (
+            ["aurora", "report"],
+            (
+                "Aurora Score: 0",
+                "Current Regime: Unknown",
+                "Regime Direction: Stable",
+                "Risk State: Unknown",
+                "Transition Risk: Unknown",
+            ),
+        ),
+        (
+            ["supernova", "report"],
+            (
+                "Approved Companies: 5",
+                "Theme Health: Unknown",
+                "Leadership Status: Unknown",
+                "Replacement Risk: Unknown",
+            ),
+        ),
+        (
+            ["phoenix", "report"],
+            (
+                "Phoenix Score: 0",
+                "Categories: 5",
+                "Current Leaders: 5",
+                "Replacement Risk: Unknown",
+            ),
+        ),
+    ],
+)
+def test_framework_report_commands_dispatch_to_entry_points(argv, expected_lines, capsys) -> None:
+    exit_code = main(argv)
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert tuple(captured.out.strip().splitlines()) == expected_lines

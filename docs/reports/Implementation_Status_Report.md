@@ -54,32 +54,33 @@ The working tree was clean at review time.
 
 # Implementation Structure Status
 
-The current source tree contains the expected top-level packages:
+The current source tree has been refactored into the packaged Orion layout:
 
 ```text
 src/
-  aurora/
-  cli/
-  core/
-  dashboard/
-  data/
-  moon/
-  phoenix/
-  supernova/
+  orion/
+    cli/
+    core/
+    dashboard/
+    frameworks/
+      aurora/
+      moon/
+      phoenix/
+      supernova/
 ```
 
-This aligns with the reconciled architecture.
+This aligns with the current Python package structure.
 
-`src/dashboard` exists as the presentation layer.
+`src/orion/dashboard` exists as the presentation layer.
 
 Framework logic is currently located under:
 
-* `src/aurora`
-* `src/moon`
-* `src/supernova`
-* `src/phoenix`
+* `src/orion/frameworks/aurora`
+* `src/orion/frameworks/moon`
+* `src/orion/frameworks/supernova`
+* `src/orion/frameworks/phoenix`
 
-No investment logic was found inside `src/dashboard`.
+No investment logic was found inside `src/orion/dashboard`.
 
 ---
 
@@ -110,12 +111,15 @@ Implemented:
 * `orion data update`
 * `orion data status`
 * Framework command shells for Moon, Aurora, Supernova, and Phoenix
+* Framework report commands for Moon, Aurora, Supernova, and Phoenix
 
 Status:
 
 CLI routing is in place.
 
-Most framework-specific commands are still placeholders.
+Framework `report` commands call their corresponding framework entry points.
+
+Non-report framework commands remain placeholders until their behavior is implemented from approved documentation.
 
 ## Aurora
 
@@ -199,13 +203,13 @@ It consumes framework outputs and does not generate investment decisions.
 The following command passed at review time:
 
 ```powershell
-pytest tests\cli tests\dashboard tests\phoenix tests\supernova tests\moon tests\aurora tests\core -q
+pytest tests\orion -q
 ```
 
 Result:
 
 ```text
-30 passed
+33 passed
 ```
 
 ---
@@ -288,21 +292,28 @@ Resolved
 
 # Remaining Implementation Issues
 
-## Framework CLI Commands Are Not Yet Wired To Framework Engines
+## Non-Report Framework CLI Commands Are Not Yet Wired To Framework Engines
 
 Current State:
 
 `orion dashboard` calls the dashboard renderer.
 
-Framework commands such as `orion moon report`, `orion aurora report`, `orion supernova report`, and `orion phoenix report` still return placeholder messages.
+Framework report commands now call their corresponding framework entry points:
+
+* `orion moon report`
+* `orion aurora report`
+* `orion supernova report`
+* `orion phoenix report`
+
+Non-report commands such as `orion moon allocation`, `orion aurora indicators`, `orion supernova watchlist`, and `orion phoenix categories` still return placeholder messages.
 
 Recommended Next Step:
 
-Wire each framework `report` command to its corresponding `run_report()` function.
+Wire non-report commands only after their output contracts and framework behavior are documented.
 
 Severity:
 
-Major
+Minor
 
 ## Engine Outputs Are Placeholder Reports
 
@@ -324,7 +335,7 @@ Major
 
 Current State:
 
-`src/data` exists but has no data collection, normalization, validation, or storage implementation.
+The data layer exists only as an empty package placeholder and has no data collection, normalization, validation, or storage implementation.
 
 Recommended Next Step:
 
@@ -354,12 +365,11 @@ Minor
 
 # Recommended Next Work Order
 
-1. Wire framework `report` CLI commands to existing framework `run_report()` entry points.
-2. Add tests for those CLI-to-framework connections.
-3. Add a lightweight data contract under `src/data` without investment logic.
-4. Begin Moon Phase 1 implementation only from documented Moon and ADM specifications.
-5. Keep Aurora, Supernova, and Phoenix at scaffold level until their implementation rules are fully specified.
-6. Update `Environment_Setup.md`, `Orion_Repository_Structure.md`, and `Testing_Strategy.md` as a small documentation cleanup batch.
+1. Add a lightweight data contract without investment logic.
+2. Begin Moon Phase 1 implementation only from documented Moon and ADM specifications.
+3. Keep Aurora, Supernova, and Phoenix at scaffold level until their implementation rules are fully specified.
+4. Wire non-report CLI commands only after their framework output contracts are documented.
+5. Continue documentation cleanup only when implementation changes create new documented behavior.
 
 ---
 

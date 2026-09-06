@@ -150,7 +150,8 @@ orion data update
 Run Dashboard
 
 ```powershell
-python -m src.cli dashboard
+$env:PYTHONPATH = "src"
+python -m orion.cli dashboard
 ```
 
 ---

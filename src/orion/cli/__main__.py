@@ -1,4 +1,4 @@
-"""Module execution entry point for `python -m src.cli`."""
+"""Module execution entry point for `python -m orion.cli`."""
 
 from __future__ import annotations
 
