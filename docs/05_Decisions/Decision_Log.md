@@ -935,5 +935,131 @@ Approved
 
 ---
 
+## D-027
+
+### Decision
+
+Moon shall use the following canonical portfolio domain model.
+
+```text
+StrategyResult
+      ↓
+ConsensusAllocation
+      ↓
+PortfolioTarget
+      ↓
+RebalancePlan
+      ↓
+ExecutionOrder
+```
+
+Current portfolio state is represented independently:
+
+```text
+PortfolioSnapshot
+      ↓
+Current Holdings
+```
+
+A `RebalancePlan` is derived from:
+
+```text
+PortfolioTarget + PortfolioSnapshot
+      ↓
+RebalancePlan
+```
+
+### Details
+
+`StrategyResult` represents the output of an individual strategy, including its signal, allocation, and supporting information.
+
+`ConsensusAllocation` represents the allocation resulting from the aggregation of multiple strategy results.
+
+`PortfolioTarget` represents the desired portfolio allocation using the actual execution assets.
+
+`PortfolioSnapshot` represents the actual current portfolio holdings.
+
+`RebalancePlan` represents the changes required to move the current portfolio represented by `PortfolioSnapshot` toward the desired allocation represented by `PortfolioTarget`.
+
+`ExecutionOrder` represents a concrete trade instruction.
+
+These concepts shall remain distinct and shall not be collapsed into a single `Portfolio` object.
+
+### Scope
+
+`ExecutionOrder` is part of the canonical domain model but actual order execution is outside the current Moon MVP unless explicitly brought into scope by a future decision.
+
+### Rationale
+
+The term `Portfolio` has previously been used to represent multiple distinct concepts, including allocation, current holdings, target holdings, rebalancing, and execution.
+
+Separating these concepts provides a stable domain model for Moon implementation and prevents the `Portfolio` object from accumulating unrelated responsibilities.
+
+### Status
+
+Approved
+
+### Date
+
+2026-09-06
+
+---
+
+## D-028
+
+### Decision
+
+ADM shall use adjusted-price-based total return measurement for strategy calculation.
+
+Dividend distributions shall be incorporated through the adjusted price series and shall not be calculated separately within the ADM strategy logic.
+
+### Details
+
+ADM return calculation shall use the adjusted price provided by the data layer.
+
+The conceptual calculation is:
+
+```text
+Adjusted Price
+      ↓
+Total Return Measurement
+      ↓
+ADM Strategy Calculation
+```
+
+ADM shall not independently calculate dividend distributions from raw dividend data as part of its core strategy calculation.
+
+The responsibility for producing the appropriate adjusted-price series belongs to the data layer.
+
+Raw close prices and adjusted prices therefore have distinct purposes:
+
+* Raw Close: represents the unadjusted market price.
+* Adjusted Price: provides the price series used for ADM total-return measurement.
+
+### Rationale
+
+ADM evaluates asset performance on a total-return basis.
+
+Using the adjusted price series allows dividend distributions to be incorporated consistently into the return calculation without introducing a separate dividend calculation inside the strategy implementation.
+
+This keeps the strategy logic focused on investment methodology while data adjustment remains a responsibility of the data layer.
+
+### Scope
+
+This decision defines the return measurement methodology used by ADM.
+
+It does not define the broader data-provider selection, data-quality policy, or historical data validation process.
+
+### Status
+
+Approved
+
+### Date
+
+2026-09-06
+
+---
+
+
 
 ---
