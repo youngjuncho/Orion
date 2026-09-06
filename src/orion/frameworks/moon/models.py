@@ -46,8 +46,13 @@ class StrategyResult:
             raise ValueError("selected_assets and weights must have the same length")
         if any(not asset.strip() for asset in self.selected_assets):
             raise ValueError("selected asset names must not be empty")
-        if any(not isfinite(weight) or weight < 0 for weight in self.weights):
+        if any(
+            isinstance(weight, bool) or not isfinite(weight) or weight < 0
+            for weight in self.weights
+        ):
             raise ValueError("weights must be finite and non-negative")
+        if len(self.selected_assets) != len(set(self.selected_assets)):
+            raise ValueError("selected assets must be unique")
 
         metadata = self.metadata if isinstance(self.metadata, Mapping) else dict(self.metadata)
         object.__setattr__(self, "metadata", MappingProxyType(dict(metadata)))
@@ -63,7 +68,7 @@ class Allocation:
     def __post_init__(self) -> None:
         if not self.asset.strip():
             raise ValueError("asset must not be empty")
-        if not isfinite(self.weight) or self.weight < 0:
+        if isinstance(self.weight, bool) or not isfinite(self.weight) or self.weight < 0:
             raise ValueError("weight must be finite and non-negative")
 
 

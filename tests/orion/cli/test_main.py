@@ -1,5 +1,7 @@
 import pytest
+from importlib import import_module
 
+cli_main = import_module("orion.cli.main")
 from orion.cli.main import main
 
 
@@ -26,6 +28,21 @@ def test_cli_commands_dispatch(argv, expected, capsys) -> None:
 def test_cli_requires_command() -> None:
     with pytest.raises(SystemExit):
         main([])
+
+
+def test_config_command_reports_invalid_configuration(monkeypatch, capsys) -> None:
+    def raise_config_error():
+        raise cli_main.ConfigError("invalid test configuration")
+
+    monkeypatch.setattr(cli_main, "load_config", raise_config_error)
+
+    exit_code = main(["config"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert captured.out.strip() == (
+        "Orion config: invalid (invalid test configuration)"
+    )
 
 
 @pytest.mark.parametrize(

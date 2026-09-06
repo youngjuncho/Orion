@@ -1,10 +1,10 @@
 # Python Package Structure
 
-Version: 1.0
+Version: 1.1
 
-Status: Draft
+Status: Active for current scaffolding; future packages remain Draft
 
-Last Updated: 2026-07-28
+Last Updated: 2026-09-06
 
 Depends On:
 
@@ -16,293 +16,116 @@ Depends On:
 
 # Purpose
 
-Defines the standard Python package structure for Orion OS.
-
-The package structure mirrors the Orion architecture to ensure consistency between documentation and implementation.
-
----
-
-# Design Principles
-
-The package structure should:
-
-* Reflect the Orion architecture
-* Separate domain logic from infrastructure
-* Minimize framework coupling
-* Support independent testing
-* Support future extensibility
+This document describes the Python package layout currently implemented by
+Orion. It separates the actual V1 scaffolding from packages reserved for
+future evolution.
 
 ---
 
-# Root Structure
+# Current Package Layout
 
 ```text
 src/
-└── orion/
+  orion/
+    __init__.py
+    cli/
+    core/
+    dashboard/
+    frameworks/
+      aurora/
+      moon/
+      phoenix/
+      supernova/
+    services/
+  data/
+    __init__.py
+    contracts.py
 ```
+
+The current implementation uses `src/orion/core` for shared contracts and
+runtime-oriented in-memory infrastructure. Framework-specific investment
+logic belongs under `src/orion/frameworks/<framework>`. The `src/data`
+package contains normalized data contracts only and must not contain
+investment logic.
 
 ---
 
-# Package Layout
+# Current Responsibilities
+
+| Package | Responsibility | Current status |
+|---|---|---|
+| `orion.core` | Configuration, domain contracts, runtime context, state/event stores, registries, API result contracts | Implemented scaffolding |
+| `orion.frameworks.aurora` | Aurora models, engine and report entry point | Scaffold; scoring not finalized |
+| `orion.frameworks.moon` | Moon models, ADM selection, consensus and execution mapping | Partial implementation |
+| `orion.frameworks.supernova` | Supernova models, engine and report entry point | Scaffold; scoring not finalized |
+| `orion.frameworks.phoenix` | Phoenix models, engine and report entry point | Scaffold; leadership rules not finalized |
+| `orion.dashboard` | Read-only presentation models and renderer | Implemented presentation boundary |
+| `orion.cli` | Command routing and report commands | Implemented routing |
+| `orion.services` | In-memory service registry | Implemented registry only |
+| `data` | Normalized observations and batches | Contracts only |
+
+---
+
+# Dependency Direction
+
+```text
+CLI / Dashboard
+       |
+       v
+Orion Runtime / API Contracts
+       |
+       v
+Framework Engines
+       |
+       v
+Core Domain Contracts and Data Contracts
+```
+
+Framework packages must not depend directly on one another. Dashboard code
+consumes framework or runtime results and does not calculate signals, scores,
+states, allocations, or regimes.
+
+---
+
+# Future Package Evolution
+
+The following packages are design targets, not requirements of the current
+scaffolding:
 
 ```text
 src/orion/
-
-├── core/
-├── runtime/
-├── domain/
-├── services/
-├── infrastructure/
-├── frameworks/
-├── dashboard/
-├── cli/
-├── config/
-└── utils/
+  runtime/
+  domain/
+  infrastructure/
+  config/
+  utils/
 ```
+
+They may be introduced when the Runtime, persistence, source adapters, and
+domain boundaries are specified well enough to justify the migration. The
+current source tree must not be treated as incomplete merely because these
+future packages do not yet exist.
 
 ---
 
-# Core
+# Testing Layout
 
-Shared abstractions and common types.
-
-```text
-core/
-
-base.py
-constants.py
-exceptions.py
-types.py
-```
-
----
-
-# Runtime
-
-System execution.
-
-```text
-runtime/
-
-runtime.py
-scheduler.py
-workflow.py
-```
-
----
-
-# Domain
-
-Implementation of Orion_Domain_Model.
-
-```text
-domain/
-
-framework.py
-strategy.py
-score.py
-state.py
-portfolio.py
-review.py
-event.py
-```
-
----
-
-# Services
-
-Business services shared across frameworks.
-
-```text
-services/
-
-configuration_service.py
-event_service.py
-review_service.py
-dashboard_service.py
-```
-
----
-
-# Infrastructure
-
-External integrations.
-
-```text
-infrastructure/
-
-market_data/
-storage/
-logging/
-cache/
-```
-
----
-
-# Frameworks
-
-```text
-frameworks/
-
-aurora/
-moon/
-supernova/
-phoenix/
-```
-
----
-
-# Aurora
-
-```text
-frameworks/aurora/
-
-engine.py
-pipeline.py
-indicator.py
-regime.py
-scoring.py
-```
-
----
-
-# Moon
-
-```text
-frameworks/moon/
-
-engine.py
-pipeline.py
-strategy.py
-allocation.py
-execution.py
-```
-
----
-
-# Supernova
-
-```text
-frameworks/supernova/
-
-engine.py
-pipeline.py
-company.py
-theme.py
-watchlist.py
-```
-
----
-
-# Phoenix
-
-```text
-frameworks/phoenix/
-
-engine.py
-pipeline.py
-category.py
-leader.py
-project.py
-```
-
----
-
-# Dashboard
-
-Dashboard view models.
-
-```text
-dashboard/
-
-cards.py
-summary.py
-reports.py
-```
-
----
-
-# CLI
-
-Command-line interface.
-
-```text
-cli/
-
-main.py
-moon.py
-aurora.py
-supernova.py
-phoenix.py
-```
-
----
-
-# Configuration
-
-Configuration loading.
-
-```text
-config/
-
-loader.py
-schema.py
-validation.py
-```
-
----
-
-# Utilities
-
-Common helper functions.
-
-```text
-utils/
-
-dates.py
-math.py
-serialization.py
-```
-
----
-
-# Testing
-
-Tests mirror the package structure.
+Tests mirror the implemented package layout:
 
 ```text
 tests/
-
-core/
-runtime/
-domain/
-frameworks/
-services/
+  data/
+  orion/
+    cli/
+    core/
+    dashboard/
+    frameworks/
+      aurora/
+      moon/
+      phoenix/
+      supernova/
+    services/
 ```
-
----
-
-# Package Dependencies
-
-```text
-CLI
- │
- ▼
-Runtime
- │
- ▼
-Framework Engines
- │
- ▼
-Domain Models
- │
- ▼
-Infrastructure
-```
-
-Frameworks should never depend directly on each other.
-
-Shared functionality should be implemented through Services.
 
 ---
 

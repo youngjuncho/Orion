@@ -19,6 +19,10 @@ class ConsensusAllocator:
         if not results:
             raise ValueError("at least one strategy result is required")
 
+        strategy_names = [result.strategy_name for result in results]
+        if len(strategy_names) != len(set(strategy_names)):
+            raise ValueError("strategy results must contain unique strategies")
+
         strategy_weight = 1.0 / len(results)
         aggregated: dict[str, float] = {}
 

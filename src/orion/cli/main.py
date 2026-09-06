@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from orion.dashboard import render_dashboard
+from orion.core.config_loader import ConfigError, load_config
 from orion.frameworks.aurora.main import run_report as run_aurora_report
 from orion.frameworks.moon.main import run_report as run_moon_report
 from orion.frameworks.phoenix.main import run_report as run_phoenix_report
@@ -108,6 +109,12 @@ def _handle_health(_: argparse.Namespace) -> int:
 
 
 def _handle_config(_: argparse.Namespace) -> int:
+    try:
+        load_config()
+    except ConfigError as exc:
+        print(f"Orion config: invalid ({exc})")
+        return 1
+
     print("Orion config: loaded")
     return 0
 

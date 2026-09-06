@@ -32,6 +32,17 @@ The API exposes Orion functionality without exposing internal implementation det
 
 ---
 
+# Current Implementation Boundary
+
+`orion.core.api_models` currently provides typed result contracts for
+framework results, health reports, and complete Orion results. The public
+operations listed below are not yet wired to a runtime coordinator, and the
+API does not yet expose a standardized client-facing exception hierarchy.
+Until that contract is approved, internal configuration, framework, and
+storage exceptions remain outside the public API surface.
+
+---
+
 # Design Principles
 
 ## Stable Interface

@@ -8,7 +8,7 @@ Last Updated: 2026-06-23
 
 Depends On:
 
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 
 ---
 
@@ -85,6 +85,18 @@ Phoenix
 * CoinGecko
 * CryptoQuant
 * Exchange APIs
+
+These are candidate source categories only. Source-specific fields,
+freshness rules, normalization rules, and approval status are not yet closed
+for production collection. The current `src/data` package therefore stops at
+validated observation and batch contracts.
+
+| Framework | Data readiness |
+|---|---|
+| Moon | ETF price inputs are conceptually identified; ADM total-return and dividend rules remain open |
+| Aurora | Indicator set, formulas, and source contract remain open |
+| Supernova | Analyst review inputs and fundamental source contract remain open |
+| Phoenix | Leadership review inputs and on-chain/source contract remain open |
 
 ---
 

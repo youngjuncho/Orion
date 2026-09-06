@@ -8,7 +8,7 @@ Last Updated: 2026-06-23
 
 Depends On:
 
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 * Configuration_Model.md
 
 ---
@@ -106,6 +106,7 @@ moon:
     - BDA
     - HAA
     - VAA
+  active_strategies: []
   strategy_weighting: equal
   execution_mode: consensus
   signal_assets:
@@ -113,6 +114,15 @@ moon:
   execution_mapping:
     enabled: true
 ```
+
+---
+
+`strategies` is the registry of strategies known to the Moon configuration.
+`active_strategies` is the execution allowlist. Only strategies in the
+allowlist may participate in a production run. A strategy remains registered
+but inactive while its research and Orion implementation documents contain
+unresolved decisions or specifications. The initial configuration therefore
+keeps the allowlist empty until an approved strategy is explicitly activated.
 
 ---
 

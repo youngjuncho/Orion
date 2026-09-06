@@ -10,7 +10,7 @@ Depends On:
 
 * Orion_Operating_Architecture.md
 * Orion_Technical_Architecture.md
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 
 ---
 
@@ -43,19 +43,22 @@ orion/
 
 ```text
 src/
-  core/
+  orion/
+    cli/
+    core/
+    dashboard/
+    frameworks/
+      aurora/
+      moon/
+      phoenix/
+      supernova/
+    services/
   data/
-  moon/
-  aurora/
-  supernova/
-  phoenix/
-  dashboard/
-  cli/
 ```
 
 ---
 
-# Core
+# src/orion/core
 
 Shared functionality.
 
@@ -69,7 +72,7 @@ Examples:
 
 ---
 
-# Data
+# src/data
 
 Responsibilities:
 
@@ -82,7 +85,7 @@ No investment logic permitted.
 
 ---
 
-# Moon
+# src/orion/frameworks/moon
 
 ETF portfolio engine.
 
@@ -94,7 +97,7 @@ Responsibilities:
 
 ---
 
-# Aurora
+# src/orion/frameworks/aurora
 
 Monitoring engine.
 
@@ -106,7 +109,7 @@ Responsibilities:
 
 ---
 
-# Supernova
+# src/orion/frameworks/supernova
 
 Equity portfolio engine.
 
@@ -118,7 +121,7 @@ Responsibilities:
 
 ---
 
-# Phoenix
+# src/orion/frameworks/phoenix
 
 Digital asset portfolio engine.
 
@@ -130,7 +133,7 @@ Responsibilities:
 
 ---
 
-# Dashboard
+# src/orion/dashboard
 
 Responsibilities:
 
@@ -142,7 +145,7 @@ Dashboard is presentation-only.
 
 ---
 
-# CLI
+# src/orion/cli
 
 Responsibilities:
 

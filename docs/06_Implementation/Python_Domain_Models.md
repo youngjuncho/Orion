@@ -41,16 +41,22 @@ The domain layer should:
 
 | Domain Model | Python Class |
 |--------------|--------------|
-| Framework | Framework |
-| Strategy | Strategy |
-| StrategyResult | StrategyResult |
-| Portfolio | Portfolio |
-| Allocation | Allocation |
-| Score | Score |
-| State | State |
-| Review | Review |
-| Decision | Decision |
-| DashboardCard | DashboardCard |
+| Framework | No standalone class yet; framework registry names are used |
+| Strategy | `orion.frameworks.moon.models.Strategy` |
+| StrategyResult | `orion.frameworks.moon.models.StrategyResult` |
+| Portfolio | `orion.frameworks.moon.models.Portfolio` (minimal scaffold) |
+| Allocation | `orion.frameworks.moon.models.Allocation` |
+| Score | `orion.core.models.Score` |
+| State | `orion.core.models.State` |
+| Review | No standalone class yet; `ReviewRecord` is a logical contract |
+| Decision | `orion.core.models.DecisionRecord` |
+| Event | `orion.core.events.Event` |
+| OrionStateSnapshot | `orion.core.state.OrionStateSnapshot` |
+| DashboardCard | `orion.core.models.DashboardCard` |
+
+The table is intentionally explicit about concepts that are not implemented
+yet. A logical entity must not be presented as a Python class until its
+fields, lifecycle, and validation rules are approved.
 
 ---
 
@@ -102,7 +108,9 @@ Fields:
 
 # Portfolio
 
-Represents the aggregated portfolio allocation.
+Represents the current minimal Moon portfolio scaffold. The separate target,
+snapshot, rebalance-plan, and execution-order contracts remain specified but
+not implemented; see `Moon_Object_Model.md`.
 
 Fields:
 

@@ -10,7 +10,7 @@ Depends On:
 
 * Moon_Current_Production.md
 * Moon_Interface.md
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 
 ---
 
@@ -23,6 +23,24 @@ The object model provides the canonical representation of Moon's internal data s
 Research documents describe investment logic.
 
 The object model defines how that logic is represented in software.
+
+---
+
+# Implemented Result Invariants
+
+The current strategy and consensus contracts enforce the following structural
+rules:
+
+* A `StrategyResult` must contain at least one selected asset.
+* Selected assets within one result must be unique.
+* Result weights must be finite, non-negative numbers.
+* A consensus input may contain each strategy only once.
+* Consensus normalizes each positive strategy result and the final allocation
+  must total 100%.
+* Execution mapping must explicitly cover every signal asset.
+
+These are structural validation rules only. They do not choose investment
+assets, calculate momentum, or define execution mappings.
 
 ---
 
@@ -71,6 +89,30 @@ Investment logic should not be hardcoded.
 ---
 
 # Object Relationships
+
+The canonical conceptual flow is:
+
+```text
+StrategyResult
+    |
+    v
+Consensus Allocation
+    |
+    v
+Portfolio Target + Portfolio Snapshot
+    |
+    v
+Rebalance Plan
+    |
+    v
+Execution Orders
+```
+
+`Portfolio Target` is the desired allocation produced by the current
+execution. `Portfolio Snapshot` is the independently observed current
+holdings. A `Rebalance Plan` compares those two objects and produces
+execution orders. These concepts must not be collapsed into one generic
+`Portfolio` container.
 
 ```text
 Market Data
@@ -164,7 +206,8 @@ Weights:
 
 # Allocation
 
-Represents the aggregated portfolio allocation after combining all strategy results.
+Represents the aggregated signal allocation after combining all strategy
+results. It is not yet an order or a current holding.
 
 ## Fields
 
@@ -197,19 +240,19 @@ SPYM
 
 # Portfolio
 
-Represents the executable portfolio.
+Represents the executable portfolio target in the current minimal model.
 
 ## Fields
-
-Portfolio Allocation
-
-Current Holdings
 
 Target Holdings
 
 Rebalance Date
 
-Execution Orders
+Execution Assets
+
+The full target contract also defines `Portfolio Snapshot`, `Rebalance Plan`,
+and `Execution Order` as separate concepts. The current Python `Portfolio`
+model is a scaffold and does not yet implement those objects.
 
 ---
 
@@ -314,5 +357,5 @@ Reporting
 
 * Moon_Current_Production.md
 * Moon_Interface.md
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 * Orion_Configuration_Schema.md

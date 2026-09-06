@@ -9,9 +9,9 @@ Last Updated: 2026-07-27
 Depends On:
 
 * Orion_Runtime.md
-* State_Model.md
-* Event_Model.md
-* Service_Model.md
+* Orion_State_Model.md
+* Orion_Event_Model.md
+* Orion_Service_Model.md
 * Moon_Engine.md
 * Aurora_Engine.md
 
@@ -24,6 +24,19 @@ This document defines the top-level execution engine of Orion OS.
 The Orion Engine coordinates framework execution, manages the runtime lifecycle, and provides a unified execution interface for the system.
 
 Individual investment logic remains the responsibility of each framework.
+
+---
+
+# Current Implementation Boundary
+
+The current code does not yet provide a public `OrionEngine` class. The
+implemented lifecycle coordinator is `orion.core.runtime_session.RuntimeSession`,
+which manages one in-memory execution's status, event store, state store, and
+framework registry. It does not yet load and execute framework engines.
+
+The operations described below are therefore target contracts, not available
+runtime behavior. A concrete `OrionEngine` contract must be specified before
+the public coordinator is implemented.
 
 ---
 
@@ -260,9 +273,9 @@ Not Approved
 # Related Documents
 
 * Orion_Runtime.md
-* State_Model.md
-* Event_Model.md
-* Service_Model.md
+* Orion_State_Model.md
+* Orion_Event_Model.md
+* Orion_Service_Model.md
 * Moon_Engine.md
 * Aurora_Engine.md
 * Supernova_Engine.md

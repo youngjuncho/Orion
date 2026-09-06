@@ -1,10 +1,10 @@
 # Orion Operating Architecture
 
-Version: 0.1
+Version: 1.0
 
-Status: Draft
+Status: Approved
 
-Last Updated: 2026-06-22
+Last Updated: 2026-09-06
 
 Depends On:
 

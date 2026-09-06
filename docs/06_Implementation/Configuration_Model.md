@@ -8,7 +8,7 @@ Last Updated: 2026-07-27
 
 Depends On:
 
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 * Orion_Technical_Architecture.md
 
 ---
@@ -123,9 +123,14 @@ strategies:
   - VAA
   - HAA
   - BDA
+active_strategies: []
 
 rebalance_frequency: monthly
 ```
+
+`strategies` lists registered strategies. `active_strategies` is the explicit
+execution allowlist and must be a subset of the registered list. Draft or
+otherwise unresolved strategies remain registered but inactive.
 
 ---
 
@@ -284,7 +289,7 @@ Not Approved
 
 # Related Documents
 
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 * Orion_Technical_Architecture.md
 * Moon_Object_Model.md
 * Decision_Log.md

@@ -1,14 +1,17 @@
 # Orion Implementation Status Report
 
-Date: 2026-07-26
+Date: 2026-09-06
 
-Status: Draft
+Status: Active — documentation closure in progress
 
 ---
 
 # Purpose
 
 This report records the current implementation state after the initial Orion OS scaffolding work.
+
+The intermediate review package in `docs/review/review_v1.zip` is the current
+review baseline. Its findings are being applied in small, verifiable batches.
 
 It is not an architecture decision record.
 
@@ -137,6 +140,9 @@ Implemented:
 * Framework command shells for Moon, Aurora, Supernova, and Phoenix
 * Framework report commands for Moon, Aurora, Supernova, and Phoenix
 
+`orion config` now loads and validates all required configuration files and
+returns a non-zero exit code when validation fails.
+
 Status:
 
 CLI routing is in place.
@@ -191,6 +197,10 @@ weights, and a total weight of 100%.
 Market data loading, total-return calculation, defensive-asset approval,
 portfolio construction, and rebalance logic are not implemented.
 
+The Moon configuration separates the registered strategy list from the
+`active_strategies` execution allowlist. The initial allowlist is empty while
+the documented strategy decisions remain unresolved.
+
 TODO comments correctly mark ambiguous or future behavior.
 
 ## Supernova
@@ -241,6 +251,8 @@ It consumes framework outputs and does not generate investment decisions.
 ---
 
 # Test Status
+
+Latest verification on 2026-09-06: the full test suite passes with 90 tests.
 
 The following command passed at review time:
 

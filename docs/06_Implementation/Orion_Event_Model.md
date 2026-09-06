@@ -11,7 +11,7 @@ Depends On:
 * Orion_Engine.md
 * Orion_Runtime.md
 * Orion_State_Model.md
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 
 ---
 
@@ -419,6 +419,6 @@ Not Approved
 * Orion_Engine.md
 * Orion_Runtime.md
 * Orion_State_Model.md
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 * Orion_Dashboard_Spec.md
 * Decision_Log.md

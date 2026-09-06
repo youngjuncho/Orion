@@ -146,6 +146,10 @@ Configuration:
 orion config
 ```
 
+The command loads and validates the required configuration files. It returns
+exit code `0` when configuration is valid and exit code `1` with an error
+message when validation fails. It does not execute any framework.
+
 ---
 
 # Future Extensions

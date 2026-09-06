@@ -9,7 +9,7 @@ Last Updated: 2026-07-27
 Depends On:
 
 * Orion_Runtime.md
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 * Orion_Engine.md
 * Orion_Glossary.md
 
@@ -369,6 +369,6 @@ Not Approved
 
 * Orion_Runtime.md
 * Orion_Engine.md
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 * Orion_Glossary.md
 * Orion_Dashboard_Spec.md

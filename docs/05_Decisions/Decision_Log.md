@@ -902,5 +902,38 @@ Date: 2026-06-21
 
 ---
 
+## D-026
+
+### Decision
+
+Moon configuration shall distinguish registered strategies from active
+strategies.
+
+### Details
+
+`strategies` is the registry of known strategy specifications.
+`active_strategies` is the explicit execution allowlist and must be a subset
+of the registered strategies. A strategy with unresolved research or
+implementation issues remains registered but inactive.
+
+The initial operational allowlist is empty until an approved strategy is
+explicitly activated.
+
+### Rationale
+
+Registration must not imply production readiness. This prevents draft
+investment methodology from entering execution merely because a strategy is
+listed in configuration.
+
+### Status
+
+Approved
+
+### Date
+
+2026-09-06
+
+---
+
 
 ---

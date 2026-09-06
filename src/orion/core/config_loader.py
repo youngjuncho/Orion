@@ -69,6 +69,7 @@ class MoonConfig:
     enabled: bool
     rebalance_frequency: str
     strategies: tuple[str, ...]
+    active_strategies: tuple[str, ...]
     strategy_weighting: str
     execution_mode: str
     signal_assets: FeatureFlagConfig
@@ -244,6 +245,17 @@ def _parse_system(payload: dict[str, Any]) -> SystemConfig:
 
 
 def _parse_moon(payload: dict[str, Any]) -> MoonConfig:
+    strategies = _tuple_of_str(payload, "strategies", "moon.strategies")
+    active_strategies = _tuple_of_str(
+        payload, "active_strategies", "moon.active_strategies"
+    )
+    unknown_active = sorted(set(active_strategies) - set(strategies))
+    if unknown_active:
+        raise ConfigValidationError(
+            "moon.active_strategies contains unregistered strategy(ies): "
+            + ", ".join(unknown_active)
+        )
+
     return MoonConfig(
         enabled=_required_bool(payload, "enabled", "moon.enabled"),
         rebalance_frequency=_enum(
@@ -251,7 +263,8 @@ def _parse_moon(payload: dict[str, Any]) -> MoonConfig:
             {"monthly"},
             "moon.rebalance_frequency",
         ),
-        strategies=_tuple_of_str(payload, "strategies", "moon.strategies"),
+        strategies=strategies,
+        active_strategies=active_strategies,
         strategy_weighting=_enum(
             _required_str(payload, "strategy_weighting", "moon.strategy_weighting"),
             {"equal"},

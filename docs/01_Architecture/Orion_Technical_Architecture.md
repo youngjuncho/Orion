@@ -80,10 +80,15 @@ The system does not generate price predictions.
 ```text
 Data Layer
   -> Framework Engines
-  -> Scoring / State Models
+  -> Framework Results / State
+  -> Orion Runtime
   -> Dashboard Presentation
   -> CLI / Web UI
 ```
+
+Aurora is the Monitoring Layer. It provides market context to the investor
+and does not control the portfolio engines. Moon, Supernova, and Phoenix are
+independently governed Portfolio Engines.
 
 ---
 
@@ -93,17 +98,19 @@ Data Layer
 orion/
   docs/
   src/
-    core/
+    orion/
+      cli/
+      core/
+      dashboard/
+      frameworks/
+        aurora/
+        moon/
+        phoenix/
+        supernova/
+      services/
     data/
-    moon/
-    aurora/
-    supernova/
-    phoenix/
-    dashboard/
-    cli/
   tests/
   config/
-  data/
   requirements.txt
 ```
 
@@ -148,10 +155,10 @@ Responsibilities:
 
 Framework logic belongs inside:
 
-* `src/moon`
-* `src/aurora`
-* `src/supernova`
-* `src/phoenix`
+* `src/orion/frameworks/moon`
+* `src/orion/frameworks/aurora`
+* `src/orion/frameworks/supernova`
+* `src/orion/frameworks/phoenix`
 
 ---
 
@@ -171,7 +178,7 @@ Investment logic must not live inside dashboard modules.
 
 Dashboard code belongs inside:
 
-* `src/dashboard`
+* `src/orion/dashboard`
 
 ---
 

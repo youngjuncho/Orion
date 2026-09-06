@@ -41,6 +41,7 @@ def test_load_config_returns_typed_configuration() -> None:
     assert isinstance(config.moon, MoonConfig)
     assert config.system.timezone == "Asia/Seoul"
     assert config.moon.strategies == ("ADM", "BAA", "BDA", "HAA", "VAA")
+    assert config.moon.active_strategies == ()
     assert config.aurora.scoring_range.min == 0
     assert config.supernova.candidate_universe.source == (
         "Supernova_Candidate_Universe.md"
@@ -80,6 +81,7 @@ moon:
   rebalance_frequency: weekly
   strategies:
     - ADM
+  active_strategies: []
   strategy_weighting: equal
   execution_mode: consensus
   signal_assets:
@@ -91,6 +93,32 @@ moon:
     )
 
     with pytest.raises(ConfigValidationError, match="moon.rebalance_frequency"):
+        load_config(tmp_path)
+
+
+def test_load_config_rejects_unregistered_active_strategy() -> None:
+    tmp_path = _temp_dir()
+    _write_valid_config(tmp_path)
+    (tmp_path / "moon.yaml").write_text(
+        """
+moon:
+  enabled: true
+  rebalance_frequency: monthly
+  strategies:
+    - ADM
+  active_strategies:
+    - BAA
+  strategy_weighting: equal
+  execution_mode: consensus
+  signal_assets:
+    enabled: true
+  execution_mapping:
+    enabled: true
+""".lstrip(),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ConfigValidationError, match="unregistered"):
         load_config(tmp_path)
 
 
@@ -131,6 +159,7 @@ moon:
     - BDA
     - HAA
     - VAA
+  active_strategies: []
   strategy_weighting: equal
   execution_mode: consensus
   signal_assets:

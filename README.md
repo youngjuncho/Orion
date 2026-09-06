@@ -98,7 +98,7 @@ Current focus areas:
 
 Phase 1
 
-Moon Dashboard
+Documentation closure and Moon ADM vertical slice
 
 Phase 2
 
@@ -124,5 +124,10 @@ Web Dashboard
 
 ## Status
 
-Design Phase
+Implementation scaffolding complete; documentation closure in progress.
+
+The repository currently contains tested core contracts, CLI/dashboard
+routing, framework scaffolds, and a partial Moon ADM path. Research and
+implementation rules that are still marked Draft are not activated by the
+operational configuration.
 

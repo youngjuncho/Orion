@@ -7,6 +7,8 @@ moon:
     - BDA
     - HAA
     - VAA
+  # Registered strategies are not executable until their specifications are approved.
+  active_strategies: []
   strategy_weighting: equal
   execution_mode: consensus
   signal_assets:

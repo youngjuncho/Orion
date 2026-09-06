@@ -8,7 +8,7 @@ Last Updated: 2026-07-28
 
 Depends On:
 
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 * Orion_State_Model.md
 * Orion_Event_Model.md
 * Orion_Service_Model.md
@@ -416,7 +416,7 @@ Field names should remain consistent across all implementation layers whenever p
 
 # Related Documents
 
-* Orion_Dmoain_Model.md
+* Orion_Domain_Model.md
 * Orion_State_Model.md
 * Orion_Event_Model.md
 * Orion_Service_Model.md

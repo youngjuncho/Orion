@@ -15,7 +15,8 @@ Depends On:
 
 # Purpose
 
-This document catalogs all tactical asset allocation strategies implemented by Moon.
+This document catalogs all tactical asset allocation strategies registered by
+Moon. Registration does not imply that a strategy is approved for execution.
 
 It defines the research status, implementation status, and operational role of each strategy within Orion OS.
 
@@ -44,11 +45,16 @@ Individual strategy documents define only their strategy-specific rules.
 
 | Strategy | Research | Orion Spec | Coding | Status |
 |----------|----------|------------|---------|--------|
-| ADM | Complete | Complete | Not Started | Active |
-| BAA | Complete | Complete | Not Started | Active |
-| VAA | Complete | Complete | Not Started | Active |
-| HAA | Complete | Complete | Not Started | Active |
-| BDA | Complete | Complete | Not Started | Active |
+| ADM | Draft with OI-001..003 open | Partial | Partial signal selection only | Registered; inactive |
+| BAA | Open issues OI-101..104 | Draft | Not Started | Registered; inactive |
+| VAA | Open issues OI-401..405 | Draft | Not Started | Registered; inactive |
+| HAA | Open issues OI-301..304 | Draft | Not Started | Registered; inactive |
+| BDA | Open issues OI-201..203 | Draft | Not Started | Registered; inactive |
+
+The operational execution allowlist is maintained separately in
+`config/moon.yaml` as `active_strategies`. It is empty until a strategy's
+research and Orion implementation specification are ready and its execution
+mappings are approved.
 
 ---
 

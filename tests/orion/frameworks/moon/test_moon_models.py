@@ -50,6 +50,12 @@ def test_moon_models_reject_invalid_required_values() -> None:
     with pytest.raises(ValueError, match="weight"):
         Allocation("SPY", -0.1)
 
+    with pytest.raises(ValueError, match="finite"):
+        Allocation("SPY", True)
+
+    with pytest.raises(ValueError, match="unique"):
+        StrategyResult("ADM", ("SPY", "SPY"), (0.5, 0.5), "2026-07-26")
+
 
 def test_adm_selects_relative_momentum_winner_when_absolute_momentum_is_positive() -> None:
     result = ADMStrategy("SGOV").generate_result(
@@ -109,6 +115,16 @@ def test_consensus_allocator_applies_equal_strategy_weight_and_aggregates_assets
 def test_consensus_allocator_requires_strategy_results() -> None:
     with pytest.raises(ValueError, match="at least one"):
         ConsensusAllocator().allocate(())
+
+
+def test_consensus_allocator_rejects_duplicate_strategies() -> None:
+    results = (
+        StrategyResult("ADM", ("VTI",), (1.0,), "2026-07-31"),
+        StrategyResult("ADM", ("VEU",), (1.0,), "2026-07-31"),
+    )
+
+    with pytest.raises(ValueError, match="unique strategies"):
+        ConsensusAllocator().allocate(results)
 
 
 def test_consensus_allocator_rejects_zero_weight_strategy_result() -> None:
