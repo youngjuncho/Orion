@@ -9,6 +9,7 @@ from orion.frameworks.moon import (
     MoonEngine,
     MoonReport,
     Portfolio,
+    PortfolioValidator,
     Strategy,
     StrategyResult,
 )
@@ -133,3 +134,26 @@ def test_moon_engine_surfaces_unmapped_strategy_assets() -> None:
 
     with pytest.raises(ValueError, match="VTI"):
         MoonEngine().build_allocation(results)
+
+
+def test_portfolio_validator_accepts_complete_unique_allocation() -> None:
+    allocations = (Allocation("SPYM", 0.75), Allocation("QQQM", 0.25))
+
+    assert PortfolioValidator().validate(allocations) == allocations
+
+
+def test_portfolio_validator_rejects_duplicate_assets() -> None:
+    allocations = (Allocation("SPYM", 0.5), Allocation("SPYM", 0.5))
+
+    with pytest.raises(ValueError, match="unique"):
+        PortfolioValidator().validate(allocations)
+
+
+def test_portfolio_validator_rejects_incomplete_total() -> None:
+    with pytest.raises(ValueError, match="total 1.0"):
+        PortfolioValidator().validate((Allocation("SPYM", 0.5),))
+
+
+def test_portfolio_validator_rejects_negative_weight() -> None:
+    with pytest.raises(ValueError, match="non-negative"):
+        PortfolioValidator().validate((Allocation("SPYM", -0.1), Allocation("QQQM", 1.1)))

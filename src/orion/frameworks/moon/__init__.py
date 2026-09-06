@@ -6,6 +6,7 @@ from .engine import MoonEngine
 from .execution import DOCUMENTED_EXECUTION_MAPPING, ExecutionMapper
 from .main import run_report
 from .models import Allocation, MoonReport, Portfolio, Strategy, StrategyResult
+from .portfolio import PortfolioValidator
 
 __all__ = [
     "ADM_RISK_ASSETS",
@@ -17,6 +18,7 @@ __all__ = [
     "Allocation",
     "MoonEngine",
     "MoonReport",
+    "PortfolioValidator",
     "Portfolio",
     "Strategy",
     "StrategyResult",

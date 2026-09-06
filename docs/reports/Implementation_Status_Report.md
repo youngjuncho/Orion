@@ -159,6 +159,7 @@ Implemented:
 * Equal-weight strategy consensus allocation
 * Documented signal-to-execution asset mapping
 * Moon allocation orchestration from strategy results to executable assets
+* Executable portfolio allocation validation
 * Moon engine scaffold
 * Moon report entry point
 
@@ -172,6 +173,9 @@ assets, and produces normalized allocation output.
 Moon Engine orchestration now connects consensus allocation to execution
 mapping. It deliberately surfaces an error when a signal asset has no approved
 execution mapping.
+
+Executable allocations are validated for unique assets, non-negative finite
+weights, and a total weight of 100%.
 
 Market data loading, total-return calculation, defensive-asset approval,
 consensus allocation, and rebalance logic are not implemented.
@@ -236,7 +240,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-47 passed
+51 passed
 ```
 
 ---

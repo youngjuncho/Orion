@@ -8,6 +8,7 @@ from typing import Sequence
 from .consensus import ConsensusAllocator
 from .execution import ExecutionMapper
 from .models import Allocation, MoonReport, StrategyResult
+from .portfolio import PortfolioValidator
 
 
 @dataclass(frozen=True)
@@ -16,12 +17,14 @@ class MoonEngine:
 
     consensus_allocator: ConsensusAllocator = field(default_factory=ConsensusAllocator)
     execution_mapper: ExecutionMapper = field(default_factory=ExecutionMapper)
+    portfolio_validator: PortfolioValidator = field(default_factory=PortfolioValidator)
 
     def build_allocation(self, results: Sequence[StrategyResult]) -> tuple[Allocation, ...]:
         """Build executable allocation from completed strategy results."""
 
         consensus = self.consensus_allocator.allocate(results)
-        return self.execution_mapper.map_allocations(consensus)
+        executable = self.execution_mapper.map_allocations(consensus)
+        return self.portfolio_validator.validate(executable)
 
     def build_report(self) -> MoonReport:
         # TODO: Implement Moon strategy execution and consensus allocation once
