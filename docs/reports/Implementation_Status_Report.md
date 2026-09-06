@@ -98,6 +98,7 @@ Implemented:
 * In-memory append-only event store for one execution
 * Immutable Orion state snapshot contract
 * Immutable execution metadata contract
+* Shared Runtime context contract for one execution
 * Basic logging configuration utility
 
 Status:
@@ -244,7 +245,7 @@ pytest tests\orion -q
 Result:
 
 ```text
-64 passed
+67 passed
 ```
 
 ---
@@ -484,9 +485,10 @@ Major
 
 Current State:
 
-The core layer defines execution metadata, but Orion Runtime initialization,
-framework registration, shared execution context, lifecycle coordination,
-shutdown, and scheduler integration are not implemented.
+The core layer defines execution metadata and a read-only Runtime context
+contract, but Runtime initialization, lifecycle coordination, shutdown, and
+scheduler integration are not implemented. Portfolio storage remains outside
+the context until the Portfolio output contract is clarified.
 
 Recommended Next Step:
 

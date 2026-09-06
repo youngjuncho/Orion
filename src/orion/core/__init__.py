@@ -28,6 +28,7 @@ from .config_loader import (
     validate_required_files,
 )
 from .logging_utils import configure_logging
+from .runtime import DEFAULT_FRAMEWORKS, RuntimeContext
 from .models import (
     DecisionRecord,
     DashboardCard,
@@ -55,6 +56,8 @@ __all__ = [
     "Event",
     "EventStore",
     "ExecutionMetadata",
+    "DEFAULT_FRAMEWORKS",
+    "RuntimeContext",
     "FeatureFlagConfig",
     "IndicatorGroupsConfig",
     "LoggingConfig",
