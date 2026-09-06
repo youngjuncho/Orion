@@ -27,8 +27,8 @@ class MoonEngine:
         return self.portfolio_validator.validate(executable)
 
     def build_report(self) -> MoonReport:
-        # TODO: Implement Moon strategy execution and consensus allocation once
-        # the engine-specific strategy modules are added.
+        # TODO: Implement Moon strategy execution and report construction once
+        # the market-data and portfolio output contracts are approved.
         return MoonReport(
             portfolio_allocation=(),
             current_holdings=(),

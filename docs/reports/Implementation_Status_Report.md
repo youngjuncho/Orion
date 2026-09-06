@@ -178,7 +178,7 @@ Executable allocations are validated for unique assets, non-negative finite
 weights, and a total weight of 100%.
 
 Market data loading, total-return calculation, defensive-asset approval,
-consensus allocation, and rebalance logic are not implemented.
+portfolio construction, and rebalance logic are not implemented.
 
 TODO comments correctly mark ambiguous or future behavior.
 
@@ -346,17 +346,38 @@ Severity:
 
 Minor
 
-## Engine Outputs Are Placeholder Reports
+## Framework Report Outputs Remain Placeholder Reports
 
 Current State:
 
-Aurora, Moon, Supernova, and Phoenix engines return typed placeholder reports.
+Aurora, Supernova, and Phoenix engines return typed placeholder reports.
+Moon's report entry point is also still a placeholder, although its allocation
+pipeline now supports completed strategy results through validation.
 
 Recommended Next Step:
 
 Implement framework behavior only when the corresponding design document gives enough detail.
 
 If design details are missing, keep TODO comments instead of inventing logic.
+
+Severity:
+
+Major
+
+## Moon Portfolio Output Contract Is Incomplete
+
+Current State:
+
+The Moon implementation currently produces a validated executable allocation.
+The documented `Portfolio` output also requires portfolio allocation, current
+holdings, target holdings, rebalance date, and execution orders. The current
+Python `Portfolio` model contains only current holdings and next rebalance date.
+
+Recommended Next Step:
+
+Clarify the canonical Portfolio fields and the distinction between current
+holdings and target holdings before implementing portfolio construction or
+execution orders.
 
 Severity:
 
