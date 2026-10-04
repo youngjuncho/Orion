@@ -28,6 +28,27 @@ def test_runtime_context_preserves_shared_execution_inputs() -> None:
     assert context.framework_results["Moon"] == "result"
 
 
+def test_runtime_context_uses_read_only_mapping_snapshots() -> None:
+    config = load_config(Path(__file__).resolve().parents[3] / "config")
+    execution = ExecutionMetadata("execution-001", "2026-08-01", "1.0")
+    framework_results = {"Moon": "initial"}
+    dashboard_data = {"status": "ready"}
+
+    context = RuntimeContext(
+        config,
+        execution,
+        framework_results=framework_results,
+        dashboard_data=dashboard_data,
+    )
+    framework_results["Moon"] = "changed"
+    dashboard_data["status"] = "changed"
+
+    assert context.framework_results["Moon"] == "initial"
+    assert context.dashboard_data["status"] == "ready"
+    with pytest.raises(TypeError):
+        context.framework_results["Aurora"] = "result"
+
+
 def test_runtime_context_rejects_duplicate_frameworks() -> None:
     config = load_config(Path(__file__).resolve().parents[3] / "config")
     execution = ExecutionMetadata("execution-001", "2026-08-01", "1.0")

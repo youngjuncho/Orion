@@ -32,6 +32,19 @@ def test_runtime_session_can_fail_before_completion() -> None:
     assert session.status == "Error"
 
 
+def test_runtime_sessions_own_independent_in_memory_stores_and_registries() -> None:
+    first = make_session()
+    second = make_session()
+    marker = object()
+    first.registry.register("Moon", marker)
+    first.services.register("Marker", marker)
+
+    assert second.registry.names == ()
+    assert second.services.names == ()
+    assert first.events is not second.events
+    assert first.states is not second.states
+
+
 def test_runtime_session_rejects_invalid_transition() -> None:
     session = make_session()
     session.start()

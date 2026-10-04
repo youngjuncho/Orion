@@ -34,3 +34,14 @@ def test_event_store_rejects_duplicate_batch_without_partial_append() -> None:
         store.extend((first, second))
 
     assert store.events == ()
+
+
+def test_event_store_rejects_batch_colliding_with_existing_event_atomically() -> None:
+    store = EventStore()
+    existing = make_event("event-001")
+    store.append(existing)
+
+    with pytest.raises(ValueError, match="already exists"):
+        store.extend((make_event("event-002"), make_event("event-001")))
+
+    assert store.events == (existing,)

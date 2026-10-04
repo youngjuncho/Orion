@@ -20,7 +20,7 @@ Date: 2026-09-06
 | B-001 | D/S | ADM 방어자산 선택 및 시장관측 입력 규칙 | ADM 시장데이터 계산 | DQ-ADM-001은 signal/execution 분리만 정함. 실제 방어 신호자산·관측일/freshness/missing-data 규칙은 미정 |
 | B-002 | D | ADM VTI/VEU 및 방어자산 실행 매핑 | ADM 실행 allocation | 현재 승인 mapping에 VTI/VEU 없음. 구체 mapping 결정을 영구 문서에 기록 |
 | B-003 | IMPLEMENT/F | consensus allocation, execution mapping, PortfolioTarget validation | PortfolioSnapshot 기반 rebalance workflow 및 ExecutionOrder는 MVP 범위 밖 | D-027 반영 완료; target 생성 이후 holdings/rebalance는 defer |
-| B-004 | I/F | Moon MVP persistence scope | D-030 resolved the MVP boundary; implement in-memory EventStore/StateStore. Persistent storage, replay, and storage technology remain future scope. |
+| B-004 | RESOLVED | Moon MVP persistence scope | D-030 implemented as per-session in-memory EventStore/StateStore; durable storage, replay, and storage technology are future scope. |
 | B-005 | S | OrionEngine 공개 계약 | 전체 Runtime orchestration | 입력·출력·실패 격리 계약 확정 |
 | B-006 | S | API 오류 계약 | CLI/API 외부 오류 변환 | 공개 예외와 오류 응답 형식 확정 |
 | B-007 | D/S | Aurora 지표·공식·threshold | Aurora scoring/regime 엔진 | Approved indicator와 계산 규칙 결정 |
@@ -77,7 +77,7 @@ portfolio target 생성 및 validation까지 진행할 수 있습니다.
 B-004~B-006 — Core Runtime/API
 
 현재 in-memory EventStore, StateStore, RuntimeSession, API result contracts와
-service registry까지가 구현 범위입니다.
+service registry까지 구현했습니다. D-030의 MVP 저장 범위는 완료되었습니다.
 
 D-030에 따라 persistent storage와 event replay는 현재 MVP 범위 밖이며,
 구체적인 storage technology와 retention policy는 향후 별도의 Decision으로
@@ -114,7 +114,8 @@ Aurora, Supernova, Phoenix의 scoring/leadership 규칙과 source contract가
 
 | Blocker | 진행된 범위 | 남은 범위 |
 |---|---|---|
-| B-004~B-006 | RuntimeSession, ServiceRegistry, RuntimeContext, in-memory snapshots, `build_context()` 연결 | persistence, public OrionEngine, API error contract |
+| B-004 | Per-session in-memory EventStore/StateStore와 수명주기 테스트 | durable persistence/replay는 D-030에 따라 future scope |
+| B-005~B-006 | RuntimeSession, ServiceRegistry, RuntimeContext, API result contracts | public OrionEngine lifecycle 및 API error contract는 DQ-RUNTIME-001 등 결정 대기 |
 | B-009 | normalized observation/batch contracts와 runtime data handoff | source-specific fields, freshness, collectors |
 | B-003 | consensus allocation, execution mapping, PortfolioTarget construction/validation | PortfolioSnapshot/rebalance/order는 MVP 범위 밖 |
 
