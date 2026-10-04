@@ -31,3 +31,14 @@ def test_aurora_engine_build_report() -> None:
 def test_aurora_models_reject_empty_required_fields() -> None:
     with pytest.raises(ValueError, match="name"):
         AuroraIndicator("", "Trend", 1.0, Score(0), "Neutral")
+
+
+def test_aurora_report_snapshots_indicator_collection() -> None:
+    indicators = [AuroraIndicator("Trend", "Trend", 1.0, Score(70), "Neutral")]
+    report = AuroraReport(Score(70), "Neutral", "Stable", "Unknown", "Low", indicators)
+    indicators.clear()
+
+    assert len(report.indicators) == 1
+    assert isinstance(report.indicators, tuple)
+    with pytest.raises(ValueError, match="AuroraIndicator"):
+        AuroraReport(Score(0), "Unknown", "Stable", "Unknown", "Low", ("bad",))

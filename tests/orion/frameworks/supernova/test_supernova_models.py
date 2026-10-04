@@ -31,3 +31,17 @@ def test_supernova_engine_build_report() -> None:
 def test_supernova_models_reject_empty_required_values() -> None:
     with pytest.raises(ValueError, match="ticker"):
         CandidateCompany("", "NVIDIA", "AI", "Approved", Score(80))
+
+
+def test_supernova_report_snapshots_company_collections() -> None:
+    approved = [ApprovedCompany("NVDA", "AI", Score(90), "Low", "Strong")]
+    watchlist = [CandidateCompany("AMD", "AMD", "AI", "Candidate", Score(75))]
+    report = SupernovaReport(approved, "Healthy", "Stable", "Low", watchlist)
+    approved.clear()
+    watchlist.clear()
+
+    assert len(report.approved_companies) == 1
+    assert len(report.watchlist) == 1
+    assert isinstance(report.approved_companies, tuple)
+    with pytest.raises(ValueError, match="ApprovedCompany"):
+        SupernovaReport(("bad",), "Healthy", "Stable", "Low")

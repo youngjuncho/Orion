@@ -82,3 +82,16 @@ class PhoenixReport:
     def __post_init__(self) -> None:
         if not self.replacement_risk.strip():
             raise ValueError("replacement_risk must not be empty")
+
+        categories = tuple(self.categories)
+        leaders = tuple(self.current_leaders)
+        challengers = tuple(self.challengers)
+        if any(not isinstance(item, Category) for item in categories):
+            raise ValueError("categories must contain Category values")
+        if any(not isinstance(item, Leader) for item in leaders):
+            raise ValueError("current_leaders must contain Leader values")
+        if any(not isinstance(item, Challenger) for item in challengers):
+            raise ValueError("challengers must contain Challenger values")
+        object.__setattr__(self, "categories", categories)
+        object.__setattr__(self, "current_leaders", leaders)
+        object.__setattr__(self, "challengers", challengers)

@@ -21,8 +21,6 @@ class AuroraIndicator:
         for name, value in (("name", self.name), ("category", self.category), ("state", self.state)):
             if not value.strip():
                 raise ValueError(f"{name} must not be empty")
-
-
 @dataclass(frozen=True)
 class AuroraRegime:
     """Aurora regime output."""
@@ -58,3 +56,8 @@ class AuroraReport:
         ):
             if not value.strip():
                 raise ValueError(f"{name} must not be empty")
+
+        indicators = tuple(self.indicators)
+        if any(not isinstance(item, AuroraIndicator) for item in indicators):
+            raise ValueError("indicators must contain AuroraIndicator values")
+        object.__setattr__(self, "indicators", indicators)

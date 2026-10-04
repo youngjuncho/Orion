@@ -32,3 +32,19 @@ def test_phoenix_engine_build_report() -> None:
 def test_phoenix_models_reject_empty_required_values() -> None:
     with pytest.raises(ValueError, match="asset"):
         Leader("", "Smart Contracts", "Low", "Stable", Score(70))
+
+
+def test_phoenix_report_snapshots_framework_collections() -> None:
+    categories = [Category("Smart Contracts", Score(80), "Competitive", "Stable")]
+    leaders = [Leader("SOL", "Smart Contracts", "Low", "Stable", Score(90))]
+    challengers = [Challenger("SUI", "Smart Contracts", Score(75), 15)]
+    report = PhoenixReport(categories, leaders, challengers, Score(80), "Low")
+    categories.clear()
+    leaders.clear()
+    challengers.clear()
+
+    assert len(report.categories) == len(report.current_leaders) == 1
+    assert len(report.challengers) == 1
+    assert isinstance(report.categories, tuple)
+    with pytest.raises(ValueError, match="Category"):
+        PhoenixReport(("bad",), (), (), Score(0), "Low")

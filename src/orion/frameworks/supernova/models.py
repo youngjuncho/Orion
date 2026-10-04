@@ -20,8 +20,6 @@ class Theme:
         for name, value in (("theme_name", self.theme_name), ("state", self.state), ("trend", self.trend)):
             if not value.strip():
                 raise ValueError(f"{name} must not be empty")
-
-
 @dataclass(frozen=True)
 class CandidateCompany:
     """Supernova candidate company."""
@@ -77,3 +75,12 @@ class SupernovaReport:
         ):
             if not value.strip():
                 raise ValueError(f"{name} must not be empty")
+
+        approved = tuple(self.approved_companies)
+        watchlist = tuple(self.watchlist)
+        if any(not isinstance(item, ApprovedCompany) for item in approved):
+            raise ValueError("approved_companies must contain ApprovedCompany values")
+        if any(not isinstance(item, CandidateCompany) for item in watchlist):
+            raise ValueError("watchlist must contain CandidateCompany values")
+        object.__setattr__(self, "approved_companies", approved)
+        object.__setattr__(self, "watchlist", watchlist)
