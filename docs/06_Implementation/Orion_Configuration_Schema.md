@@ -123,6 +123,8 @@ allowlist may participate in a production run. A strategy remains registered
 but inactive while its research and Orion implementation documents contain
 unresolved decisions or specifications. The initial configuration therefore
 keeps the allowlist empty until an approved strategy is explicitly activated.
+Both lists accept only non-empty, unique names; every active name must also
+appear in `strategies`.
 
 ---
 

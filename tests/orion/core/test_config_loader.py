@@ -122,6 +122,39 @@ moon:
         load_config(tmp_path)
 
 
+@pytest.mark.parametrize("field", ["strategies", "active_strategies"])
+def test_load_config_rejects_duplicate_moon_strategy_names(field: str) -> None:
+    tmp_path = _temp_dir()
+    _write_valid_config(tmp_path)
+    moon_file = tmp_path / "moon.yaml"
+    content = moon_file.read_text(encoding="utf-8")
+    if field == "strategies":
+        content = content.replace("    - BAA\n", "    - BAA\n    - ADM\n", 1)
+    else:
+        content = content.replace(
+            "  active_strategies: []", "  active_strategies: [ADM, ADM]"
+        )
+    moon_file.write_text(content, encoding="utf-8")
+
+    with pytest.raises(ConfigValidationError, match=f"moon\\.{field}.*duplicate"):
+        load_config(tmp_path)
+
+
+def test_load_config_rejects_blank_moon_strategy_name() -> None:
+    tmp_path = _temp_dir()
+    _write_valid_config(tmp_path)
+    moon_file = tmp_path / "moon.yaml"
+    content = moon_file.read_text(encoding="utf-8").replace(
+        "  active_strategies: []", "  active_strategies: ['   ']"
+    )
+    moon_file.write_text(content, encoding="utf-8")
+
+    with pytest.raises(
+        ConfigValidationError, match="moon.active_strategies.*non-empty"
+    ):
+        load_config(tmp_path)
+
+
 def test_load_config_requires_documented_top_level_key() -> None:
     tmp_path = _temp_dir()
     _write_valid_config(tmp_path)

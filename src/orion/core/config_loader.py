@@ -460,6 +460,10 @@ def _tuple_of_str(payload: dict[str, Any], key: str, path: str) -> tuple[str, ..
         raise ConfigValidationError(f"{path} must be a list.")
     if not all(isinstance(item, str) for item in value):
         raise ConfigValidationError(f"{path} must contain only strings.")
+    if any(not item.strip() for item in value):
+        raise ConfigValidationError(f"{path} must contain only non-empty strings.")
+    if len(value) != len(set(value)):
+        raise ConfigValidationError(f"{path} must not contain duplicate values.")
     return tuple(value)
 
 
