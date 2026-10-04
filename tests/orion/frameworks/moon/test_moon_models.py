@@ -138,6 +138,33 @@ def test_adm_rejects_undefined_relative_momentum_tie() -> None:
         ADMStrategy("SGOV").calculate_signal(inputs)
 
 
+def test_adm_signal_input_rejects_invalid_field_types() -> None:
+    with pytest.raises(ValueError, match="boolean"):
+        ADMSignalInput(
+            "2026-07-31",
+            {"VTI": 0.12, "VEU": 0.08},
+            1,  # type: ignore[arg-type]
+            "SGOV",
+        )
+    with pytest.raises(ValueError, match="finite numbers"):
+        ADMSignalInput(
+            "2026-07-31",
+            {"VTI": True, "VEU": 0.08},  # type: ignore[dict-item]
+            True,
+            "SGOV",
+        )
+    with pytest.raises(ValueError, match="mapping"):
+        ADMSignalInput("2026-07-31", [], True, "SGOV")  # type: ignore[arg-type]
+
+
+def test_adm_signal_input_snapshots_relative_momentum() -> None:
+    momentum = {"VTI": 0.12, "VEU": 0.08}
+    inputs = ADMSignalInput("2026-07-31", momentum, True, "SGOV")
+    momentum["VTI"] = -0.5
+
+    assert inputs.relative_momentum["VTI"] == 0.12
+
+
 def test_consensus_allocator_applies_equal_strategy_weight_and_aggregates_assets() -> None:
     results = (
         StrategyResult("ADM", ("VTI",), (1.0,), "2026-07-31"),

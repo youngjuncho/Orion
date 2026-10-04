@@ -48,18 +48,34 @@ class ADMSignalInput:
     defensive_asset: str
 
     def __post_init__(self) -> None:
-        if not self.signal_date.strip():
-            raise ValueError("signal_date must not be empty")
-        if not self.defensive_asset.strip():
-            raise ValueError("defensive_asset must not be empty")
+        if not isinstance(self.signal_date, str) or not self.signal_date.strip():
+            raise ValueError("signal_date must be a non-empty string")
+        if (
+            not isinstance(self.defensive_asset, str)
+            or not self.defensive_asset.strip()
+        ):
+            raise ValueError("defensive_asset must be a non-empty string")
         if self.defensive_asset in ADM_RISK_ASSETS:
             raise ValueError("defensive_asset must be separate from ADM risk assets")
+        if not isinstance(self.absolute_momentum_positive, bool):
+            raise ValueError("absolute_momentum_positive must be a boolean")
+        if not isinstance(self.relative_momentum, Mapping):
+            raise ValueError("relative_momentum must be a mapping")
+        if any(not isinstance(asset, str) for asset in self.relative_momentum):
+            raise ValueError("relative_momentum keys must be strings")
 
-        missing = [asset for asset in ADM_RISK_ASSETS if asset not in self.relative_momentum]
+        missing = [
+            asset for asset in ADM_RISK_ASSETS if asset not in self.relative_momentum
+        ]
         if missing:
             raise ValueError(f"relative_momentum is missing: {', '.join(missing)}")
-        if any(not isfinite(self.relative_momentum[asset]) for asset in ADM_RISK_ASSETS):
-            raise ValueError("relative momentum values must be finite")
+        for asset, momentum in self.relative_momentum.items():
+            if (
+                isinstance(momentum, bool)
+                or not isinstance(momentum, (int, float))
+                or not isfinite(momentum)
+            ):
+                raise ValueError("relative momentum values must be finite numbers")
 
         object.__setattr__(
             self,
@@ -78,14 +94,19 @@ class ADMStrategy:
     status: str = "Active"
 
     def __post_init__(self) -> None:
-        if not self.defensive_asset.strip():
-            raise ValueError("defensive_asset must not be empty")
+        if (
+            not isinstance(self.defensive_asset, str)
+            or not self.defensive_asset.strip()
+        ):
+            raise ValueError("defensive_asset must be a non-empty string")
         if self.defensive_asset in ADM_RISK_ASSETS:
             raise ValueError("defensive_asset must be separate from ADM risk assets")
 
     def calculate_signal(self, inputs: ADMSignalInput) -> StrategyResult:
         """Select one target asset from already-calculated ADM inputs."""
 
+        if not isinstance(inputs, ADMSignalInput):
+            raise ValueError("inputs must be an ADMSignalInput")
         if inputs.defensive_asset != self.defensive_asset:
             raise ValueError("input defensive_asset must match the strategy configuration")
 
