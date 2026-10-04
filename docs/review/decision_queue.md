@@ -326,20 +326,33 @@ Execution Mapping은 명시적으로 관리한다. 현재 승인된 mapping은 �
 
 ## Decision
 
-V1의 Operational Configuration에는 현재 실제로 구현되고 검증된 전략만 포함한다.
+V1의 operational execution allowlist에는 실제로 구현되고 검증된 전략만
+포함한다. 이는 D-026의 `strategies` registry와 `active_strategies`
+allowlist 분리를 따른다.
+
+`strategies`는 알려진 strategy specification의 registry이므로 Research /
+Development 전략도 포함할 수 있다. 등록만으로 실행 가능해지는 것은 아니다.
 
 현재 Moon MVP의 첫 번째 End-to-End Vertical Slice는 ADM으로 진행한다.
 
-따라서 현재 Operational Configuration은:
+ADM vertical slice가 검증되고 활성화 승인을 받기 전까지 현재 실행 allowlist는
+비어 있다. 현재 설정은:
 
 ```yaml
 strategies:
   - ADM
+  - BAA
+  - BDA
+  - HAA
+  - VAA
+active_strategies: []
 ```
 
-으로 한다.
+이다. ADM vertical slice 검증과 승인 후 `active_strategies`에 ADM만
+추가한다.
 
-BAA, BDA, HAA, VAA는 Research / Development 상태로 유지하며, 현재 Moon MVP의 Operational Execution에는 참여시키지 않는다.
+BAA, BDA, HAA, VAA는 Research / Development 상태로 유지하며 현재 Moon MVP의
+Operational Execution에는 참여시키지 않는다.
 
 전략이 구현되고 검증된 이후 별도의 승인 절차를 거쳐 Operational Configuration에 추가한다.
 
@@ -823,12 +836,13 @@ by making an implicit decision.
 This Decision Queue can be considered cleared for the Moon MVP when:
 
 ```text
-[ ] DQ-MOON-001 Portfolio contract resolved
-[ ] DQ-ADM-001 Defensive asset resolved
-[ ] DQ-ADM-002 Total Return methodology resolved
-[ ] DQ-ADM-003 Dividend handling resolved
-[ ] DQ-ADM-004 Execution mapping resolved
-[ ] DQ-MOON-002 Strategy activation semantics resolved
+[x] DQ-MOON-001 portfolio contract resolved (D-027)
+[ ] DQ-ADM-001 defensive signal asset selected (signal/execution split is decided)
+[x] DQ-ADM-002 total-return methodology resolved (D-028)
+[x] DQ-ADM-003 dividend handling resolved (D-028)
+[ ] DQ-ADM-004 concrete VTI/VEU mappings approved (mapping policy is decided)
+[x] DQ-MOON-002 activation semantics resolved (D-026)
+[ ] ADM market-observation timing, freshness, and missing-data contract specified
 ```
 
 After that:

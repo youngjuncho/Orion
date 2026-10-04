@@ -867,7 +867,7 @@ This implementation review may be considered closed for the current stage when:
 [x] ADM OI-002 is resolved
 [x] ADM OI-003 is resolved
 [ ] ADM execution mappings are approved
-[ ] Moon operational configuration is truthful
+[x] Moon operational configuration is truthful (D-026; allowlist empty until ADM validation and approval)
 [ ] One Moon/ADM vertical slice is implementation-ready
 [x] Relevant tests are defined
 [ ] Implementation roadmap reflects actual state
