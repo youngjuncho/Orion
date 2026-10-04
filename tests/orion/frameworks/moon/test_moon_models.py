@@ -9,9 +9,11 @@ from orion.frameworks.moon import (
     MoonEngine,
     MoonReport,
     Portfolio,
+    PortfolioTarget,
     PortfolioValidator,
     Strategy,
     StrategyResult,
+    calculate_adjusted_price_return,
 )
 
 
@@ -158,6 +160,60 @@ def test_moon_engine_surfaces_unmapped_strategy_assets() -> None:
 
     with pytest.raises(ValueError, match="VTI"):
         MoonEngine().build_allocation(results)
+
+
+def test_moon_engine_builds_validated_portfolio_target() -> None:
+    results = (
+        StrategyResult("ADM", ("SPY",), (1.0,), "2026-07-31"),
+    )
+
+    target = MoonEngine().build_portfolio_target(
+        results, rebalance_date="2026-08-31", status="Draft"
+    )
+
+    assert target == PortfolioTarget(
+        (Allocation("SPYM", 1.0),), "2026-08-31", "Draft"
+    )
+
+
+def test_portfolio_target_snapshots_allocations_and_validates_contract() -> None:
+    allocations = [Allocation("SPYM", 0.75), Allocation("QQQM", 0.25)]
+    target = PortfolioTarget(allocations, "2026-08-31", "Proposed")
+    allocations.clear()
+
+    assert len(target.allocations) == 2
+    assert isinstance(target.allocations, tuple)
+
+    with pytest.raises(ValueError, match="total 1.0"):
+        PortfolioTarget((Allocation("SPYM", 0.5),), "2026-08-31", "Proposed")
+    with pytest.raises(ValueError, match="unique"):
+        PortfolioTarget(
+            (Allocation("SPYM", 0.5), Allocation("SPYM", 0.5)),
+            "2026-08-31",
+            "Proposed",
+        )
+
+
+def test_adjusted_price_return_uses_current_over_trailing_minus_one() -> None:
+    assert calculate_adjusted_price_return(110.0, 100.0) == pytest.approx(0.1)
+    assert calculate_adjusted_price_return(90.0, 100.0) == pytest.approx(-0.1)
+
+
+@pytest.mark.parametrize(
+    "current,trailing",
+    [
+        (0.0, 100.0),
+        (100.0, 0.0),
+        (float("nan"), 100.0),
+        (100.0, float("inf")),
+        (True, 100.0),
+    ],
+)
+def test_adjusted_price_return_rejects_invalid_prices(
+    current: object, trailing: object
+) -> None:
+    with pytest.raises(ValueError, match="finite positive"):
+        calculate_adjusted_price_return(current, trailing)  # type: ignore[arg-type]
 
 
 def test_portfolio_validator_accepts_complete_unique_allocation() -> None:
