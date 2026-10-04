@@ -1,17 +1,19 @@
 # Orion Implementation Status Report
 
-Date: 2026-09-06
+Date: 2026-10-04
 
-Status: Active — documentation closure in progress
+Status: Active — implementation and documentation in progress
 
 ---
 
 # Purpose
 
-This report records the current implementation state after the initial Orion OS scaffolding work.
+This report records the current implementation state after the initial Orion
+OS scaffolding and subsequent review-driven implementation work.
 
-The intermediate review package in `docs/review/review_v1.zip` is the current
-review baseline. Its findings are being applied in small, verifiable batches.
+Review findings are tracked in the permanent decision log and current working
+documents under `docs/review/`. The temporary review package has been removed
+from the working tree and is no longer the active baseline.
 
 It is not an architecture decision record.
 
@@ -38,20 +40,8 @@ Reviewed:
 
 # Current Git Review Baseline
 
-The most recent implementation commits reviewed were:
-
-* `Connect CLI for dashboard`
-* `feat: dashboard scaffold`
-* `feat : phoenix scaffold`
-* `feat: add supernova scaffold`
-* `feat: moon scaffold`
-* `feat: add aurora scaffolding`
-* `feat: add core models and cli scaffold`
-* `chore: stop tracking test scratch directory`
-* `feat: add core models and stabilize config tests`
-* `chore: reconcile docs, config, and vscode environment`
-
-The working tree was clean at review time.
+The report was refreshed against the current source tree and test suite on
+2026-10-04. Git history is the authoritative record of implementation commits.
 
 ---
 
@@ -97,6 +87,7 @@ Implemented:
 * Required configuration file validation
 * Typed configuration dataclasses
 * Core score, state, regime, review, decision, and dashboard card models
+* Strict score and required-field/type validation for core domain models
 * Immutable domain event contract
 * In-memory append-only event store for one execution
 * Immutable Orion state snapshot contract
@@ -105,7 +96,7 @@ Implemented:
 * Shared Runtime context contract for one execution
 * In-memory Framework Registry for one execution
 * Minimal Runtime lifecycle state transitions
-* Typed Orion API result contracts
+* Typed Orion API result contracts with immutable, validated collection fields
 * Required-field validation across framework domain models
 * In-memory Service Registry for one execution
 * Basic logging configuration utility
@@ -120,12 +111,14 @@ Implemented:
 
 * Immutable normalized observation contract
 * Validated market data batch contract
-* Required-field and duplicate-observation checks
+* Scalar observation and string-metadata type checks
+* Immutable batch snapshots and duplicate-observation checks
 
 Status:
 
-The data layer currently defines input contracts only. It does not collect,
-normalize, persist, or interpret source data.
+The data layer currently defines validated normalized-input contracts only.
+It does not collect from raw sources, normalize raw data, persist, or interpret
+source data.
 
 ## CLI
 
@@ -177,6 +170,7 @@ Implemented:
 * Documented signal-to-execution asset mapping
 * Moon allocation orchestration from strategy results to executable assets
 * PortfolioTarget construction from validated executable allocations
+* Adjusted-price return calculation helper
 * Executable portfolio allocation validation
 * Moon engine scaffold
 * Moon report entry point
@@ -247,6 +241,7 @@ Implemented:
 
 Status:
 
+Dashboard models validate presentation inputs and snapshot collection fields.
 Dashboard remains presentation-only.
 
 It consumes framework outputs and does not generate investment decisions.
@@ -255,18 +250,18 @@ It consumes framework outputs and does not generate investment decisions.
 
 # Test Status
 
-Latest verification on 2026-09-06: the full test suite passes with 90 tests.
+Latest verification on 2026-10-04: the full test suite passes with 130 tests.
 
-The following command passed at review time:
+The following command passed:
 
 ```powershell
-pytest tests\orion -q
+pytest
 ```
 
 Result:
 
 ```text
-87 passed
+130 passed
 ```
 
 ---
