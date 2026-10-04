@@ -867,10 +867,10 @@ This implementation review may be considered closed for the current stage when:
 ```text
 [ ] Current package structure is documented accurately
 [ ] Domain model has one canonical mapping
-[ ] Moon portfolio contracts are resolved
+[x] Moon portfolio contracts are resolved
 [ ] ADM OI-001 is resolved
-[ ] ADM OI-002 is resolved
-[ ] ADM OI-003 is resolved
+[x] ADM OI-002 is resolved
+[x] ADM OI-003 is resolved
 [ ] ADM execution mappings are approved
 [ ] Moon operational configuration is truthful
 [ ] One Moon/ADM vertical slice is implementation-ready

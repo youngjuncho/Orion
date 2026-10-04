@@ -45,6 +45,7 @@ The domain layer should:
 | Strategy | `orion.frameworks.moon.models.Strategy` |
 | StrategyResult | `orion.frameworks.moon.models.StrategyResult` |
 | Portfolio | `orion.frameworks.moon.models.Portfolio` (minimal scaffold) |
+| PortfolioTarget | `orion.frameworks.moon.models.PortfolioTarget` |
 | Allocation | `orion.frameworks.moon.models.Allocation` |
 | Score | `orion.core.models.Score` |
 | State | `orion.core.models.State` |
@@ -57,6 +58,11 @@ The domain layer should:
 The table is intentionally explicit about concepts that are not implemented
 yet. A logical entity must not be presented as a Python class until its
 fields, lifecycle, and validation rules are approved.
+
+`PortfolioTarget` is implemented separately with execution-asset allocations,
+rebalance date, and caller-supplied status. The status is an opaque non-empty
+label because the implementation documents do not define an allowed status
+vocabulary.
 
 ---
 

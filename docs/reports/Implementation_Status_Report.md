@@ -176,6 +176,7 @@ Implemented:
 * Equal-weight strategy consensus allocation
 * Documented signal-to-execution asset mapping
 * Moon allocation orchestration from strategy results to executable assets
+* PortfolioTarget construction from validated executable allocations
 * Executable portfolio allocation validation
 * Moon engine scaffold
 * Moon report entry point
@@ -194,8 +195,10 @@ execution mapping.
 Executable allocations are validated for unique assets, non-negative finite
 weights, and a total weight of 100%.
 
-Market data loading, total-return calculation, defensive-asset approval,
-portfolio construction, and rebalance logic are not implemented.
+Market-data loading and observation selection, PortfolioSnapshot
+construction, and rebalance logic are not implemented. The adjusted-price
+return formula is approved and has a pure calculation helper, but integration
+with market observations remains blocked on the data contract.
 
 The Moon configuration separates the registered strategy list from the
 `active_strategies` execution allowlist. The initial allowlist is empty while
@@ -428,21 +431,22 @@ Major
 
 Current State:
 
-`ADM_Orion.md` still contains three open implementation issues:
+`ADM_Orion.md` has one remaining open issue:
 
 * OI-001: Final defensive asset selection among `SGOV`, `BIL`, and `SHY`
-* OI-002: Total-return calculation methodology
-* OI-003: Dividend adjustment methodology
 
 The current ADM implementation therefore accepts precomputed momentum inputs
 and an explicitly supplied defensive asset. It does not select a defensive
-asset or calculate momentum from market prices.
+asset or select market observations and calculate momentum from market prices.
+The adjusted-price return formula and data-layer dividend responsibility are
+resolved by D-028; data timing, freshness, and missing-observation behavior
+remain unspecified.
 
 Recommended Next Step:
 
-Resolve OI-001, OI-002, and OI-003 through approved Moon documentation and
-governance decisions before implementing ADM market-data calculations or
-connecting ADM to an operational CLI execution path.
+Resolve OI-001 and the market-data observation contract before completing ADM
+market-data integration or connecting ADM to an operational CLI execution
+path. The VTI/VEU execution mappings also remain unapproved.
 
 Severity:
 

@@ -12,12 +12,34 @@ from .models import StrategyResult
 ADM_RISK_ASSETS = ("VTI", "VEU")
 
 
+def calculate_adjusted_price_return(
+    current_adjusted_price: float,
+    trailing_adjusted_price: float,
+) -> float:
+    """Calculate return from two already selected adjusted-price observations.
+
+    The data layer is responsible for supplying the current observation and
+    the observation corresponding to the documented trailing period.
+    """
+
+    for name, value in (
+        ("current_adjusted_price", current_adjusted_price),
+        ("trailing_adjusted_price", trailing_adjusted_price),
+    ):
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"{name} must be a finite positive number")
+        if not isfinite(value) or value <= 0:
+            raise ValueError(f"{name} must be a finite positive number")
+
+    return current_adjusted_price / trailing_adjusted_price - 1.0
+
+
 @dataclass(frozen=True)
 class ADMSignalInput:
     """Inputs required by the Orion ADM selection rules.
 
     Momentum values are supplied by an upstream data/calculation layer. This
-    object does not define the unresolved total-return or dividend methods.
+    object does not select market observations or define their freshness rules.
     """
 
     signal_date: str

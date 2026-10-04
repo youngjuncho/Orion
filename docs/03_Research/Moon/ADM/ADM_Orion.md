@@ -173,7 +173,12 @@ Trailing 12-Month Total Return
 
 Formula
 
-Current Price / Price 12 Months Ago − 1
+AdjustedPrice[t] / AdjustedPrice[t-12M] − 1
+
+Adjusted Price is supplied by the normalized data layer and is treated as a
+total-return proxy. ADM does not reconstruct or separately add distributions.
+The observation selection, freshness, and missing-data rules remain subject
+to the market-data contract.
 
 Status
 
@@ -388,7 +393,7 @@ Total return calculation methodology
 
 Status
 
-Open
+Resolved by D-028. Use adjusted-price total return as specified above.
 
 ---
 
@@ -398,7 +403,8 @@ Dividend adjustment methodology
 
 Status
 
-Open
+Resolved by D-028. Dividend adjustments are handled by the data layer's
+adjusted-price normalization; ADM does not calculate dividends separately.
 
 ---
 

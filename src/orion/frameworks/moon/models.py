@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from math import isfinite
+from math import isclose, isfinite
 from types import MappingProxyType
 from typing import Mapping
 
@@ -70,6 +70,36 @@ class Allocation:
             raise ValueError("asset must not be empty")
         if isinstance(self.weight, bool) or not isfinite(self.weight) or self.weight < 0:
             raise ValueError("weight must be finite and non-negative")
+
+
+@dataclass(frozen=True)
+class PortfolioTarget:
+    """Desired Moon portfolio allocation expressed in execution assets."""
+
+    allocations: tuple[Allocation, ...]
+    rebalance_date: str
+    status: str
+
+    def __post_init__(self) -> None:
+        allocations = tuple(self.allocations)
+        if not allocations:
+            raise ValueError("portfolio target must contain at least one allocation")
+        if any(not isinstance(item, Allocation) for item in allocations):
+            raise ValueError("portfolio target allocations must be Allocation values")
+        if len({item.asset for item in allocations}) != len(allocations):
+            raise ValueError("portfolio target assets must be unique")
+        if not isclose(
+            sum(item.weight for item in allocations),
+            1.0,
+            rel_tol=0.0,
+            abs_tol=1e-12,
+        ):
+            raise ValueError("portfolio target weights must total 1.0")
+        if not self.rebalance_date.strip():
+            raise ValueError("rebalance_date must not be empty")
+        if not self.status.strip():
+            raise ValueError("status must not be empty")
+        object.__setattr__(self, "allocations", allocations)
 
 
 @dataclass(frozen=True)

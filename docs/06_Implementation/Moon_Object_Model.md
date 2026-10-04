@@ -305,6 +305,10 @@ execution-asset mapping.
 
 `PortfolioTarget` does not represent current holdings.
 
+The current Python implementation validates non-empty, unique execution
+assets, a 100% total allocation, a non-empty rebalance date, and a non-empty
+caller-supplied status label. The allowed status vocabulary is not defined.
+
 ### PortfolioSnapshot
 
 Represents the actual current portfolio holdings at a specific point in
@@ -406,7 +410,7 @@ Responsibilities:
 3. Collect Strategy Results
 4. Run Consensus Allocation
 5. Apply Execution Mapping
-6. Generate Portfolio
+6. Generate and validate PortfolioTarget
 7. Produce reports
 
 The Moon Engine does not implement individual strategy logic.

@@ -17,9 +17,9 @@ Date: 2026-09-06
 
 | ID | 구분 | 항목 | 막히는 작업 | 다음 조치 |
 |---|---|---|---|---|
-| B-001 | D/S | ADM 방어자산·총수익·배당 방식 | ADM 시장데이터 계산 | 사용자 결정 후 ADM 문서와 Decision Log 갱신 |
-| B-002 | D | ADM VTI/VEU 및 방어자산 실행 매핑 | ADM 실행 allocation | 승인된 신호→실행 매핑 추가 |
-| B-003 | consensus allocation, execution mapping, PortfolioTarget validation | 실제 PortfolioSnapshot 기반 rebalance workflow 및 ExecutionOrder는 MVP 범위 밖 |
+| B-001 | D/S | ADM 방어자산 선택 및 시장관측 입력 규칙 | ADM 시장데이터 계산 | DQ-ADM-001은 signal/execution 분리만 정함. 실제 방어 신호자산·관측일/freshness/missing-data 규칙은 미정 |
+| B-002 | D | ADM VTI/VEU 및 방어자산 실행 매핑 | ADM 실행 allocation | 현재 승인 mapping에 VTI/VEU 없음. 구체 mapping 결정을 영구 문서에 기록 |
+| B-003 | IMPLEMENT/F | consensus allocation, execution mapping, PortfolioTarget validation | PortfolioSnapshot 기반 rebalance workflow 및 ExecutionOrder는 MVP 범위 밖 | D-027 반영 완료; target 생성 이후 holdings/rebalance는 defer |
 | B-004 | I/F | Moon MVP persistence scope | D-030 resolved the MVP boundary; implement in-memory EventStore/StateStore. Persistent storage, replay, and storage technology remain future scope. |
 | B-005 | S | OrionEngine 공개 계약 | 전체 Runtime orchestration | 입력·출력·실패 격리 계약 확정 |
 | B-006 | S | API 오류 계약 | CLI/API 외부 오류 변환 | 공개 예외와 오류 응답 형식 확정 |
@@ -32,8 +32,9 @@ Date: 2026-09-06
 ### B-001~B-002 — ADM
 
 현재 ADM은 사전 계산된 momentum 입력으로 선택하는 부분까지만 구현되어
-있습니다. 방어자산 선택, total-return 계산, 배당 처리, 실제 실행 매핑은
-결정 전까지 구현하지 않습니다.
+있습니다. D-028에 따라 조정가격 기반 수익률 계산 helper까지 구현했으나,
+시장 관측일/freshness/missing-data 계약과 방어자산 선택은 미정입니다.
+실제 실행 매핑도 결정 전까지 연결하지 않습니다.
 
 ### B-003 — Moon Portfolio
 
@@ -69,7 +70,7 @@ PortfolioTarget + PortfolioSnapshot
 generation 및 execution은 현재 Moon MVP 범위에 포함하지 않습니다.
 
 따라서 현재 구현에서는 consensus allocation, execution mapping,
-portfolio target 및 validation까지 진행할 수 있습니다.
+portfolio target 생성 및 validation까지 진행할 수 있습니다.
 
 **Status:** Resolved by D-027
 
@@ -115,7 +116,7 @@ Aurora, Supernova, Phoenix의 scoring/leadership 규칙과 source contract가
 |---|---|---|
 | B-004~B-006 | RuntimeSession, ServiceRegistry, RuntimeContext, in-memory snapshots, `build_context()` 연결 | persistence, public OrionEngine, API error contract |
 | B-009 | normalized observation/batch contracts와 runtime data handoff | source-specific fields, freshness, collectors |
-| B-003 | consensus allocation과 execution mapping validation | Portfolio target/snapshot/rebalance/order semantics |
+| B-003 | consensus allocation, execution mapping, PortfolioTarget construction/validation | PortfolioSnapshot/rebalance/order는 MVP 범위 밖 |
 
 현재 구현은 Runtime의 in-memory 조립 경로를 강화한 것이며, 아직 전체
 OrionEngine orchestration을 구현한 것은 아닙니다.
