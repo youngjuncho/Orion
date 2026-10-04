@@ -317,12 +317,8 @@ Moon is currently the most important implementation target.
 
 ### Not yet complete
 
-* complete Portfolio contract,
-* complete ConsensusAllocation contract,
-* PortfolioTarget,
-* PortfolioSnapshot,
-* RebalancePlan,
-* complete ADM methodology,
+* PortfolioSnapshot and RebalancePlan construction (post-MVP),
+* ADM defensive-asset choice and market-observation rules,
 * ADM execution mappings,
 * complete end-to-end CLI execution.
 
@@ -378,7 +374,7 @@ The following areas require explicit attention before the corresponding implemen
 
 ## 9.1 Portfolio contracts
 
-The following contracts must be made canonical:
+Decision D-027 establishes the canonical Moon portfolio flow:
 
 ```text
 Portfolio
@@ -388,30 +384,29 @@ PortfolioSnapshot
 RebalancePlan
 ```
 
-These are specification work.
-
-They should not be independently redefined in multiple documents.
+`PortfolioTarget` construction and validation are implemented. Snapshot and
+rebalance construction are outside the current MVP boundary. The canonical
+decision should not be redefined in multiple documents.
 
 ---
 
 ## 9.2 ADM methodology
 
-The following ADM issues remain part of the implementation boundary:
+The following ADM decisions remain open:
 
 ```text
 ADM OI-001
-ADM OI-002
-ADM OI-003
+Market observation date / freshness / missing-data rules
 ```
 
-These must be resolved from the authoritative investment methodology.
+OI-002 and OI-003 were resolved by D-028: use adjusted-price total return,
+with dividend adjustment handled by the normalized data layer. Remaining
+market-data rules must be resolved from the authoritative Orion contract.
 
 The coding agent must not infer missing methodology from common investment practice.
 
 In particular, calculations involving:
 
-* total return,
-* dividend adjustment,
 * price history,
 * defensive selection,
 
@@ -874,7 +869,7 @@ This implementation review may be considered closed for the current stage when:
 [ ] ADM execution mappings are approved
 [ ] Moon operational configuration is truthful
 [ ] One Moon/ADM vertical slice is implementation-ready
-[ ] Relevant tests are defined
+[x] Relevant tests are defined
 [ ] Implementation roadmap reflects actual state
 ```
 

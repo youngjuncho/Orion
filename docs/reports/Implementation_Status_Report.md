@@ -579,8 +579,10 @@ Minor
 
 # Recommended Next Work Order
 
-1. Approve ADM execution mappings through Moon governance.
-2. Resolve ADM defensive-asset, total-return, and dividend methodology before implementing market-data calculations.
+1. Approve the ADM VTI/VEU and defensive-asset execution mappings through Moon governance.
+2. Resolve ADM defensive-asset selection and market-observation timing,
+   freshness, and missing-data rules before market-data integration. D-028
+   already resolves adjusted-price total return and dividend handling.
 3. Keep Aurora, Supernova, and Phoenix at scaffold level until their implementation rules are fully specified.
 4. Implement data collection and normalization only after their source contracts are documented.
 5. Wire non-report CLI commands only after their framework output contracts are documented.

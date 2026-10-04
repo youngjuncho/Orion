@@ -19,8 +19,6 @@ Date: 2026-09-06
 - [ ] OI-001: 방어자산 결정 — SGOV / BIL / SHY 중 선택
 - [x] OI-002: 12개월 수익률 계산 방식 결정 — D-028에서 adjusted-price total-return proxy로 확정
 - [x] OI-003: 배당 처리 책임 결정 — D-028에서 data layer의 adjusted-price normalization으로 확정
-  - 데이터 정규화 계층에서 처리
-  - ADM 전략 내부에서 처리
 - [ ] 평가일, `data_as_of`, 실행일, 결측 데이터 처리 규칙 확정
 
 결정 후 보강할 문서:
