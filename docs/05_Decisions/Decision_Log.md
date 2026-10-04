@@ -1121,3 +1121,493 @@ Approved
 2026-09-07
 
 ---
+
+# D.1–D.2 Decision Review & Decision Lifecycle
+
+## Context
+
+Orion의 Decision Review 영역에서 Analysis, Evidence Snapshot, Recommendation, User Decision, Review Record, Note 및 관계(Relation)의 lifecycle과 provenance를 명확히 정의한다.
+
+핵심 목적은 다음과 같다.
+
+* Analysis와 Recommendation의 lifecycle을 분리한다.
+* Recommendation과 User Decision의 lifecycle을 분리한다.
+* Review가 Recommendation 또는 Decision을 직접 수정하지 않도록 한다.
+* 기존 판단을 수정할 경우 기존 기록을 변경하지 않고 새로운 기록을 생성한다.
+* 모든 중요한 판단과 변경의 provenance를 추적 가능하게 한다.
+* 현재 상태를 mutable pointer나 별도 status field에 의존하지 않고 lifecycle과 lineage에서 결정할 수 있도록 한다.
+
+---
+
+## D.1 — Decision Review Framework
+
+### 1. Architecture Boundary
+
+Orion의 판단 흐름은 다음과 같이 분리한다.
+
+```text
+Analysis
+   ↓
+Evidence Snapshot
+   ↓
+Recommendation
+   ↓
+User Decision
+
+Review Record
+   └─ Recommendation / Decision에 영향을 주는 trigger와 결과를 기록
+```
+
+Actual Trading은 Orion의 외부 영역이다.
+
+```text
+Analysis
+→ Recommendation
+→ User Decision
+→ Actual Trading (Outside Orion)
+```
+
+Orion은 실제 주문 실행 여부나 실행 결과를 User Decision의 lifecycle에 반영하지 않는다.
+
+### 2. Recommendation Immutability
+
+Recommendation은 Immutable하다.
+
+Recommendation의 내용이 변경되어야 하는 경우 기존 Recommendation을 수정하지 않는다.
+
+```text
+R1 = Superseded
+R2 = Active
+```
+
+R2는 R1을 `Supersedes`한다.
+
+Recommendation이 생성되면 새로운 User Decision은 `Pending`으로 시작한다.
+
+### 3. Evidence Snapshot
+
+Recommendation 생성 시 사용한 Evidence Snapshot은 고정한다.
+
+Analysis가 이후 변경되더라도 당시 Recommendation이 어떤 evidence를 기반으로 만들어졌는지 재현할 수 있어야 한다.
+
+Provenance:
+
+```text
+Analysis Version
+      ↓
+Evidence Snapshot
+      ↓
+Recommendation
+      ↓
+User Decision
+```
+
+### 4. Review Trigger
+
+Review는 다음 두 종류의 trigger로 발생할 수 있다.
+
+* Regular Review
+* Material Change
+
+Change Detection과 Material Change 판단은 별개의 개념이다.
+
+Review는 변경이 감지되었다는 사실과 그것이 Recommendation 변경을 요구하는지 여부를 분리해서 판단한다.
+
+### 5. Review Result
+
+Review Result는 다음 세 가지로 구분한다.
+
+* `No Change`
+* `Reconsideration Required`
+* `Recommendation Change Required`
+
+`No Change`도 명시적인 Review Record로 남긴다.
+
+Review Record 자체가 Recommendation을 직접 변경하지 않는다.
+
+### 6. Reconsideration
+
+`Reconsideration Required`인 경우 Recommendation은 유지한다.
+
+기존 Active User Decision은 `Superseded`가 되고 새로운 Pending User Decision을 생성한다.
+
+```text
+Recommendation R1
+    ↓
+Decision D1 = Superseded
+Decision D2 = Pending
+```
+
+### 7. Recommendation Change
+
+`Recommendation Change Required`인 경우 기존 Recommendation을 Superseded 처리하고 새로운 Recommendation을 생성한다.
+
+기존 Recommendation의 현재 Active/Pending Decision도 Superseded 처리한다.
+
+새 Recommendation에는 새로운 Pending Decision을 생성한다.
+
+기존 Decision history를 새로운 Recommendation으로 복사하지 않는다.
+
+Recommendation 간 lineage는 `Supersedes` 관계로 연결한다.
+
+---
+
+# D.2 — Decision Lifecycle & Relation Model
+
+## 1. User Decision Lifecycle
+
+User Decision의 lifecycle은 다음 세 가지다.
+
+```text
+Pending
+Active
+Superseded
+```
+
+`Rejected`는 lifecycle이 아니라 Outcome이다.
+
+따라서:
+
+```text
+Status = Active
+Outcome = Rejected
+```
+
+가 가능하다.
+
+Outcome은 다음 두 가지로 제한한다.
+
+* `Accepted`
+* `Rejected`
+
+Conditional Acceptance는 별도 lifecycle이 아니라:
+
+```text
+Outcome = Accepted
+Conditions = <condition>
+```
+
+으로 표현한다.
+
+조건이 없는 Accepted Decision은 `Conditions = null`이다.
+
+Rejected Decision에도 Conditions를 둘 수 있다.
+
+## 2. Decision Immutability
+
+User Decision은 Immutable하다.
+
+다음 사항이 변경되면 새로운 Decision을 생성한다.
+
+* Outcome 변경
+* Conditions의 의미 변경
+* Recommendation 변경에 따른 새로운 판단
+* Reconsideration에 따른 새로운 판단
+
+기존 Decision은 `Superseded`로 남긴다.
+
+단순한 wording-only clarification은 Decision을 변경하지 않고 별도의 Note/Clarification으로 기록한다.
+
+## 3. Decision Supersession
+
+새 Decision이 기존 Decision을 대체하는 경우:
+
+```text
+New Decision
+   ├─ Supersedes Decision
+   └─ triggered_by_review (해당하는 경우)
+```
+
+기존 Decision의 `Superseded Reason`을 필수로 기록한다.
+
+Recommendation 변경 때문에 Decision이 Superseded되는 경우:
+
+```text
+Superseded Reason = Recommendation Superseded
+superseded_by_recommendation_id = R2
+```
+
+Superseded된 Decision의 Outcome과 Conditions는 변경하지 않는다.
+
+## 4. Current Decision
+
+Current Decision은 별도의 `current_decision_id` pointer로 저장하지 않는다.
+
+Lifecycle을 기반으로 결정한다.
+
+Recommendation 하나에 대해:
+
+* Active Decision은 최대 1개
+* Pending Decision은 최대 1개
+
+를 허용한다.
+
+Reconsideration 시 기존 Active Decision을 먼저 Supersede하고 새로운 Pending Decision을 생성한다.
+
+따라서 동일 Recommendation 아래에서 `Active + Pending` Decision을 동시에 유지하지 않는다.
+
+Pending Decision이 존재하는 상태에서 추가 Review가 발생하면 새로운 Pending Decision을 만들지 않고 기존 Pending Decision을 유지하며 Review Record만 추가한다.
+
+단, Recommendation 자체가 변경되면 기존 Pending Decision도 Superseded되고 새로운 Recommendation에 새로운 Pending Decision을 생성한다.
+
+## 5. Recommendation–Decision Relationship
+
+Recommendation과 User Decision은 1:N 관계다.
+
+하나의 Recommendation에는 여러 historical Decision이 존재할 수 있지만 현재 유효한 Decision은 lifecycle 규칙에 따라 결정한다.
+
+새 Recommendation은 이전 Decision history를 복사하지 않는다.
+
+---
+
+# Review / Decision Interaction
+
+Review와 User Decision은 독립 객체다.
+
+Review Record는 판단을 trigger하고 근거를 남기지만 Recommendation이나 Decision을 직접 수정하지 않는다.
+
+```text
+Review Record
+   ├─ No Change
+   ├─ Reconsideration Required
+   └─ Recommendation Change Required
+```
+
+새 Decision이 Review 때문에 생성된 경우 `triggered_by_review`로 해당 Review Record를 참조한다.
+
+`No Change` Review에서는 기존 Active Decision을 그대로 유지한다.
+
+---
+
+# Note / Clarification
+
+Note/Clarification은 Decision 변경을 대신하지 않는다.
+
+Note는 Immutable하며 다음 정보를 가진다.
+
+* `created_at`
+* `created_by`
+* `note_type`
+* `content`
+* `target_type`
+* `target_id`
+
+`created_by`는 현재 단계에서 다음으로 제한한다.
+
+* `User`
+* `System`
+
+Note Type 초기 집합:
+
+* `Clarification`
+* `Correction`
+* `Context`
+* `Observation`
+* `Other`
+
+`Other`를 선택하면 `Other Type Description`을 필수로 한다.
+
+Note는 다음 주요 객체에 attach할 수 있다.
+
+* Analysis
+* Evidence Snapshot
+* Recommendation
+* User Decision
+* Review Record
+
+Note는 다른 Note에도 연결할 수 있다.
+
+초기 Relation Type:
+
+* `Supersedes`
+* `Related To`
+
+`Related To`는 undirected relation이다.
+
+`Supersedes`는 directed relation이다.
+
+Self-reference는 금지한다.
+
+`Supersedes` cycle은 금지한다.
+
+중복 Relation도 금지한다.
+
+---
+
+# Supersedes Relation
+
+`Supersedes` 관계 자체도 provenance의 일부로 취급한다.
+
+일반적으로 source의 `created_at`은 target보다 이후여야 한다.
+
+단, migration/import에서는 temporal validation exception을 허용한다.
+
+Exception은 다음 정보를 가진다.
+
+* `exception_type`
+* `exception_description`
+
+`exception_type = Other`인 경우 상세 설명을 필수로 한다.
+
+Exception 기록 자체도 Immutable하다.
+
+잘못 생성된 `Supersedes` 관계는 직접 삭제하거나 취소하지 않는다.
+
+별도의 `Invalidates Supersedes` 관계를 생성하여 해당 Supersedes 관계를 무효화한다.
+
+---
+
+# Invalidates Supersedes
+
+잘못된 `Supersedes` 관계는 다음 구조로 정정한다.
+
+```text
+Supersedes Relation
+       ↓
+Invalidates Supersedes
+```
+
+`Invalidates Supersedes`는 특정 `Supersedes Relation ID`를 직접 참조한다.
+
+현재 유효성은 별도의 status field가 아니라 lineage에서 도출한다.
+
+`Invalidates Supersedes` 관계 자체는 Immutable하다.
+
+`Invalidates Supersedes` 자체를 다시 invalidate하는 recursive 구조는 허용하지 않는다.
+
+대신 잘못된 invalidation은 별도의 Correction으로 정정한다.
+
+---
+
+# Correction
+
+Correction은 특정 `Invalidates Supersedes` 관계를 정정하기 위한 Immutable 기록이다.
+
+필수 정보:
+
+* `target_relation_id`
+* `correction_type`
+* `description`
+* `created_at`
+* `created_by`
+
+`created_by`는 현재 단계에서 다음으로 제한한다.
+
+* `User`
+* `System`
+
+현재 Correction Type은 최소 모델로 다음 하나만 정의한다.
+
+* `Restore Validity`
+
+즉:
+
+```text
+Invalidates Supersedes
+       ↓
+Correction
+       ↓
+Restore Validity
+```
+
+Correction은 동일한 Invalidates Supersedes 관계에 대해 여러 개 존재할 수 있다.
+
+Correction은 기존 Correction을 수정하거나 삭제하지 않는다.
+
+현재 상태를 결정할 때는 가장 최근 Correction을 사용한다.
+
+정렬 규칙:
+
+1. `created_at`
+2. 동일 timestamp인 경우 `Correction ID`
+
+`Correction ID` 자체는 순번이나 시간적 의미를 갖지 않는다. 단순 identifier이며 timestamp tie-breaker로만 사용한다.
+
+---
+
+# Current Relation Validity
+
+현재 관계의 유효성은 저장된 mutable status가 아니라 lineage에서 deterministic하게 계산한다.
+
+개념적으로:
+
+```text
+Supersedes
+   ↓
+Invalidates Supersedes
+   ↓
+Latest Correction
+```
+
+`Restore Validity` Correction이 존재하면 해당 `Invalidates Supersedes`의 효력이 제거된 것으로 간주하고 원래 `Supersedes` 관계가 다시 유효해진다.
+
+따라서 Current State는 별도의 mutable state field가 아니라 relation lineage의 계산 결과다.
+
+---
+
+# Core Invariants
+
+다음 규칙은 D.1–D.2에서 확정한 핵심 invariant다.
+
+1. Recommendation은 Immutable하다.
+2. User Decision은 Immutable하다.
+3. Review Record는 Recommendation/Decision을 직접 수정하지 않는다.
+4. Analysis 변경 자체는 Recommendation 변경을 의미하지 않는다.
+5. Recommendation 변경이 필요한 경우 새로운 Recommendation을 생성한다.
+6. Decision 변경이 필요한 경우 새로운 Decision을 생성한다.
+7. 기존 기록은 삭제하지 않고 Superseded lineage를 유지한다.
+8. Recommendation 하나에는 최대 하나의 Active Decision이 존재한다.
+9. Recommendation 하나에는 최대 하나의 Pending Decision이 존재한다.
+10. Recommendation reconsideration 시 Active + Pending Decision을 동시에 유지하지 않는다.
+11. Actual Trading execution state는 Orion의 Decision lifecycle에 포함하지 않는다.
+12. Current state는 가능한 경우 mutable pointer/status가 아니라 lifecycle과 lineage에서 도출한다.
+13. 모든 중요한 변경은 provenance를 유지한다.
+14. Supersedes lineage는 cycle을 가질 수 없다.
+15. Invalidates 및 Correction도 Immutable provenance를 유지한다.
+
+---
+
+# Decision Traceability
+
+이번 D.1–D.2 설계 결정은 Review Session의 개별 결정 번호를 통해 추적한다.
+
+Review Session 결정 번호는 permanent Decision ID가 아니다.
+Permanent architectural record는 본 Decision Log에 기록된 D-xxx Decision과 해당 결정 블록이다.
+
+현재 확인된 Review Session 결정 범위:
+
+* D.1-54 ~ D.1-67: Review / Recommendation / Decision lifecycle 및 provenance
+* D.2-01 ~ D.2-10: Review / Decision 기본 lifecycle
+* D.2-11 ~ D.2-46: Decision lifecycle, Outcome, Conditions, Actual Trading boundary
+* D.2-47 ~ D.2-80: Note, Relation, Supersedes, Invalidates 구조
+* D.2-81: Invalidates Supersedes / Correction lifecycle 관련 결정
+* D.2-84 ~ D.2-100: Invalidates Supersedes Correction 및 deterministic validity
+
+D.2-82 및 D.2-83은 현재 Decision Review 기록에서 원문 결정 내용을 복구하지 못했으므로 본 Log에서는 의미를 추정하지 않는다.
+
+해당 결정이 실제로 존재하고 구현 또는 문서 정합성에 영향을 주는 것으로 확인될 경우, 원래 Review 기록을 복구한 후 별도로 보완한다.
+
+개별 Review Session 결정과 본 Decision Log의 permanent record 사이에 불일치가 발견될 경우, 추정으로 수정하지 않고 provenance를 확인한 후 정정한다.
+
+---
+
+# Consequences
+
+이 결정으로 Orion의 Decision Review 모델은 다음 특성을 갖는다.
+
+* Append-only history
+* Immutable Recommendation
+* Immutable User Decision
+* Explicit Review Record
+* Explicit provenance
+* Recommendation–Decision lineage
+* Supersedes lineage
+* Invalidates lineage
+* Correction lineage
+* Deterministic current-state derivation
+
+향후 구현에서는 이 규칙을 임의로 단순화하거나 mutable status/pointer로 대체하지 않는다.
+
+구현상 불가피한 변경이 필요한 경우 새로운 Decision Record를 생성하여 본 결정과의 관계를 명시한다.
+
+---

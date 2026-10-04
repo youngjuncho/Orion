@@ -14,7 +14,21 @@ docs/05_Decisions/
 
 and all affected Framework / Research / Implementation documents must be updated.
 
+When a decision is made, it must be promoted to the appropriate permanent record under:
+
+```text
+docs/05_Decisions/
+```
+
+The permanent record is the Decision Log and, where required, a dedicated decision document.
+
+All affected Framework / Research / Implementation documents must then be updated.
+
 > **Review identifies decisions. `05_Decisions` preserves decisions.**
+
+The Decision Queue is a working queue, not the authoritative historical record.
+
+Once a decision has been promoted and its affected documentation has been reconciled, the corresponding queue item may be marked `DECIDED`.
 
 ---
 
@@ -766,16 +780,38 @@ OPEN
   ↓
 Human Decision
   ↓
-05_Decisions/ADR-xxx.md
+Permanent Decision Record
+  ↓
+05_Decisions/Decision_Log.md
   ↓
 Affected Research / Framework / Implementation docs
   ↓
 Decision Queue = DECIDED
-  ↓
-Codex implementation
 ```
 
+The Decision Log is the authoritative historical record of material Orion decisions.
+
+A dedicated decision document may be created when the decision requires substantial supporting specification, but it does not replace the permanent Decision Log entry.
+
 The Decision Queue is not the permanent record.
+
+A queue item must not be considered fully promoted merely because a preferred option was identified. The human decision must first be confirmed.
+
+For decisions made during a structured Decision Review session:
+
+```text
+Review Decision
+  ↓
+Confirmed by User
+  ↓
+Recorded in Decision Log
+  ↓
+Affected documents reconciled
+  ↓
+Queue item = DECIDED
+```
+
+Review-session identifiers such as `D.1-54` or `D.2-100` are traceability identifiers within the review process. They are not substitutes for the permanent Decision Log record.
 
 ---
 
@@ -833,29 +869,62 @@ by making an implicit decision.
 
 # 21. Exit Criteria
 
-This Decision Queue can be considered cleared for the Moon MVP when:
+This Decision Queue can be considered cleared for the current Moon MVP decision scope when all decisions required for the immediate implementation slice have either:
+
+1. been resolved and promoted to the permanent Decision Log, or
+2. been explicitly deferred because they do not block the current implementation slice.
+
+Current status:
 
 ```text
 [x] DQ-MOON-001 portfolio contract resolved (D-027)
-[ ] DQ-ADM-001 defensive signal asset selected (signal/execution split is decided)
+
+[x] DQ-MOON-002 strategy activation semantics resolved (D-026)
+
 [x] DQ-ADM-002 total-return methodology resolved (D-028)
+
 [x] DQ-ADM-003 dividend handling resolved (D-028)
-[ ] DQ-ADM-004 concrete VTI/VEU mappings approved (mapping policy is decided)
-[x] DQ-MOON-002 activation semantics resolved (D-026)
+
+[ ] DQ-ADM-001 defensive asset / execution mapping requires documentation reconciliation
+
+[ ] DQ-ADM-004 concrete execution mappings require documentation reconciliation
+
 [ ] ADM market-observation timing, freshness, and missing-data contract specified
+
+[ ] DQ-DOMAIN-001 canonical domain model mapping
+
+[ ] DQ-RUNTIME-001 runtime lifecycle contract
+
+[ ] DQ-RUNTIME-002 event semantics
+
+[ ] DQ-AURORA-001 Aurora scoring
+
+[ ] DQ-SUPERNOVA-001 Supernova company evaluation
+
+[ ] DQ-PHOENIX-001 Phoenix leadership evaluation
 ```
 
-After that:
+The unchecked items above do not all block the current Moon MVP.
+
+The immediate implementation boundary remains:
 
 ```text
-05_Decisions
+Permanent Decisions
         ↓
-Moon Implementation Specification
+Implementation-ready specification
         ↓
-Codex
+Moon / ADM vertical slice
         ↓
-Moon End-to-End MVP
+Validation
+        ↓
+Codex implementation
 ```
+
+Decision Review work outside the current implementation boundary must not be treated as a Moon MVP blocker unless a direct dependency is demonstrated.
+
+D.1–D.2 Decision Review and Decision Lifecycle rules are considered resolved and are now preserved in `05_Decisions/Decision_Log.md`.
+
+Their implementation impact should be handled when the corresponding Decision Review domain is implemented. They do not by themselves block the current Moon MVP.
 
 ---
 
