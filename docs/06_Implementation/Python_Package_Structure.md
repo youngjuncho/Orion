@@ -48,6 +48,12 @@ logic belongs under `src/orion/frameworks/<framework>`. The `src/data`
 package contains normalized data contracts only and must not contain
 investment logic.
 
+The current data contracts are `MarketDataPoint` for one typed observation
+and `MarketDataSet` for a duplicate-free batch with an `as_of` value. They
+validate scalar value and metadata types and preserve immutable snapshots.
+They do not define source adapters, freshness, missing-observation policy, or
+market-data persistence.
+
 ---
 
 # Current Responsibilities

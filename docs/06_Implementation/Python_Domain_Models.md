@@ -64,6 +64,16 @@ rebalance date, and caller-supplied status. The status is an opaque non-empty
 label because the implementation documents do not define an allowed status
 vocabulary.
 
+## Data Contracts
+
+| Contract | Python Class | Boundary |
+|---|---|---|
+| Normalized observation | `data.contracts.MarketDataPoint` | Typed scalar value and string metadata; immutable metadata snapshot |
+| Observation batch | `data.contracts.MarketDataSet` | Unique observation identities, `as_of` label, immutable observation tuple |
+
+These contracts do not determine source-specific fields, observation
+freshness, missing-data behavior, or collection/normalization services.
+
 ---
 
 # Framework

@@ -456,9 +456,14 @@ Major
 
 Current State:
 
-The data layer now exposes immutable contracts for normalized observations and validated input batches.
+The data layer exposes immutable `MarketDataPoint` and `MarketDataSet`
+contracts. They validate scalar observation and string metadata types, reject
+duplicate identities, and snapshot their inputs. Source-specific fields,
+freshness, missing-data behavior, collection, and persistence remain
+unspecified or unimplemented.
 
-It still has no data collection, normalization pipeline, persistence, or source-specific adapters.
+No data collection, normalization pipeline, persistence, or source-specific
+adapters are implemented.
 
 Recommended Next Step:
 
