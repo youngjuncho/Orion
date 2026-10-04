@@ -34,3 +34,19 @@ def test_event_rejects_unsupported_severity() -> None:
 def test_event_rejects_empty_required_fields() -> None:
     with pytest.raises(ValueError, match="event_id"):
         Event("", "2026-08-01", "Moon", "State Updated", "Moon", "Portfolio", "A", "B", "Notice")
+
+
+def test_event_rejects_non_string_metadata_values() -> None:
+    with pytest.raises(ValueError, match="metadata keys and values"):
+        Event(
+            "event-001",
+            "2026-08-01",
+            "Moon",
+            "State Updated",
+            "Moon",
+            "Portfolio",
+            "A",
+            "B",
+            "Notice",
+            metadata={"attempt": 1},  # type: ignore[dict-item]
+        )

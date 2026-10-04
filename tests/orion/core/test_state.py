@@ -25,3 +25,21 @@ def test_state_snapshot_rejects_unsupported_system_status() -> None:
 def test_state_snapshot_rejects_empty_identity_fields() -> None:
     with pytest.raises(ValueError, match="execution_id"):
         OrionStateSnapshot("2026-08-01", "", "1.0")
+
+
+def test_state_snapshot_rejects_invalid_map_values_and_snapshots_inputs() -> None:
+    with pytest.raises(ValueError, match="framework_states"):
+        OrionStateSnapshot(
+            "2026-08-01",
+            "execution-001",
+            "1.0",
+            framework_states={"Moon": 1},  # type: ignore[dict-item]
+        )
+
+    framework_states = {"Moon": "Risk On"}
+    snapshot = OrionStateSnapshot(
+        "2026-08-01", "execution-002", "1.0", framework_states=framework_states
+    )
+    framework_states["Moon"] = "Risk Off"
+
+    assert snapshot.framework_states["Moon"] == "Risk On"

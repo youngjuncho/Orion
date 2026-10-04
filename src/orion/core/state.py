@@ -26,11 +26,28 @@ class OrionStateSnapshot:
             ("execution_id", self.execution_id),
             ("orion_version", self.orion_version),
         ):
-            if not value.strip():
-                raise ValueError(f"{name} must not be empty")
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(f"{name} must be a non-empty string")
 
-        if self.system_status not in SYSTEM_STATUSES:
+        if (
+            not isinstance(self.system_status, str)
+            or self.system_status not in SYSTEM_STATUSES
+        ):
             raise ValueError(f"unsupported system status: {self.system_status}")
 
-        object.__setattr__(self, "framework_states", MappingProxyType(dict(self.framework_states)))
-        object.__setattr__(self, "portfolio_state", MappingProxyType(dict(self.portfolio_state)))
+        for name, values in (
+            ("framework_states", self.framework_states),
+            ("portfolio_state", self.portfolio_state),
+        ):
+            if not isinstance(values, Mapping):
+                raise ValueError(f"{name} must be a mapping")
+            snapshot = dict(values)
+            if any(
+                not isinstance(key, str)
+                or not key.strip()
+                or not isinstance(value, str)
+                or not value.strip()
+                for key, value in snapshot.items()
+            ):
+                raise ValueError(f"{name} must contain non-empty string keys and values")
+            object.__setattr__(self, name, MappingProxyType(snapshot))

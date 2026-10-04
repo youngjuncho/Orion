@@ -42,12 +42,31 @@ class Event:
             ("current_state", self.current_state),
             ("severity", self.severity),
         ):
-            if not value.strip():
-                raise ValueError(f"{name} must not be empty")
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(f"{name} must be a non-empty string")
+
+        for name, value in (
+            ("related_decision", self.related_decision),
+            ("related_review", self.related_review),
+        ):
+            if value is not None and (
+                not isinstance(value, str) or not value.strip()
+            ):
+                raise ValueError(f"{name} must be a non-empty string when provided")
+        if not isinstance(self.description, str):
+            raise ValueError("description must be a string")
 
         if self.category not in EVENT_CATEGORIES:
             raise ValueError(f"unsupported event category: {self.category}")
         if self.severity not in EVENT_SEVERITIES:
             raise ValueError(f"unsupported event severity: {self.severity}")
 
-        object.__setattr__(self, "metadata", MappingProxyType(dict(self.metadata)))
+        if not isinstance(self.metadata, Mapping):
+            raise ValueError("metadata must be a mapping")
+        metadata = dict(self.metadata)
+        if any(
+            not isinstance(key, str) or not isinstance(value, str)
+            for key, value in metadata.items()
+        ):
+            raise ValueError("metadata keys and values must be strings")
+        object.__setattr__(self, "metadata", MappingProxyType(metadata))

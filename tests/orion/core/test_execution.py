@@ -24,3 +24,16 @@ def test_execution_metadata_rejects_negative_duration() -> None:
 def test_execution_metadata_rejects_empty_required_field() -> None:
     with pytest.raises(ValueError, match="start_time"):
         ExecutionMetadata("execution-001", "", "1.0")
+
+
+@pytest.mark.parametrize("duration", [True, float("nan"), float("inf"), "2"])
+def test_execution_metadata_rejects_invalid_duration_type_or_value(
+    duration: object,
+) -> None:
+    with pytest.raises(ValueError, match="duration_seconds"):
+        ExecutionMetadata(
+            "execution-001",
+            "2026-08-01",
+            "1.0",
+            duration_seconds=duration,  # type: ignore[arg-type]
+        )
