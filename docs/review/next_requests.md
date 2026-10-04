@@ -17,11 +17,8 @@ Date: 2026-09-06
 대상 문서: `docs/03_Research/Moon/ADM/ADM_Orion.md`
 
 - [ ] OI-001: 방어자산 결정 — SGOV / BIL / SHY 중 선택
-- [ ] OI-002: 12개월 수익률 계산 방식 결정
-  - 조정가격을 total-return proxy로 사용할지
-  - 가격수익률만 사용할지
-  - 배당을 직접 재구성할지
-- [ ] OI-003: 배당 처리 책임 결정
+- [x] OI-002: 12개월 수익률 계산 방식 결정 — D-028에서 adjusted-price total-return proxy로 확정
+- [x] OI-003: 배당 처리 책임 결정 — D-028에서 data layer의 adjusted-price normalization으로 확정
   - 데이터 정규화 계층에서 처리
   - ADM 전략 내부에서 처리
 - [ ] 평가일, `data_as_of`, 실행일, 결측 데이터 처리 규칙 확정
@@ -51,11 +48,11 @@ Date: 2026-09-06
 
 대상 문서: `docs/06_Implementation/Moon_Object_Model.md`
 
-- [ ] Current Holdings의 의미 확정
-- [ ] Target Holdings가 매핑 전인지 후인지 확정
-- [ ] RebalancePlan의 필드 확정
-- [ ] ExecutionOrder가 실제 주문인지 수동 실행용 추천 목록인지 확정
-- [ ] share count / 금액 / order type을 포함할지 결정
+- [x] Current Holdings는 PortfolioSnapshot으로 분리 (D-027)
+- [x] Target은 실행자산 mapping 후 PortfolioTarget으로 정의 (D-027)
+- [x] RebalancePlan은 target과 snapshot 차이로 정의 (D-027); 상세 필드는 후속 범위
+- [x] ExecutionOrder는 실제 주문 단위로 정의 (D-027); brokerage 실행은 MVP 제외
+- [x] share count / 금액 / order type은 MVP에서 제외 (D-027)
 
 ---
 
