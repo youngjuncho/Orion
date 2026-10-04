@@ -19,6 +19,12 @@ def test_score_rejects_out_of_range_value() -> None:
         Score(-1)
 
 
+@pytest.mark.parametrize("value", [True, 1.5])
+def test_score_rejects_non_integer_values(value: object) -> None:
+    with pytest.raises(ValueError, match="integer"):
+        Score(value)  # type: ignore[arg-type]
+
+
 def test_core_models_are_immutable() -> None:
     card = DashboardCard(
         entity_name="Aurora",
@@ -44,3 +50,12 @@ def test_regime_uses_score_confidence() -> None:
     regime = Regime("Risk On", "Improving", Score(88))
 
     assert regime.confidence.band == ScoreBand.STRONG
+
+
+def test_core_models_reject_missing_required_text_and_wrong_nested_types() -> None:
+    with pytest.raises(ValueError, match="name"):
+        State("  ")
+    with pytest.raises(ValueError, match="confidence"):
+        Regime("Risk On", "Improving", "high")  # type: ignore[arg-type]
+    with pytest.raises(ValueError, match="score"):
+        DashboardCard("Aurora", 70, State("Risk On"), "Stable", "today")  # type: ignore[arg-type]

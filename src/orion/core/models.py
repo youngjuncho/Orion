@@ -31,6 +31,8 @@ class Score:
     value: int
 
     def __post_init__(self) -> None:
+        if not isinstance(self.value, int) or isinstance(self.value, bool):
+            raise ValueError("score value must be an integer")
         if not SCORE_MIN <= self.value <= SCORE_MAX:
             raise ValueError("score value must be between 0 and 100 inclusive")
 
@@ -59,6 +61,9 @@ class State:
 
     name: str
 
+    def __post_init__(self) -> None:
+        _validate_non_empty_strings(name=self.name)
+
 
 @dataclass(frozen=True)
 class Regime:
@@ -67,6 +72,11 @@ class Regime:
     name: str
     direction: str
     confidence: Score
+
+    def __post_init__(self) -> None:
+        _validate_non_empty_strings(name=self.name, direction=self.direction)
+        if not isinstance(self.confidence, Score):
+            raise ValueError("confidence must be a Score")
 
 
 @dataclass(frozen=True)
@@ -80,6 +90,17 @@ class ReviewRecord:
     outcome: str
     notes: str = ""
 
+    def __post_init__(self) -> None:
+        _validate_non_empty_strings(
+            date=self.date,
+            framework=self.framework,
+            entity=self.entity,
+            review_type=self.review_type,
+            outcome=self.outcome,
+        )
+        if not isinstance(self.notes, str):
+            raise ValueError("notes must be a string")
+
 
 @dataclass(frozen=True)
 class DecisionRecord:
@@ -92,6 +113,16 @@ class DecisionRecord:
     title: str
     description: str
 
+    def __post_init__(self) -> None:
+        _validate_non_empty_strings(
+            decision_id=self.decision_id,
+            date=self.date,
+            status=self.status,
+            category=self.category,
+            title=self.title,
+            description=self.description,
+        )
+
 
 @dataclass(frozen=True)
 class DashboardCard:
@@ -102,3 +133,20 @@ class DashboardCard:
     state: State
     trend: str
     last_updated: str
+
+    def __post_init__(self) -> None:
+        _validate_non_empty_strings(
+            entity_name=self.entity_name,
+            trend=self.trend,
+            last_updated=self.last_updated,
+        )
+        if not isinstance(self.score, Score):
+            raise ValueError("score must be a Score")
+        if not isinstance(self.state, State):
+            raise ValueError("state must be a State")
+
+
+def _validate_non_empty_strings(**values: str) -> None:
+    for name, value in values.items():
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"{name} must be a non-empty string")
