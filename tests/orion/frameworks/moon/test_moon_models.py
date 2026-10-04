@@ -58,6 +58,44 @@ def test_moon_models_reject_invalid_required_values() -> None:
     with pytest.raises(ValueError, match="unique"):
         StrategyResult("ADM", ("SPY", "SPY"), (0.5, 0.5), "2026-07-26")
 
+    with pytest.raises(ValueError, match="weights"):
+        StrategyResult("ADM", ["SPY"], ["invalid"], "2026-07-26")  # type: ignore[arg-type]
+
+
+def test_moon_models_snapshot_mutable_collection_inputs() -> None:
+    assets = ["SPY"]
+    weights = [1.0]
+    metadata = {"source": "fixture"}
+    result = StrategyResult("ADM", assets, weights, "2026-07-26", metadata=metadata)
+    allocation = Allocation("SPY", 1.0)
+    holdings = [allocation]
+    portfolio = Portfolio(holdings, "2026-08-31")
+    portfolio_allocations = [allocation]
+    strategy_results = [result]
+    report = MoonReport(
+        portfolio_allocations,
+        holdings,
+        "2026-08-31",
+        strategy_results,
+        "SPY",
+        "Stable",
+        "Neutral",
+    )
+    assets.clear()
+    weights.clear()
+    metadata["source"] = "changed"
+    holdings.clear()
+    portfolio_allocations.clear()
+    strategy_results.clear()
+
+    assert result.selected_assets == ("SPY",)
+    assert result.weights == (1.0,)
+    assert result.metadata["source"] == "fixture"
+    assert portfolio.current_holdings == (allocation,)
+    assert report.current_holdings == (allocation,)
+    assert report.portfolio_allocation == (allocation,)
+    assert report.strategy_summary == (result,)
+
 
 def test_adm_selects_relative_momentum_winner_when_absolute_momentum_is_positive() -> None:
     result = ADMStrategy("SGOV").generate_result(
