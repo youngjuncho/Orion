@@ -4,7 +4,7 @@ Version: 0.1
 
 Status: Draft
 
-Last Updated: 2026-06-22
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -251,73 +251,31 @@ Leader Score declining.
 
 ---
 
-# Replacement Risk
+# Replacement Risk and Leadership State
 
-Measures probability of leadership change.
+Replacement Risk is derived from the score gap between the current Leader and Primary Challenger.
 
-Range:
+Score Gap:
 
-0-100
+Leader Score - Challenger Score
 
----
+The canonical mapping is:
 
-## Dominant
+| Score Gap | Replacement Risk | Leadership State | Action |
+|---|---|---|---|
+| 20+ | Low | Dominant | Hold |
+| 10-19 | Medium | Stable | Monitor |
+| 0-9 | High | Competitive | Review |
+| Challenger exceeds Leader | Critical | Transition | Review Required |
 
-0-20
+`Disrupted` is not a separate score-gap band. It is the terminal leadership state used when the Promotion Rule has been satisfied and the challenger is formally confirmed as the new leader.
 
-Leader secure.
+For a Disrupted state:
 
-Action:
+- Replacement Risk remains Critical until the new leader is formally recorded.
+- Action: Rebalance Candidate.
 
-Hold
-
----
-
-## Stable
-
-21-40
-
-Minor challenger pressure.
-
-Action:
-
-Monitor
-
----
-
-## Competitive
-
-41-60
-
-Meaningful challenger pressure.
-
-Action:
-
-Review
-
----
-
-## Transition
-
-61-80
-
-Leadership transition possible.
-
-Action:
-
-Review Required
-
----
-
-## Disrupted
-
-81-100
-
-Leadership transition likely.
-
-Action:
-
-Rebalance Candidate
+No production-facing Phoenix document may introduce a second risk/state vocabulary or a conflicting numeric mapping.
 
 ---
 
@@ -333,43 +291,9 @@ minus
 
 Challenger Score
 
----
+The score-gap mapping above is authoritative.
 
-Gap
-
-20+
-
-Risk:
-
-Low
-
----
-
-Gap
-
-10-19
-
-Risk:
-
-Medium
-
----
-
-Gap
-
-0-9
-
-Risk:
-
-High
-
----
-
-Challenger exceeds leader
-
-Risk:
-
-Critical
+The worked examples in Phoenix_Scoring_Framework.md and Phoenix_Operating_Model.md must use the same mapping.
 
 ---
 
@@ -474,7 +398,11 @@ Replacement Risk methodology.
 
 Status:
 
-Open
+Closed
+
+Resolution:
+
+Resolved by D-035. Phoenix now uses one canonical score-gap, Replacement Risk, and Leadership State mapping across production-facing documentation.
 
 ---
 

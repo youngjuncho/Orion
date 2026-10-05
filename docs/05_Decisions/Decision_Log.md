@@ -1611,3 +1611,204 @@ D.2-82 및 D.2-83은 현재 Decision Review 기록에서 원문 결정 내용을
 구현상 불가피한 변경이 필요한 경우 새로운 Decision Record를 생성하여 본 결정과의 관계를 명시한다.
 
 ---
+
+---
+
+## D-031 — Phoenix Production Category Set
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Phoenix
+
+### Decision
+
+Phoenix production portfolio construction shall use exactly five production-eligible categories:
+
+* Smart Contract Platforms
+* Oracle Networks
+* Real World Assets
+* AI Infrastructure
+* Data Availability
+
+Store of Value remains outside Phoenix under D-021.
+
+The remaining documented categories are retained for research/reference purposes but are not production eligible unless separately approved.
+
+### Rationale
+
+The runtime configuration already operates on these five categories. Explicit production eligibility separates the operational portfolio universe from the broader research category framework.
+
+### Consequences
+
+Category `Status` and `Production Eligible` are separate dimensions.
+
+Changes to the production category set require a new Decision Log entry before implementation.
+
+---
+
+## D-032 — Phoenix Multi-Category Membership and Unique-Asset Portfolio Construction
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Phoenix
+
+### Decision
+
+Phoenix permits an asset to belong to multiple categories.
+
+Category roles are evaluated independently. The same asset may be a Leader in one category and a Challenger or Watchlist asset in another.
+
+Portfolio construction operates on unique assets. The same asset may appear only once in the Phoenix portfolio even when it has roles in multiple categories.
+
+### Example
+
+RENDER
+
+* DePIN → Leader
+* AI Infrastructure → Challenger
+
+Portfolio:
+
+RENDER → one position maximum
+
+### Rationale
+
+Category leadership and portfolio identity are separate concepts. Multi-category membership preserves analytical fidelity without creating duplicate portfolio positions.
+
+---
+
+## D-033 — Phoenix Judgment-Assisted-by-Metrics Scoring Model
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Phoenix
+
+### Decision
+
+Phoenix scoring shall remain a judgment-assisted-by-metrics model rather than a fully formula-driven quantitative model.
+
+Each 0–10 scoring dimension shall use qualitative anchors. Reviewers shall retain the principal evidence supporting each assigned score.
+
+Raw metrics may inform the assessment but shall not mechanically determine the score unless a separate metric-to-score rule is explicitly approved.
+
+### Minimum Review Record
+
+Each reviewed score should record:
+
+* Score
+* Evidence
+* Assessment
+* Review Date
+
+### Rationale
+
+The existing 0–10 ranges are useful for structured comparison, but the current framework does not define sufficiently reproducible metric-to-score formulas. Requiring full automation at this stage would create false precision and unnecessary implementation scope.
+
+---
+
+## D-034 — Phoenix Approved Leaders Registry
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Phoenix
+
+### Decision
+
+Phoenix shall maintain `Phoenix_Approved_Leaders_v1.md` as the authoritative registry of current category leadership decisions.
+
+The registry is separate from:
+
+* Category definitions
+* Leader-selection methodology
+* Scoring methodology
+* Runtime configuration
+
+The current five configuration leaders are recorded as Provisional until explicit approval evidence is documented.
+
+### Current Provisional Leaders
+
+* Smart Contract Platforms → SOL
+* Oracle Networks → LINK
+* Real World Assets → ONDO
+* AI Infrastructure → TAO
+* Data Availability → TIA
+
+Only Approved leaders are eligible for formal Phoenix portfolio construction under D-022.
+
+Configuration membership alone does not constitute approval evidence.
+
+---
+
+## D-035 — Phoenix Canonical Replacement Risk and Leadership State Mapping
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Phoenix
+
+### Decision
+
+Phoenix shall use one canonical Replacement Risk and Leadership State mapping across all production-facing documentation.
+
+Replacement Risk is derived from:
+
+```text
+Score Gap = Leader Score − Challenger Score
+```
+
+Canonical mapping:
+
+| Score Gap | Replacement Risk | Leadership State | Action |
+|---|---|---|---|
+| 20+ | Low | Dominant | Hold |
+| 10–19 | Medium | Stable | Monitor |
+| 0–9 | High | Competitive | Review |
+| Challenger exceeds Leader | Critical | Transition | Review Required |
+
+`Disrupted` is a confirmed transition state used when the Promotion Rule has been satisfied and the challenger is formally confirmed as the new leader. It is not a separate score-gap band.
+
+The worked examples in Phoenix documentation must use this mapping literally.
+
+### Rationale
+
+The previous documents contained incompatible risk/state vocabularies and an example that translated `Gap 6 → High Risk` into `Transition` without a defined rule. This decision removes that ambiguity and makes the score-gap calculation, risk, state, and action deterministic.
+

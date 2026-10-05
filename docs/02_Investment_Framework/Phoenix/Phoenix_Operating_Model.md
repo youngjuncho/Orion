@@ -4,7 +4,7 @@ Version: 0.2
 
 Status: Draft
 
-Last Updated: 2026-06-21
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -147,75 +147,19 @@ SUI
 
 # Leadership States
 
-## Dominant
+Leadership State is derived from the canonical Replacement Risk mapping in Phoenix_Leader_Framework.md.
 
-Leader strongly maintains ecosystem leadership.
+| Leadership State | Replacement Risk | Condition | Action |
+|---|---|---|---|
+| Dominant | Low | Score Gap 20+ | Hold |
+| Stable | Medium | Score Gap 10–19 | Monitor |
+| Competitive | High | Score Gap 0–9 | Review |
+| Transition | Critical | Challenger exceeds Leader | Review Required |
+| Disrupted | Critical | Promotion Rule satisfied; leadership replacement confirmed | Rebalance Candidate |
 
-Replacement Risk:
+`Disrupted` is an event-confirmed state rather than a fifth score-gap band.
 
-Very Low
-
-Action:
-
-Hold
-
----
-
-## Stable
-
-Leader remains dominant.
-
-Challenger activity increasing.
-
-Replacement Risk:
-
-Low
-
-Action:
-
-Monitor
-
----
-
-## Competitive
-
-Leader and challenger both gaining traction.
-
-Replacement Risk:
-
-Medium
-
-Action:
-
-Review
-
----
-
-## Transition
-
-Leadership transition becoming possible.
-
-Replacement Risk:
-
-High
-
-Action:
-
-Review Required
-
----
-
-## Disrupted
-
-Leader position no longer secure.
-
-Replacement Risk:
-
-Critical
-
-Action:
-
-Rebalance Candidate
+Price movement alone never changes Leadership State.
 
 ---
 
@@ -325,19 +269,23 @@ Example Portfolio
 
 SOL
 
-25%
+20%
 
 LINK
 
-25%
+20%
 
 TAO
 
-25%
+20%
 
 ONDO
 
-25%
+20%
+
+TIA
+
+20%
 
 ---
 
@@ -393,13 +341,15 @@ Approved Leaders:
 * LINK
 * TAO
 * ONDO
+* TIA
 
 Allocation:
 
-* SOL = 25%
-* LINK = 25%
-* TAO = 25%
-* ONDO = 25%
+* SOL = 20%
+* LINK = 20%
+* TAO = 20%
+* ONDO = 20%
+* TIA = 20%
 
 ---
 
@@ -503,7 +453,11 @@ Final leader selection methodology.
 
 Status:
 
-Open
+Closed
+
+Resolution:
+
+Leader selection is governed by the Phoenix Leader and Scoring Frameworks; current leadership state is recorded in the Approved Leaders Registry.
 
 ---
 
@@ -513,7 +467,11 @@ Replacement Risk scoring framework.
 
 Status:
 
-Open
+Closed
+
+Resolution:
+
+The canonical score-gap and Leadership State mapping is defined in Phoenix_Leader_Framework.md.
 
 ---
 
@@ -533,7 +491,11 @@ Category approval process.
 
 Status:
 
-Open
+Closed
+
+Resolution:
+
+Production eligibility is explicitly recorded per category in Phoenix_Category_Framework.md.
 
 ---
 

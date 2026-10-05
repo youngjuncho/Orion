@@ -4,7 +4,7 @@ Version: 0.2
 
 Status: Draft
 
-Last Updated: 2026-06-22
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -82,6 +82,10 @@ Status:
 
 Reference Only
 
+Production Eligible:
+
+No
+
 Notes:
 
 Store of Value assets are monitored for ecosystem awareness but are outside Phoenix portfolio construction.
@@ -131,6 +135,10 @@ Status:
 
 Competitive
 
+Production Eligible:
+
+Yes
+
 Reference:
 
 D-021
@@ -167,6 +175,10 @@ Status:
 
 Established
 
+Production Eligible:
+
+Yes
+
 ---
 
 ## Category 4
@@ -200,6 +212,10 @@ Status:
 
 Research
 
+Production Eligible:
+
+No
+
 ---
 
 ## Category 5
@@ -231,6 +247,10 @@ Watchlist:
 Status:
 
 Emerging
+
+Production Eligible:
+
+Yes
 
 ---
 
@@ -264,6 +284,10 @@ Status:
 
 Emerging
 
+Production Eligible:
+
+Yes
+
 ---
 
 ## Category 7
@@ -295,6 +319,10 @@ None
 Status:
 
 Emerging
+
+Production Eligible:
+
+Yes
 
 ---
 
@@ -330,6 +358,10 @@ Status:
 
 Emerging
 
+Production Eligible:
+
+No
+
 ---
 
 ## Category 9
@@ -361,6 +393,10 @@ None
 Status:
 
 Established
+
+Production Eligible:
+
+No
 
 ---
 
@@ -394,6 +430,10 @@ Status:
 
 Research
 
+Production Eligible:
+
+No
+
 ---
 
 # Leadership States
@@ -421,7 +461,11 @@ States:
 
 # Portfolio Eligibility
 
-Only approved category leaders are eligible for portfolio inclusion.
+Production eligibility is a separate dimension from Category Status.
+
+`Status` describes the category's ecosystem/research condition. `Production Eligible` determines whether the category participates in Phoenix portfolio construction.
+
+Only approved category leaders from Production Eligible categories are eligible for portfolio inclusion.
 
 Primary challengers and watchlist assets are monitored but are not eligible for portfolio inclusion.
 
@@ -430,6 +474,20 @@ Reference:
 D-022
 
 ---
+
+# Multi-Category Rule
+
+An asset may belong to multiple categories and may have different roles in each category.
+
+Example:
+
+RENDER
+  DePIN → Leader
+  AI Infrastructure → Challenger
+
+Category roles are evaluated independently.
+
+Portfolio construction operates on unique assets: the same asset may appear only once in the Phoenix portfolio even if it has roles in multiple categories.
 
 # Governance Rules
 
@@ -455,7 +513,11 @@ Final category list approval.
 
 Status:
 
-Open
+Closed
+
+Resolution:
+
+Phoenix production construction is currently limited to Smart Contract Platforms, Oracle Networks, Real World Assets, AI Infrastructure, and Data Availability.
 
 ---
 
@@ -470,7 +532,11 @@ Examples:
 
 Status:
 
-Open
+Closed
+
+Resolution:
+
+Multi-category membership is allowed. Roles are evaluated independently by category, while portfolio construction operates on unique assets.
 
 ---
 
@@ -481,6 +547,10 @@ Category scoring methodology.
 Status:
 
 Open
+
+Resolution:
+
+Scoring methodology is governed by Phoenix_Scoring_Framework.md; quantitative automation remains an open implementation question.
 
 ---
 

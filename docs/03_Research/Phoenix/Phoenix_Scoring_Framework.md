@@ -4,7 +4,7 @@ Version: 0.1
 
 Status: Draft
 
-Last Updated: 2026-06-22
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -27,11 +27,13 @@ Scores are used to determine:
 
 # Scoring Philosophy
 
-The objective is not precision.
+The objective is not false precision.
 
-The objective is consistency.
+Phoenix scoring is judgment-assisted-by-metrics rather than a fully formula-driven quantitative model.
 
-A repeatable scoring process is preferred over a complex model.
+A repeatable scoring process is preferred over a complex model. Raw metrics inform the assessment but do not mechanically determine the score unless a separate metric-to-score rule has been explicitly approved.
+
+Each 0-10 scoring dimension uses qualitative anchors. Reviewers must retain the principal evidence supporting the assigned score.
 
 ---
 
@@ -81,6 +83,14 @@ Maximum:
 
 0-10
 
+Qualitative Score Anchors:
+
+* 0-2: Very Weak
+* 3-4: Weak
+* 5-6: Moderate
+* 7-8: Strong
+* 9-10: Exceptional
+
 Examples:
 
 * Active addresses
@@ -92,6 +102,14 @@ Examples:
 ## Network Utilization
 
 0-10
+
+Qualitative Score Anchors:
+
+* 0-2: Very Weak
+* 3-4: Weak
+* 5-6: Moderate
+* 7-8: Strong
+* 9-10: Exceptional
 
 Examples:
 
@@ -132,6 +150,14 @@ Maximum:
 
 0-10
 
+Qualitative Score Anchors:
+
+* 0-2: Very Weak
+* 3-4: Weak
+* 5-6: Moderate
+* 7-8: Strong
+* 9-10: Exceptional
+
 Examples:
 
 * Active developers
@@ -143,6 +169,14 @@ Examples:
 ## Application Ecosystem
 
 0-10
+
+Qualitative Score Anchors:
+
+* 0-2: Very Weak
+* 3-4: Weak
+* 5-6: Moderate
+* 7-8: Strong
+* 9-10: Exceptional
 
 Examples:
 
@@ -183,6 +217,14 @@ Maximum:
 
 0-10
 
+Qualitative Score Anchors:
+
+* 0-2: Very Weak
+* 3-4: Weak
+* 5-6: Moderate
+* 7-8: Strong
+* 9-10: Exceptional
+
 Examples:
 
 * Protocol revenue
@@ -193,6 +235,14 @@ Examples:
 ## Economic Efficiency
 
 0-10
+
+Qualitative Score Anchors:
+
+* 0-2: Very Weak
+* 3-4: Weak
+* 5-6: Moderate
+* 7-8: Strong
+* 9-10: Exceptional
 
 Examples:
 
@@ -232,6 +282,14 @@ Maximum:
 
 0-10
 
+Qualitative Score Anchors:
+
+* 0-2: Very Weak
+* 3-4: Weak
+* 5-6: Moderate
+* 7-8: Strong
+* 9-10: Exceptional
+
 Examples:
 
 * Relative performance
@@ -242,6 +300,14 @@ Examples:
 ## Narrative Strength
 
 0-10
+
+Qualitative Score Anchors:
+
+* 0-2: Very Weak
+* 3-4: Weak
+* 5-6: Moderate
+* 7-8: Strong
+* 9-10: Exceptional
 
 Examples:
 
@@ -335,47 +401,31 @@ Score decrease:
 
 # Replacement Risk
 
-Calculated using score gap.
+Calculated using the canonical score-gap mapping defined in Phoenix_Leader_Framework.md.
+
+| Score Gap | Replacement Risk | Leadership State |
+|---|---|---|
+| 20+ | Low | Dominant |
+| 10-19 | Medium | Stable |
+| 0-9 | High | Competitive |
+| Challenger exceeds Leader | Critical | Transition |
+
+When the Promotion Rule is satisfied, the leadership state becomes Disrupted until the replacement is formally recorded.
+
+The worked example below must follow this mapping.
 
 ---
 
-Gap
+# Review Record
 
-20+
+Each reviewed score should record:
 
-Risk:
+* Score
+* Evidence
+* Assessment
+* Review Date
 
-Low
-
----
-
-Gap
-
-10-19
-
-Risk:
-
-Medium
-
----
-
-Gap
-
-0-9
-
-Risk:
-
-High
-
----
-
-Challenger exceeds leader
-
-Risk:
-
-Critical
-
----
+The principal evidence should be sufficient for another reviewer to understand why the score was assigned.
 
 # Monthly Review Process
 
@@ -432,13 +482,13 @@ High
 
 State:
 
-Transition
+Competitive
 
 ---
 
 Action:
 
-Review Required
+Review
 
 ---
 
@@ -464,6 +514,10 @@ Automated scoring sources.
 Status:
 
 Open
+
+Note:
+
+Automation is not required for v1. Raw metrics remain supporting evidence unless an explicit metric-to-score rule is approved.
 
 ---
 
