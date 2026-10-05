@@ -899,9 +899,9 @@ Current status:
 
 [ ] DQ-AURORA-001 Aurora scoring
 
-[ ] DQ-SUPERNOVA-001 Supernova company evaluation
+[x] DQ-SUPERNOVA-001 Supernova company evaluation and governance contract
 
-[ ] DQ-PHOENIX-001 Phoenix leadership evaluation
+[x] DQ-PHOENIX-001 Phoenix leadership evaluation
 ```
 
 The unchecked items above do not all block the current Moon MVP.

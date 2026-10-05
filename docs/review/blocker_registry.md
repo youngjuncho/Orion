@@ -24,7 +24,7 @@ Date: 2026-09-06
 | B-005 | S | OrionEngine 공개 계약 | 전체 Runtime orchestration | 입력·출력·실패 격리 계약 확정 |
 | B-006 | S | API 오류 계약 | CLI/API 외부 오류 변환 | 공개 예외와 오류 응답 형식 확정 |
 | B-007 | D/S | Aurora 지표·공식·threshold | Aurora scoring/regime 엔진 | Approved indicator와 계산 규칙 결정 |
-| B-008 | D/S | Supernova/Phoenix review 입력 경로 | 분석 점수 기반 report | 입력 형식·저장·최신 record 규칙 결정 |
+| B-008 | RESOLVED | Supernova/Phoenix review 입력 경로 | 분석 점수 기반 report | Supernova review record, evidence cutoff, governance action vocabulary, and latest-record contract established; Phoenix review already completed |
 | B-009 | S | Framework별 source/freshness 계약 | 데이터 collector | 프레임워크별 데이터 필드와 freshness 확정 |
 
 ## Blocker별 범위

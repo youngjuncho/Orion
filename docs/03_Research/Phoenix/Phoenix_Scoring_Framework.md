@@ -282,7 +282,7 @@ Maximum:
 
 0-10
 
-Qualitative Score Anchors:
+Qualitative Score Anchors-
 
 * 0-2: Very Weak
 * 3-4: Weak

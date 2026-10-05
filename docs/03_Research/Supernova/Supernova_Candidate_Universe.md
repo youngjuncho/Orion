@@ -35,15 +35,11 @@ Candidate Universe
 
 ↓
 
-Leader
+Leadership Evidence
 
 ↓
 
-Challenger
-
-↓
-
-Replacement Risk
+Replacement Risk Assessment
 
 ---
 
@@ -187,7 +183,7 @@ All Approved Companies must originate from the Candidate Universe.
 
 Watchlist monitoring is performed within the Candidate Universe.
 
-Leader and Challenger selection are derived from the Candidate Universe.
+Leader and Challenger assessments are derived from the Candidate Universe, but leadership role does not override Portfolio State. Only Approved companies are eligible for accumulation.
 
 ---
 

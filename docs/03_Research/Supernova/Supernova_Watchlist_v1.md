@@ -1,10 +1,10 @@
 # Supernova Watchlist v1
 
-Version: 1.1
+Version: 1.2
 
 Status: Draft
 
-Last Updated: 2026-06-23
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -33,19 +33,15 @@ Theme
 
 ↓
 
-Leader
+Leader / Approved Company
 
 ↓
 
-Challenger
+Challenger / Watchlist Evidence
 
 ↓
 
-Watchlist
-
-↓
-
-Replacement Risk
+Replacement Risk Assessment
 
 ---
 
@@ -138,7 +134,11 @@ The purpose of the Watchlist is to identify:
 
 * Emerging challengers
 * Theme leadership shifts
-* Increasing replacement risk
+* Evidence relevant to increasing replacement risk
+
+A challenger is not a prerequisite for Replacement Risk escalation. The Watchlist
+supports research and evidence collection; governance determines the final risk
+level and any Replace or Retire action.
 
 ---
 

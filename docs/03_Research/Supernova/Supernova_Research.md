@@ -284,3 +284,29 @@ Supernova_Theme_Framework.md
 Purpose:
 
 Define the structure, evaluation criteria, and investment logic for each Orion 5D theme.
+
+---
+
+# Company Research Record
+
+A company review is preserved as a dated research cycle. The minimum structure is:
+
+```text
+Company
+    ↓
+Review Date
+    ↓
+Five Dimension Reviews
+    ├── Score
+    ├── Evidence
+    ├── Assessment
+    └── Source Provenance
+    ↓
+Company Score
+    ↓
+Governance Review
+```
+
+Each dimension review should identify the evidence used and the assessment derived from it. Source provenance should be retained for material claims so that a later review can distinguish new evidence from a changed judgment.
+
+A research record is evidence of the review process; it is not itself a portfolio action.

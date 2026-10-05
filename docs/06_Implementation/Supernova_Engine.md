@@ -1,10 +1,10 @@
 # Supernova Engine
 
-Version: 1.0
+Version: 1.1
 
 Status: Draft
 
-Last Updated: 2026-07-27
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -44,9 +44,25 @@ The engine consumes:
 
 * Company universe
 * Theme definitions
-* Financial metrics
+* Evidence-backed company score reviews
 * Review records
 * Configuration
+
+Company scoring input follows the approved evidence contract:
+
+```text
+Company Research Record
+    ↓
+Dimension Review
+    ├── Score
+    ├── Evidence
+    ├── Assessment
+    └── Source Provenance
+    ↓
+Company Score
+```
+
+Raw metrics may inform an assessment but do not mechanically determine a score unless a separate governance rule is approved.
 
 ---
 
@@ -58,6 +74,7 @@ The engine produces:
 * Company states
 * Theme summaries
 * Review recommendations
+* Governance review records
 * Dashboard data
 
 ---
@@ -85,24 +102,42 @@ Evaluates:
 
 ## Scoring Engine
 
-Calculates normalized company scores.
+Consumes evidence-backed dimension reviews and produces a normalized company score.
 
 Score Range:
 
 0–100
 
+The Company Score is a governance assessment, not a purchase-timing signal.
+
+## Governance Boundary
+
+Company Score does not automatically assign Portfolio State, Leadership Role, or Replacement Risk. Those outcomes are documented through a Governance Decision.
+
+The engine may validate the shape of a governance result, but it does not invent governance thresholds or approve a transition. Governance decisions must retain: Company Score, Portfolio State, Leadership Role, Replacement Risk, Primary Risk Driver, Action, Rationale, Evidence Summary, Review Date, and Approver.
+
+Score-to-state mappings are intentionally not encoded as automatic thresholds in v1.
+
 ---
 
 ## State Engine
 
-Assigns company states.
+Maintains two separate dimensions:
 
-Examples:
+Portfolio State:
+
+* Approved
+* Watchlist
+* Review Required
+* Retired
+
+Leadership Role:
 
 * Leader
-* Watch
-* Review
-* Replacement Candidate
+* Challenger
+* Candidate
+
+A score may support a transition but does not automatically perform it.
 
 ---
 
@@ -123,9 +158,15 @@ Load Universe
       │
 Evaluate Themes
       │
+Collect / Validate Evidence
+      │
+Assess Dimensions
+      │
 Score Companies
       │
-Assign States
+Governance Review
+      │
+Update States
       │
 Update Watchlists
       │

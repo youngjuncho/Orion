@@ -85,13 +85,32 @@ Theme Evaluation
 
 ## Stage 3
 
+Collect and Assess Evidence
+
+Tasks:
+
+* Collect evidence for each company-scoring dimension
+* Validate evidence provenance
+* Record an evidence-based assessment
+* Preserve review date and source references
+
+Output:
+
+Evidence-backed Dimension Reviews
+
+---
+
+## Stage 4
+
 Score Companies
 
 Tasks:
 
-* Calculate quality metrics
-* Calculate growth metrics
-* Normalize scores
+* Apply the approved qualitative anchors
+* Require all five scoring dimensions
+* Calculate the weighted Company Score using the approved 20/25/25/15/15 weights
+* Do not impute missing dimensions or reweight partial records
+* Preserve the underlying Evidence and Assessment records
 
 Output:
 
@@ -99,51 +118,36 @@ Company Scores
 
 ---
 
-## Stage 4
-
-Assign States
-
-Tasks:
-
-* Evaluate thresholds
-* Update company states
-* Detect transitions
-
-Output:
-
-Company States
-
----
-
 ## Stage 5
 
-Update Watchlists
+Governance Review and State Assignment
 
 Tasks:
 
-* Add candidates
-* Remove obsolete entries
-* Promote approved companies
+* Review Company Score and supporting evidence
+* Evaluate Portfolio State and Leadership Role separately
+* Detect governance-required transitions
 
 Output:
 
-Updated Watchlists
+Governance Review Results
 
 ---
 
 ## Stage 6
 
-Generate Reviews
+Update Watchlists and Generate Reviews
 
 Tasks:
 
+* Update candidates and watchlists after governance review
 * Schedule reviews
 * Produce review records
 * Publish events
 
 Output:
 
-Review Records
+Updated Watchlists and Review Records
 
 ---
 
@@ -196,7 +200,15 @@ ThemeEvaluated
 
 ↓
 
+EvidenceCollected
+
+↓
+
 CompanyScored
+
+↓
+
+GovernanceReviewed
 
 ↓
 

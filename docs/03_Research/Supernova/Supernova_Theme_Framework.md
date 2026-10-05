@@ -1,10 +1,10 @@
 # Supernova Theme Framework
 
-Version: 0.1
+Version: 1.0
 
-Status: Draft
+Status: Approved
 
-Last Updated: 2026-06-22
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -284,7 +284,29 @@ Active
 
 ---
 
-# Theme States
+# Theme Evaluation
+
+Theme evaluation and company evaluation are separate layers.
+
+Theme Health answers:
+
+> Is the underlying 5D structural trend still valid and investable over the long term?
+
+A Theme may be evaluated with a 0-100 Theme Health Score, but the score is an evidence-assisted governance input. It is not a portfolio-weighting signal and is not a purchase-timing signal.
+
+Minimum Theme Evaluation Record:
+
+* Theme
+* Score
+* Evidence
+* Assessment
+* State
+* Trend
+* Review Date
+
+Theme scores shall not be mechanically combined with Company Scores.
+
+## Theme States
 
 Each theme receives one of the following states.
 
@@ -297,6 +319,8 @@ Established
 Mature
 
 Declining
+
+State transitions require documented evidence and governance review. They are not triggered solely by a numeric score threshold.
 
 ---
 
@@ -356,45 +380,15 @@ before implementation.
 
 ---
 
-# Known Open Issues
+# Resolved Governance Issues
 
-OI-611
+OI-611 — Resolved by D-043. Theme Health is an evidence-assisted governance input; exact component weights are not required for v1.
 
-Theme scoring methodology.
+OI-612 — Resolved by D-043. Themes do not receive portfolio allocation weights in v1.
 
-Status:
+OI-613 — Resolved by D-036. Multi-theme membership is permitted and evaluated independently.
 
-Open
-
----
-
-OI-612
-
-Theme weighting methodology.
-
-Status:
-
-Open
-
----
-
-OI-613
-
-Multi-theme company evaluation rules.
-
-Status:
-
-Open
-
----
-
-OI-614
-
-Theme lifecycle transition criteria.
-
-Status:
-
-Open
+OI-614 — Resolved by D-043. Theme lifecycle transitions require evidence and governance review rather than automatic numeric thresholds.
 
 ---
 

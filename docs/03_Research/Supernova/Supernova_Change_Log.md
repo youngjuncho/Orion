@@ -177,6 +177,53 @@ Approved
 
 ---
 
+---
+
+### S-007
+
+Title:
+
+Supernova Replacement Risk Definition Established
+
+Type:
+
+Governance
+
+Summary:
+
+Defined Replacement Risk as an independent governance assessment of the likelihood
+that an Approved Company may need to be replaced or retired. Established four
+assessment axes: Leadership Threat, Moat Deterioration, Growth / Execution
+Deterioration, and Thesis Integrity. Clarified that challenger emergence is not
+required for risk escalation and that risk escalation is a review trigger rather
+than an automatic trade signal.
+
+Status:
+
+Approved
+
+
+## S-009
+
+Supernova Five-Company Baseline Governance Approval
+
+Type:
+
+Governance
+
+Date:
+
+2026-10-05
+
+Summary:
+
+YJ approved the 2026-10-05 governance baseline for NVDA, GOOGL, ISRG, PLTR, and CEG. All five remain Approved + Leader with Continue as the canonical governance action. Replacement Risk remains Low for NVDA, GOOGL, PLTR, and CEG, and Very Low for ISRG.
+
+Status:
+
+Approved
+
+
 # Future Entries
 
 Future framework modifications should be recorded using:

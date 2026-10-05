@@ -1,10 +1,10 @@
 # Supernova Data Sources
 
-Version: 0.1
+Version: 1.1
 
 Status: Draft
 
-Last Updated: 2026-06-22
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -46,19 +46,21 @@ Primary Sources
 
 Priority 2
 
-Financial Data Providers
+Reliable Secondary / Financial Data Sources
 
 ↓
 
 Priority 3
 
-Research Sources
+Analytical Research Sources
 
 ↓
 
 Priority 4
 
-Supplementary Sources
+Contextual / Supplementary Sources
+
+Source priority informs evidence quality; it does not mechanically determine a score. Material assessments should prefer primary evidence and use secondary or analytical sources when they add necessary context or peer comparison.
 
 ---
 
@@ -78,10 +80,11 @@ Examples:
 
 Usage:
 
-* Financial strength
-* Management review
-* Business risks
-* Capital allocation
+* Competitive moat
+* Leadership position
+* Growth quality
+* Execution quality
+* Business risks and capital allocation context
 
 Priority:
 
@@ -103,9 +106,9 @@ Examples:
 
 Usage:
 
-* Strategy review
+* Strategy and execution review
 * Growth initiatives
-* Management quality
+* Competitive positioning
 
 Priority:
 
@@ -226,6 +229,21 @@ Medium
 
 ---
 
+# Evidence Record Requirements
+
+Each material source used in a Company Score review should be identifiable through:
+
+* Source Type
+* Source Name
+* Reference / Locator
+* Publication Date, when available
+* Access Date, when relevant
+* Relevant Period, when applicable
+
+The source record supports traceability. The assessment remains a judgment supported by evidence rather than an automatic metric-to-score conversion.
+
+---
+
 # Supplementary Sources
 
 ## Reddit
@@ -239,7 +257,7 @@ Usage:
 * Sentiment awareness
 * Product adoption signals
 
-Not used for scoring.
+Context only. Not used as a primary scoring basis.
 
 Priority:
 
@@ -258,6 +276,8 @@ Usage:
 * Early trend detection
 * Industry discussion
 
+Context only. Not used as a primary scoring basis.
+
 Not used for scoring.
 
 Priority:
@@ -268,67 +288,181 @@ Low
 
 # Data Usage Mapping
 
-Theme Alignment
+Data sources support evidence collection and assessment. They do not mechanically generate Company Scores.
 
-Sources:
+## Theme Evaluation
+
+Primary inputs:
 
 * Investor Relations
-* Earnings Calls
+* Annual reports / company filings
+* Earnings calls
+* Industry reports
+
+Use:
+
+* Structural persistence
+* Adoption
+* Economic relevance
+* Trend direction
+
+Theme evidence is evaluated separately from Company Score evidence.
 
 ---
 
-Competitive Advantage
+## Theme Exposure
 
-Sources:
+Primary inputs:
 
-* Annual Reports
-* Industry Reports
+* Investor Relations
+* Annual reports / company filings
+* Earnings calls
+* Industry reports
+
+Use:
+
+* Directness of exposure to approved 5D themes
+* Structural relevance
+* Durability of the theme-company relationship
 
 ---
 
-Market Leadership
+## Competitive Moat
 
-Sources:
+Primary inputs:
 
-* Industry Reports
+* SEC filings
+* Annual reports
+* Investor presentations / investor days
+* Industry reports
+
+Supporting inputs:
+
+* Koyfin
+* Reliable analytical research
+
+Use:
+
+* Competitive advantage
+* Switching costs
+* Ecosystem effects
+* Cost or scale advantages
+* Durability versus peers
+
+---
+
+## Leadership Position
+
+Primary inputs:
+
+* Industry reports
+* Company disclosures
+* Investor presentations
+
+Supporting inputs:
+
 * Finviz
 * Koyfin
 
+Use:
+
+* Category leadership
+* Relative competitive position
+* Challenger emergence
+* Market or category share evidence
+
 ---
 
-Growth Potential
+## Growth Quality
 
-Sources:
+Primary inputs:
 
-* Macrotrends
+* SEC filings
+* Annual reports
+* Investor presentations
+* Earnings calls
+
+Supporting inputs:
+
 * Yahoo Finance
-
----
-
-Financial Strength
-
-Sources:
-
-* SEC Filings
 * Macrotrends
+* Koyfin
+
+Use:
+
+* Long-term growth durability
+* Revenue and earnings trajectory
+* Cash-flow quality
+* Growth drivers and constraints
 
 ---
 
-Management Quality
+## Execution Quality
 
-Sources:
+Primary inputs:
 
-* Earnings Calls
-* Annual Reports
+* SEC filings
+* Annual reports
+* Earnings calls
+* Investor presentations
+
+Use:
+
+* Management execution
+* Delivery against stated strategy
+* Capital allocation
+* Operational consistency
 
 ---
 
-Strategic Relevance
+# Evidence Provenance Contract
 
-Sources:
+Each material Company Score assessment should preserve enough provenance to allow a later reviewer to understand what supported the judgment.
 
-* Investor Presentations
-* Industry Reports
+Minimum provenance fields for a source reference are:
+
+```text
+Source Type
+Source Name
+Reference / Locator
+```
+
+Where available, the research record should also retain:
+
+```text
+Publication Date
+Access Date
+Relevant Period
+```
+
+`Reference / Locator` may be a filing identifier, report title, document section, or other stable locator. A raw URL may be retained when useful, but a URL alone is not considered an adequate description of the evidence.
+
+Evidence records should distinguish the source from the analyst's Assessment. The source provides provenance; the Assessment explains why the source supports the assigned Score.
+
+## Source Role
+
+* **Primary** — company filings and official disclosures; preferred for material claims.
+* **Secondary** — financial data providers and established industry research; used to corroborate or quantify evidence.
+* **Analytical** — professional research and comparative analysis; useful for peer and category assessment.
+* **Contextual** — market discussion and community sources; useful for awareness or hypothesis generation, but not sufficient by themselves for material scoring claims.
+
+Contextual sources such as Reddit or X may inform research discovery but are not scoring evidence by themselves.
+
+## 13F / Institutional Holdings
+
+Institutional holdings data may be used as contextual evidence for investor positioning, ownership trends, or research prioritization. Because 13F data is delayed and does not directly establish operating performance or competitive advantage, it is not a standalone basis for Company Score, Leadership Role, or Portfolio State decisions.
+
+---
+
+## 13F / Institutional Holdings
+
+Institutional holdings data may be used as contextual evidence for investor positioning, ownership trends, or research prioritization. Because 13F data is delayed and does not directly establish operating performance or competitive advantage, it is not a standalone basis for Company Score, Leadership Role, or Portfolio State decisions.
+
+Usage:
+
+* Observe changes in institutional holdings
+* Provide supplementary context for leadership and market-interest research
+* Support seasonality / positioning analysis when relevant
 
 ---
 

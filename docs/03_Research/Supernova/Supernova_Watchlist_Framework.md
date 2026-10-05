@@ -1,10 +1,10 @@
 # Supernova Watchlist Framework
 
-Version: 0.1
+Version: 1.0
 
-Status: Draft
+Status: Approved
 
-Last Updated: 2026-06-22
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -43,25 +43,21 @@ Theme
 
 ↓
 
-Category
+Company Evaluation
 
 ↓
 
-Leader
-
-↓
-
-Candidate
-
-↓
-
-Watchlist
+Portfolio State + Leadership Role
 
 ---
 
-# Company States
+# Company Governance Model
 
-Each company receives one of the following states.
+Portfolio State and Leadership Role are separate dimensions.
+
+## Portfolio State
+
+Each company receives one of the following portfolio states.
 
 ---
 
@@ -83,7 +79,7 @@ Hold
 
 Under evaluation.
 
-May become Approved in future reviews.
+Not eligible for accumulation.
 
 Action:
 
@@ -113,13 +109,32 @@ Review
 
 ---
 
-## Removed
+## Retired
 
-No longer eligible.
+No longer eligible for portfolio inclusion.
 
 Action:
 
 Do Not Buy
+
+---
+
+## Leadership Role
+
+Leadership Role is independent of Portfolio State.
+
+* Leader
+* Challenger
+* Candidate
+
+Example:
+
+```text
+NVDA → Approved + Leader
+AMD  → Watchlist + Challenger
+```
+
+A Leadership Role does not itself make a company portfolio eligible.
 
 ---
 
@@ -163,22 +178,28 @@ Characteristics:
 
 # Promotion Rules
 
-A company may be promoted when:
+Promotion is based on explicit eligibility criteria and documented research evidence. Company Score informs the decision but does not automatically trigger promotion.
 
-* Theme alignment improves
-* Competitive advantage strengthens
-* Financial quality improves
-* Strategic relevance increases
+Minimum Approved eligibility:
+
+* Clear relationship to at least one approved 5D theme
+* Theme remains structurally valid
+* Competitive position is sufficient
+* Long-term growth thesis is credible
+* No core thesis disproof
+* Rational portfolio-level reason for inclusion relative to the current Approved Universe
+* Evidence is recorded
+* Governance approval is documented
 
 Promotion Path:
 
-Watchlist
-
-↓
-
 Candidate
 
-↓
+↓ Research Qualification
+
+Watchlist
+
+↓ Governance Approval
 
 Approved
 
@@ -186,19 +207,18 @@ Approved
 
 # Removal Rules
 
-A company may be removed when:
+Candidate or Watchlist companies may be retired when:
 
-* Competitive moat deteriorates
-* Strategic relevance declines
-* Theme exposure disappears
-* Management quality materially worsens
-* Long-term thesis breaks
+* Theme relevance is materially lost
+* Long-term thesis is invalidated
+* Competitive position deteriorates materially
+* Evidence is insufficient and research priority is no longer justified
 
-Removal decisions should be documented.
+Approved companies enter `Review Required` before a final Retirement decision except in an explicitly documented Emergency Review.
 
-Reference:
+Short-term price movement alone does not trigger removal.
 
-Decision_Log.md
+Removal decisions should be documented in Decision_Log.md.
 
 ---
 
@@ -256,45 +276,15 @@ before implementation.
 
 ---
 
-# Known Open Issues
+# Resolved Governance Issues
 
-OI-621
+OI-621 — Resolved by D-038. Company scoring uses the approved 5-dimension framework with qualitative anchors and evidence.
 
-Final company scoring methodology.
+OI-622 — Resolved by D-042. Promotion uses explicit eligibility criteria and governance approval rather than a hard numeric threshold.
 
-Status:
+OI-623 — Resolved by D-042. Removal uses structural criteria and governance review rather than a hard numeric threshold.
 
-Open
-
----
-
-OI-622
-
-Promotion thresholds.
-
-Status:
-
-Open
-
----
-
-OI-623
-
-Removal thresholds.
-
-Status:
-
-Open
-
----
-
-OI-624
-
-Maximum approved company count.
-
-Status:
-
-Open
+OI-624 — Consolidated with OI-704 and resolved as an explicit governance gap by D-039: no hard maximum is set in v1.
 
 ---
 

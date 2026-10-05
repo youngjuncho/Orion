@@ -2,9 +2,9 @@
 
 Version: 1.0
 
-Status: Draft
+Status: Approved
 
-Last Updated: 2026-06-23
+Last Updated: 2026-10-05
 
 Depends On:
 
@@ -43,21 +43,21 @@ Supernova shall maintain:
 
 ---
 
-# Candidate Lifecycle
+# Candidate Governance Model
 
-Candidate
+Candidate and Watchlist are research/portfolio-state concepts. Leader and Challenger are leadership roles. They must not be collapsed into a single lifecycle.
 
-↓
+```text
+Portfolio State
+    Candidate / Watchlist
+          ↓ governance approval
+       Approved
+          ↓ structural review
+   Review Required / Retired
 
-Approved Company
-
-↓
-
-Leader
-
-↓
-
-Retired
+Leadership Role
+    Candidate / Challenger / Leader
+```
 
 ---
 

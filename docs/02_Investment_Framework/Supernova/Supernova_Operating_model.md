@@ -60,9 +60,15 @@ Companies should satisfy most of the following conditions:
 
 # Portfolio Construction
 
-Approved companies are maintained in a curated watchlist.
+Approved companies are the portfolio-eligible universe. Candidate and Watchlist companies are research states and are not eligible for accumulation.
 
-The watchlist represents the current best candidates within the 5D framework.
+The target weight is equal weight across the current Approved Company set:
+
+```text
+Target Weight = 1 / N
+```
+
+Supernova does not impose a hard maximum Approved Company count in v1. The current five approved companies remain the current portfolio state, not a hard cap. A future capacity decision must be explicitly recorded in the Decision Log before additional Approved Companies are added beyond the current governance intent.
 
 ---
 
@@ -76,7 +82,18 @@ Frequency:
 
 Monthly
 
-Capital is invested regardless of short-term market conditions.
+Capital is invested regardless of short-term market conditions. Monthly contributions are allocated preferentially toward underweight Approved Companies to move the portfolio toward equal-weight targets (Smart DCA).
+
+Conceptually:
+
+```text
+Deficit_i = max(Target Weight_i - Current Weight_i, 0)
+
+DCA Allocation_i
+= Deficit_i / Sum(Deficit) ¡¿ Monthly DCA
+```
+
+The Company Score does not determine purchase timing or DCA allocation.
 
 ---
 
@@ -94,14 +111,28 @@ The default assumption is long-term ownership.
 
 # Replacement Policy
 
-Holdings may be replaced only when:
+Replacement follows three separate stages:
 
-* The approved company list changes
-* A superior category leader emerges
-* A company's competitive advantage materially deteriorates
-* A company no longer fits the 5D framework
+1. Research / Detection
+2. Governance Decision
+3. Portfolio Transition
 
-Replacement decisions should be documented in the Decision Log.
+A challenger becoming stronger is a review trigger, not an automatic trade trigger.
+Replacement Risk is assessed independently from Company Score and does not require
+the presence of a challenger. A company may become High or Critical risk because
+its own leadership, moat, growth, execution, or investment thesis has materially
+deteriorated. Score alone cannot automatically replace an Approved Company.
+
+A normal replacement is executed at the next regular review cycle after governance approval. An Emergency Review may be used for clear structural thesis failure.
+
+Replacement and Retirement are distinct:
+
+* Replacement: Approved Company A is replaced by Approved Company B.
+* Retirement / Exit: Approved Company A is removed without requiring a replacement.
+
+Price movement alone does not trigger replacement.
+
+Replacement decisions must be documented in the Decision Log before implementation.
 
 ---
 
@@ -124,6 +155,27 @@ Aurora:
 Market Climate Monitoring
 
 Supernova operates independently of Moon allocation decisions.
+
+---
+
+# Governance State Model
+
+Supernova uses two independent dimensions:
+
+```text
+Portfolio State
+    Approved
+    Watchlist
+    Review Required
+    Retired
+
+Leadership Role
+    Leader
+    Challenger
+    Candidate
+```
+
+Only Approved companies are portfolio eligible. Leadership Role is not equivalent to Portfolio State.
 
 ---
 

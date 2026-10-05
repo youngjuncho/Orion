@@ -1,10 +1,10 @@
 # Supernova Dashboard Specification
 
-Version: 1.1
+Version: 1.2
 
 Status: Draft
 
-Last Updated: 2026-06-23
+Last Updated: 2026-10-05
 
 ---
 
@@ -47,29 +47,16 @@ Trend
 
 ---
 
-Example
+Illustrative example only. Example values are not approved company review results.
 
-NVDA
-
-Theme:
-
-Digital Transformation
-
-Score:
-
-92
-
-Leadership Status:
-
-Leader
-
-Replacement Risk:
-
-Low
-
-Trend:
-
-Stable
+```text
+Company: <Ticker>
+Theme: <Theme>
+Score: <Reviewed Score>
+Leadership Status: <Role>
+Replacement Risk: <Reviewed Risk>
+Trend: <Trend>
+```
 
 ---
 
@@ -89,25 +76,15 @@ Trend
 
 ---
 
-Example
+Illustrative example only. Theme and company values must come from reviewed records.
 
-Digital Transformation
-
-Leader:
-
-NVDA
-
-Challenger:
-
-MSFT
-
-Theme Score:
-
-91
-
-Trend:
-
-Improving
+```text
+Theme: <Theme>
+Leader: <Leader>
+Challenger: <Challenger when applicable>
+Theme Score: <Reviewed Theme Assessment>
+Trend: <Trend>
+```
 
 ---
 
@@ -119,27 +96,27 @@ Company
 
 Risk Level
 
-Reason
+Primary Risk Driver
+
+Reason / Evidence Summary
 
 Review Status
 
+The monitor reflects a governance assessment, not a price-risk indicator.
+Replacement Risk is independent of Company Score and may escalate without a
+challenger being present.
+
 ---
 
-Example
+Illustrative example only. Replacement Risk values must come from a reviewed Governance Record.
 
-PLTR
-
-Replacement Risk:
-
-Medium
-
-Reason:
-
-Increasing competition
-
-Review:
-
-Required
+```text
+Company: <Ticker>
+Replacement Risk: <Risk Level>
+Primary Risk Driver: <Driver>
+Reason / Evidence Summary: <Summary>
+Review Status: <Status>
+```
 
 ---
 

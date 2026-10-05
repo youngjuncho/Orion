@@ -1812,3 +1812,506 @@ The worked examples in Phoenix documentation must use this mapping literally.
 
 The previous documents contained incompatible risk/state vocabularies and an example that translated `Gap 6 → High Risk` into `Transition` without a defined rule. This decision removes that ambiguity and makes the score-gap calculation, risk, state, and action deterministic.
 
+## D-036 — Supernova Multi-Theme Attribution and Theme Concentration
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Supernova permits a company to have meaningful exposure to multiple 5D themes. Each theme relationship is evaluated independently. A multi-theme company does not receive an automatic score bonus and does not require a single primary theme.
+
+Theme exposure and portfolio theme concentration are separate governance questions. Supernova v1 does not impose a hard theme-concentration limit. Theme concentration shall be monitored and may be addressed by a future governance decision.
+
+### Rationale
+
+Multi-theme attribution preserves the structural nature of the 5D framework without conflating categorization with portfolio concentration.
+
+---
+
+## D-037 — Supernova Portfolio State and Leadership Role Separation
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Supernova uses two independent governance dimensions.
+
+Portfolio State:
+
+* Approved
+* Watchlist
+* Review Required
+* Retired
+
+Leadership Role:
+
+* Leader
+* Challenger
+* Candidate
+
+Only Approved companies are eligible for accumulation. Leadership Role does not imply portfolio eligibility.
+
+Example:
+
+```text
+NVDA → Approved + Leader
+AMD  → Watchlist + Challenger
+```
+
+### Rationale
+
+Separating ownership state from leadership role prevents the existing lifecycle from incorrectly treating Approved Company and Leader as the same concept.
+
+---
+
+## D-038 — Supernova Company Scoring and Evidence Contract
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Supernova retains the existing five company-scoring dimensions and weights:
+
+* Theme Exposure — 20%
+* Competitive Moat — 25%
+* Leadership Position — 25%
+* Growth Quality — 15%
+* Execution Quality — 15%
+
+The scoring model is judgment-assisted by evidence rather than fully formula-driven. Each reviewed dimension shall retain Score, Evidence, Assessment, and Review Date. Qualitative anchors shall support score assignment. Raw metrics may inform an assessment but do not mechanically determine the score unless a separate rule is explicitly approved.
+
+Company Score does not automatically determine Portfolio State or Leadership Role and is not a purchase-timing signal.
+
+### Rationale
+
+The existing dimensions and weights provide a stable v1 structure while avoiding false precision from unapproved metric-to-score formulas.
+
+---
+
+## D-039 — Supernova Approved Company Capacity
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Supernova v1 does not impose a hard maximum Approved Company count. The current five Approved Companies remain the current portfolio state and are not a hard cap. Any future maximum or target range must be established by an explicit governance decision before additional Approved Companies are admitted beyond the current governance intent.
+
+### Rationale
+
+The repository contains unresolved maximum-capacity issues, but no canonical approved numeric cap. An earlier proposed 10–15 range is not treated as an approved decision.
+
+---
+
+## D-040 — Supernova Equal Weight Target and Smart DCA
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+The target portfolio weight for each Approved Company is equal weight:
+
+```text
+Target Weight = 1 / N
+```
+
+Monthly DCA capital shall be allocated preferentially toward underweight Approved Companies to move the portfolio toward target equal weights. Existing holdings are not sold solely to correct market-driven drift.
+
+Conceptually:
+
+```text
+Deficit_i = max(Target Weight_i - Current Weight_i, 0)
+DCA Allocation_i
+= Deficit_i / Sum(Deficit) × Monthly DCA
+```
+
+Company Score does not determine DCA allocation or purchase timing.
+
+### Rationale
+
+Equal Weight defines the target state; Smart DCA defines the contribution method. This separates portfolio construction from research scoring and reduces unnecessary selling.
+
+---
+
+## D-041 — Supernova Replacement and Portfolio Transition Governance
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Replacement follows three separate stages:
+
+1. Research / Detection
+2. Governance Decision
+3. Portfolio Transition
+
+A challenger becoming stronger is a review trigger, not an automatic trade trigger. Score alone cannot automatically replace an Approved Company. Normal replacement occurs at the next regular review cycle after governance approval. Emergency Review may be used for clear structural thesis failure.
+
+Replacement and Retirement are distinct:
+
+* Replacement: Approved Company A is replaced by Approved Company B.
+* Retirement / Exit: Approved Company A is removed without requiring a replacement.
+
+Price movement alone does not trigger replacement.
+
+### Rationale
+
+Separating detection, governance, and execution prevents research signals from becoming unintended automatic trades.
+
+---
+
+## D-042 — Supernova Candidate and Watchlist Lifecycle Governance
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Candidate and Watchlist are research/portfolio-state stages. Promotion and removal use explicit eligibility criteria and documented evidence; company scores inform decisions but do not automatically trigger state transitions.
+
+Minimum Approved eligibility includes:
+
+* Clear relationship to at least one approved 5D theme
+* Theme remains structurally valid
+* Competitive position is sufficient
+* Long-term growth thesis is credible
+* No core thesis disproof
+* Rational portfolio-level reason for inclusion relative to the current Approved Universe
+* Evidence recorded
+* Governance approval
+
+Short-term price movement alone does not trigger promotion or removal.
+
+### Rationale
+
+A relative governance decision is more appropriate than an arbitrary numeric threshold for long-horizon thematic equities.
+
+---
+
+## D-043 — Supernova Theme Health and Lifecycle Evaluation
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Theme Evaluation is a separate layer from Company Evaluation. Supernova may record a 0–100 Theme Health Score as an evidence-assisted governance input, together with Evidence, Assessment, State, Trend, and Review Date.
+
+Theme State remains qualitative:
+
+* Emerging
+* Developing
+* Established
+* Mature
+* Declining
+
+Theme scores are not portfolio allocation weights and are not purchase-timing signals. Theme Score is not mechanically combined with Company Score. State transitions require documented evidence and governance review rather than automatic numeric thresholds.
+
+Supernova v1 does not allocate portfolio capital directly by Theme.
+
+### Rationale
+
+Theme Health evaluates the structural investment environment, while Company Score evaluates company quality. Keeping these layers separate preserves the 5D framework without creating an unnecessary composite score.
+
+---
+
+## D-044 — Supernova Evidence, Assessment, and Review Traceability
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Supernova research evaluations shall preserve Evidence, Assessment, Score where applicable, and Review Date as separate but linked records. Evidence provenance should be retained where practical, with primary company filings and official disclosures preferred for material claims and reliable secondary or analytical sources used as supplements.
+
+Historical assessments shall remain traceable across review cycles.
+
+### Rationale
+
+Traceable evidence prevents scores from becoming unexplained numbers and allows future reviews to distinguish changed facts from changed judgment.
+
+---
+
+
+---
+
+## D-045 — Supernova Company Score Aggregation Contract
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Supernova Company Score is the weighted aggregation of the five approved company-scoring dimensions:
+
+* Theme Exposure — 20%
+* Competitive Moat — 25%
+* Leadership Position — 25%
+* Growth Quality — 15%
+* Execution Quality — 15%
+
+All five dimensions are required. Missing dimensions are not imputed and remaining dimensions are not reweighted. Duplicate or unsupported dimensions invalidate the Research Record for scoring. The resulting weighted score is rounded to the nearest integer using conventional half-up rounding.
+
+Company Score remains a governance input and does not automatically assign Portfolio State, Leadership Role, Replacement Risk, or a trading action.
+
+### Rationale
+
+A deterministic aggregation rule makes the approved scoring framework reproducible while preserving the existing evidence-assisted judgment model at the dimension level. Requiring complete dimension coverage prevents partial evidence from silently changing the meaning of the score.
+
+
+## D-046 — Supernova Score-to-Governance Decision Boundary
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Company Score, Leadership Role, Portfolio State, and Replacement Risk remain separate governance dimensions. Company Score is evidence for governance review but does not automatically determine any of the other dimensions.
+
+Governance outcomes shall be recorded explicitly through a Governance Decision containing:
+
+* Company Score
+* Portfolio State
+* Leadership Role
+* Replacement Risk
+* Action
+* Rationale
+* Evidence Summary
+* Review Date
+* Approver
+
+Approved actions are limited to the governed decision set: Continue, Promote, Review, Replace, or Retire. Numeric score thresholds for these actions or states are not defined in v1.
+
+Replace applies only to an Approved company undergoing a documented replacement decision. Retire applies when an Approved company is removed without requiring a replacement.
+
+### Rationale
+
+This preserves the distinction between deterministic score aggregation and qualitative investment governance. It prevents a high or low score from becoming an unintended trading or lifecycle signal.
+
+
+## D-047 — Supernova Replacement Risk Definition
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Supernova Replacement Risk is an independent governance assessment of the
+likelihood that an Approved Company may no longer deserve its portfolio position
+and may require Replacement or Retirement at a future governance review. It is
+not a short-term price, valuation, or market-volatility risk measure and is not
+mechanically derived from Company Score.
+
+Replacement Risk shall be assessed using four evidence-based axes:
+
+* Leadership Threat
+* Moat Deterioration
+* Growth / Execution Deterioration
+* Thesis Integrity
+
+A challenger is not required for Replacement Risk to escalate. Conversely, a
+stronger challenger does not automatically imply high Replacement Risk when the
+Approved Company's leadership and thesis remain durable.
+
+Risk levels remain qualitative:
+
+* Very Low — no material replacement evidence; leadership and thesis remain strong
+* Low — concerns exist but long-term leadership and thesis remain durable
+* Medium — material warning signals warrant focused monitoring or review
+* High — core leadership, moat, growth, execution, or thesis has materially weakened
+* Critical — structural leadership or thesis is substantially broken and Replace or
+  Retire is a realistic governance outcome
+
+Replacement Risk escalation is a review trigger, not an automatic trading rule.
+Final action remains a separate Governance Decision.
+
+### Rationale
+
+This definition preserves the governance boundary established in D-046 while
+making Replacement Risk operationally assessable. It also prevents Supernova from
+becoming a copy of Phoenix's challenger-relative replacement model: Supernova must
+be able to recognize replacement risk caused by deterioration of the Approved
+Company itself, even without a clear challenger.
+
+
+## D-048 — Supernova Governance Review Reproducibility Contract
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+Supernova V1 defines reproducibility at the **governance-record level**, not as identical independent human numeric scoring. A complete review must preserve sufficient evidence, assessments, dimension scores, temporal cutoff, Replacement Risk assessment, action, and governance decision to allow another reviewer to reconstruct the reasoning path.
+
+Company Score aggregation remains deterministic under D-045 once the five dimension scores are assigned. V1 does not introduce numeric calibration thresholds for assigning the individual 0–100 dimension scores.
+
+The canonical governance action vocabulary from D-046 is authoritative: `Continue`, `Promote`, `Review`, `Replace`, and `Retire`. Descriptive phrases may be used in rationale but must not become alternative action types.
+
+`Primary Risk Driver` identifies the most decision-relevant concern. `None material` is valid when no material concern is identified.
+
+`Evidence As Of` records the temporal evidence cutoff considered by the review and is distinct from `Review Date`.
+
+### Rationale
+
+The five-company baseline demonstrated that Company Score can be reconstructed deterministically from recorded dimension scores and that Replacement Risk can be documented without a challenger. Requiring identical human scores would introduce false precision into an intentionally evidence-assisted framework. The appropriate V1 control is traceability, canonical terminology, and explicit governance decisions.
+
+### Consequence
+
+No additional Replacement Risk formula or numeric threshold is required for Supernova V1. Future calibration may be introduced only through an explicit governance decision if repeated reviews demonstrate unacceptable reviewer divergence.
+
+
+## D-049 — Supernova Five-Company Baseline Governance Approval
+
+Date:
+
+2026-10-05
+
+Status:
+
+Approved
+
+Category:
+
+Supernova
+
+### Decision
+
+YJ approved the 2026-10-05 Supernova governance baseline for the five current Approved Companies: NVDA, GOOGL, ISRG, PLTR, and CEG.
+
+The approved baseline is:
+
+* NVDA — Company Score 97, Approved, Leader, Replacement Risk Low, Action Continue
+* GOOGL — Company Score 93, Approved, Leader, Replacement Risk Low, Action Continue
+* ISRG — Company Score 97, Approved, Leader, Replacement Risk Very Low, Action Continue
+* PLTR — Company Score 95, Approved, Leader, Replacement Risk Low, Action Continue
+* CEG — Company Score 91, Approved, Leader, Replacement Risk Low, Action Continue
+
+This decision confirms the governance state for the review cycle. It is not an automatic trade instruction and does not override the existing Portfolio Transition process. Future changes require the normal Supernova governance review and decision process.
+
+Approver: YJ
+
+### Rationale
+
+The five-company baseline was reviewed after completion of the Supernova governance contracts, including Company Score aggregation, Replacement Risk, score-to-governance boundaries, lifecycle governance, and reproducibility. YJ approved the resulting records without requiring further governance redesign.

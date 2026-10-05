@@ -185,7 +185,7 @@ Approved companies should satisfy most of the following conditions.
 * Durable competitive moat
 * Strategic relevance
 * Long-term growth potential
-* Manageable replacement risk
+* Durable leadership and thesis integrity
 
 ---
 
@@ -193,15 +193,11 @@ Approved companies should satisfy most of the following conditions.
 
 Each approved company shall be monitored using the following framework.
 
-Leader
+Leadership / Competitive Evidence
 
 ↓
 
-Challenger
-
-↓
-
-Replacement Risk
+Replacement Risk Assessment
 
 ↓
 
@@ -209,63 +205,58 @@ Review Decision
 
 ---
 
-# Example
+# Leadership Monitoring Example
 
-NVDA
+A challenger may provide important evidence, but it is not required for Replacement Risk assessment.
 
-Leader
-
-↓
-
-AMD
-
-Challenger
-
-↓
-
-Replacement Risk
-
-↓
-
-Monthly Review
+```text
+Approved Company
+      ↓
+Leadership / Competitive Evidence
+      ↓
+Replacement Risk Assessment
+      ↓
+Governance Review
+```
 
 ---
 
-# Approval States
+# Governance State Model
 
-## Approved
+Portfolio State and Leadership Role are separate dimensions.
 
-Eligible for continued accumulation.
+## Portfolio State
 
----
+### Approved
 
-## Review
+Eligible for accumulation.
 
-Leadership status requires additional monitoring.
+### Review Required
 
-No immediate portfolio action required.
+Fundamentals or thesis require additional governance review. No automatic trade follows from the review state.
 
----
+### Watchlist
 
-## Watch
+Research monitoring state. Not eligible for accumulation.
 
-Replacement risk increasing.
-
-Monthly review required.
-
----
-
-## Replacement Candidate
-
-Leadership deterioration confirmed.
-
-Replacement evaluation required.
-
----
-
-## Retired
+### Retired
 
 No longer approved for Supernova ownership.
+
+## Leadership Role
+
+* Leader
+* Challenger
+* Candidate
+
+Example:
+
+```text
+NVDA → Approved + Leader
+AMD  → Watchlist + Challenger
+```
+
+Leadership Role does not itself determine portfolio eligibility.
 
 ---
 
@@ -299,22 +290,19 @@ Frequency:
 
 Monthly
 
-Accumulation continues regardless of short-term market conditions.
+Accumulation continues regardless of short-term market conditions. Monthly contributions are preferentially allocated to underweight Approved Companies to move toward equal-weight targets (Smart DCA).
 
 ---
 
-# Rebalancing Principle
+# Rebalancing and Replacement Principle
 
 Price appreciation alone shall not trigger rebalancing.
 
 Price declines alone shall not trigger rebalancing.
 
-Rebalancing may occur only when:
+Market-driven drift is corrected preferentially through new DCA capital rather than selling existing holdings.
 
-* Leadership changes
-* Theme relevance deteriorates
-* Replacement risk becomes unacceptable
-* Approved company status changes
+A full portfolio transition occurs only after an Approved Company status change or an approved replacement/retirement decision.
 
 ---
 
@@ -371,51 +359,15 @@ Annually
 
 ---
 
-# Known Open Issues
+# Resolved Governance Issues
 
-OI-701
+OI-701 — Resolved by D-038. Company scoring is evidence-assisted with qualitative anchors; score does not automatically determine approval.
 
-Approved company scoring thresholds.
+OI-702 — Resolved by D-041. Replacement is a research → governance → portfolio transition process; no automatic replacement threshold is defined in v1.
 
-Status:
+OI-703 — Resolved by D-036. Multi-theme membership is permitted and evaluated independently.
 
-Open
-
----
-
-OI-702
-
-Replacement risk scoring methodology.
-
-Status:
-
-Open
-
----
-
-OI-703
-
-Theme overlap treatment.
-
-Examples:
-
-* NVDA
-* GOOGL
-* PLTR
-
-Status:
-
-Open
-
----
-
-OI-704
-
-Maximum approved company count.
-
-Status:
-
-Open
+OI-704 — Resolved by D-039. No hard maximum Approved Company count is set in v1.
 
 ---
 

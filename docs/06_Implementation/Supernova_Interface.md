@@ -1,10 +1,10 @@
 # Supernova Interface Specification
 
-Version: 1.0
+Version: 1.1
 
 Status: Draft
 
-Last Updated: 2026-06-23
+Last Updated: 2026-10-05
 
 ---
 
@@ -19,9 +19,10 @@ Defines the operational interface for Supernova.
 Supernova is responsible for:
 
 * Theme evaluation
-* Company evaluation
+* Evidence-backed company evaluation
 * Leadership monitoring
 * Replacement risk assessment
+* Portfolio state management
 
 ---
 
@@ -33,6 +34,10 @@ Financial Data
 
 Theme Data
 
+Evidence-backed Score Reviews
+
+Company Research Records
+
 Scoring Rules
 
 ---
@@ -43,9 +48,14 @@ Theme
 
 CandidateCompany
 
+CompanyScoreReview
+
+CompanyResearchRecord
+
 ApprovedCompany
 
 ReviewRecord
+GovernanceDecision
 
 ---
 
@@ -69,13 +79,17 @@ Required Fields
 
 Ticker
 
-Company Name
-
 Theme
 
-Score
+Company Score (weighted from five reviewed dimensions)
 
-Status
+Portfolio State
+
+Leadership Role
+
+Replacement Risk
+
+Trend
 
 ---
 
@@ -83,11 +97,13 @@ Status
 
 Required Fields
 
-Leader
+Leader / Leadership Role
 
-Challenger
+Challenger (when applicable)
 
 Replacement Risk
+
+Primary Risk Driver
 
 Trend
 
