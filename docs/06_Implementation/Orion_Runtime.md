@@ -326,7 +326,7 @@ Persistent information is stored separately after execution.
 
 Examples:
 
-* Portfolio Snapshots
+* Portfolio State / Snapshots
 * Regime History
 * Review Records
 * Execution Logs

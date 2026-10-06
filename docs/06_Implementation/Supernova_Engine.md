@@ -74,7 +74,6 @@ The engine produces:
 * Company states
 * Theme summaries
 * Review recommendations
-* Governance review records
 * Dashboard data
 
 ---
@@ -114,7 +113,7 @@ The Company Score is a governance assessment, not a purchase-timing signal.
 
 Company Score does not automatically assign Portfolio State, Leadership Role, or Replacement Risk. Those outcomes are documented through a Governance Decision.
 
-The engine may validate the shape of a governance result, but it does not invent governance thresholds or approve a transition. Governance decisions must retain: Company Score, Portfolio State, Leadership Role, Replacement Risk, Primary Risk Driver, Action, Rationale, Evidence Summary, Review Date, and Approver.
+The engine may validate the shape of a governance result, but it does not invent governance thresholds or approve a transition. Governance decisions must retain: Company Score, Portfolio State, Leadership Role, Replacement Risk, Action, Rationale, Evidence Summary, Review Date, and Approver.
 
 Score-to-state mappings are intentionally not encoded as automatic thresholds in v1.
 

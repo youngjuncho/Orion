@@ -55,7 +55,6 @@ CompanyResearchRecord
 ApprovedCompany
 
 ReviewRecord
-GovernanceDecision
 
 ---
 
@@ -97,13 +96,11 @@ Trend
 
 Required Fields
 
-Leader / Leadership Role
+Leader
 
-Challenger (when applicable)
+Challenger
 
 Replacement Risk
-
-Primary Risk Driver
 
 Trend
 

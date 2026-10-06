@@ -35,8 +35,8 @@ Its purpose is to provide structured decision support across multiple asset clas
 
 Orion consists of:
 
-* One Monitoring Layer
-* Three Portfolio Engines
+* One Monitoring / Market Environment Framework
+* Four Portfolio Investment Frameworks
 
 ```text
                     Orion OS
@@ -48,22 +48,18 @@ Orion consists of:
 
           ▼                             ▼
 
-      Aurora                    Portfolio Engines
+      Aurora                 Investment Frameworks
 
 (Market Monitoring)                   │
 
-                      ┌──────────┬──────────┐
-                      │          │          │
-
-                      ▼          ▼          ▼
-
-                    Moon    Supernova   Phoenix
-
-                      │          │          │
-
-                      ▼          ▼          ▼
-
-                     ETF      Equity      Crypto
+                      ┌───────┬───────┬──────────┬─────────┐
+                      │       │       │          │
+                      ▼       ▼       ▼          ▼
+                    Moon    Orbit  Supernova  Phoenix
+                      │       │       │          │
+                      ▼       ▼       ▼          ▼
+                    Dynamic  Static  Equity     Digital
+                     AA       AA    Satellite   Asset
 ```
 
 ---
@@ -109,11 +105,10 @@ What is the current market environment?
 
 ---
 
-# Portfolio Engines
+# Investment Frameworks
 
-Portfolio engines manage specific asset classes.
-
-Each engine operates independently.
+Each portfolio-producing Investment Framework manages its own Portfolio according to its own methodology.
+Each framework operates independently. Engine is an implementation/runtime term, not an investment-level category.
 
 ---
 
@@ -121,11 +116,11 @@ Each engine operates independently.
 
 Purpose:
 
-ETF Allocation Engine
+Dynamic Asset Allocation Framework
 
 Asset Class:
 
-ETF Portfolio
+Dynamic Asset Allocation Portfolio
 
 ---
 
@@ -149,6 +144,26 @@ What should be owned now?
 * Tactical
 * Trend Following
 * Dynamic Asset Allocation
+
+---
+
+## Orbit
+
+Purpose:
+
+Static Asset Allocation Framework
+
+Core Question
+
+What is the target allocation for the static portfolio?
+
+Characteristics
+
+* Strategic
+* Static target allocation
+* Periodic rebalancing
+
+Orbit is independent of Moon. Any Moon → Orbit asset movement is a Portfolio Transfer operation and does not represent a decision dependency.
 
 ---
 
@@ -222,9 +237,31 @@ Which digital asset ecosystems are becoming leaders?
 
 ---
 
+# Common Portfolio Domain
+
+Portfolio management is modeled independently from the investment methodology.
+
+```text
+PortfolioTarget + PortfolioState
+             ↓
+       RebalancePlan
+             ↓
+       ExecutionOrder
+```
+
+A Transfer is a separate Portfolio Operation and is not a Rebalance.
+
+```text
+Source Portfolio → Transfer → Destination Portfolio
+```
+
+Portfolio State is derived from actual Position and Cash state. An overall portfolio view, when needed, is a derived aggregate view rather than a canonical source of truth.
+
+---
+
 # Portfolio Mapping
 
-## ETF Portfolio
+## Dynamic Asset Allocation Portfolio
 
 Managed By:
 
@@ -304,11 +341,11 @@ Aurora serves as Orion's monitoring and interpretation layer.
 
 Aurora provides context for investment decisions.
 
-Aurora does not control portfolio engines.
+Aurora does not control the other Investment Frameworks.
 
 Aurora informs.
 
-Portfolio engines decide.
+Each Investment Framework decides within its own governance.
 
 ---
 

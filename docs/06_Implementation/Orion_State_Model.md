@@ -58,6 +58,7 @@ Orion State
 
 ├── Aurora State
 ├── Moon State
+├── Orbit State
 ├── Supernova State
 └── Phoenix State
 ```
@@ -74,7 +75,8 @@ Fields:
 * Execution ID
 * Orion Version
 * Framework States
-* Portfolio State
+* Framework States
+* Derived Overall Portfolio View (optional)
 * System Status
 
 ---
@@ -199,16 +201,24 @@ FET
 
 Purpose:
 
-Represent the consolidated portfolio managed by Orion.
+Represent the current state of one Portfolio managed by one portfolio-producing Investment Framework.
 
-Fields:
+PortfolioState is not a consolidated cross-framework source of truth.
 
-* ETF Allocation
-* Equity Holdings
-* Digital Asset Holdings
-* Cash Allocation
+Fields may include:
 
-Portfolio State aggregates outputs from all portfolio frameworks.
+* Current Allocation
+* Portfolio Value
+* Position references
+* Cash exposure
+* Valuation Timestamp
+* Status
+
+Current Allocation and Portfolio Value are derived from underlying Position and Cash state.
+
+# Overall Portfolio View
+
+An optional derived aggregate view across Moon, Orbit, Supernova, and Phoenix. It is not a canonical source of truth and must not replace individual PortfolioState objects.
 
 ---
 

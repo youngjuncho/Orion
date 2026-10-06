@@ -91,10 +91,11 @@ The Orion Engine recognizes the following event categories.
 |----------|---------|
 | System | Engine lifecycle |
 | Aurora | Market environment |
-| Moon | Portfolio allocation |
-| Supernova | Equity research |
-| Phoenix | Digital asset research |
-| Portfolio | Consolidated portfolio |
+| Moon | Dynamic allocation framework |
+| Orbit | Static allocation framework |
+| Supernova | Equity research / satellite governance |
+| Phoenix | Digital asset research / satellite governance |
+| Portfolio | Common portfolio domain |
 | Governance | Documentation and approval |
 
 ---
@@ -207,7 +208,7 @@ Examples:
 
 Purpose:
 
-Represent consolidated portfolio changes.
+Represent changes within an individual Portfolio.
 
 Examples:
 

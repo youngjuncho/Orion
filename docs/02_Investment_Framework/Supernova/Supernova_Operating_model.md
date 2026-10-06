@@ -117,11 +117,7 @@ Replacement follows three separate stages:
 2. Governance Decision
 3. Portfolio Transition
 
-A challenger becoming stronger is a review trigger, not an automatic trade trigger.
-Replacement Risk is assessed independently from Company Score and does not require
-the presence of a challenger. A company may become High or Critical risk because
-its own leadership, moat, growth, execution, or investment thesis has materially
-deteriorated. Score alone cannot automatically replace an Approved Company.
+A challenger becoming stronger is a review trigger, not an automatic trade trigger. Score alone cannot automatically replace an Approved Company.
 
 A normal replacement is executed at the next regular review cycle after governance approval. An Emergency Review may be used for clear structural thesis failure.
 

@@ -50,6 +50,7 @@ src/
     frameworks/
       aurora/
       moon/
+      orbit/
       phoenix/
       supernova/
     services/
@@ -61,6 +62,8 @@ src/
 # src/orion/core
 
 Shared functionality.
+
+The core layer is the intended home for the common Portfolio Domain. The domain contract includes Portfolio, PortfolioTarget, PortfolioState, RebalancePlan, ExecutionOrder, Transfer, Asset, Position, Account, and Cash. Framework-specific concepts remain inside their respective framework packages.
 
 Examples:
 
@@ -87,7 +90,7 @@ No investment logic permitted.
 
 # src/orion/frameworks/moon
 
-ETF portfolio engine.
+Dynamic asset allocation framework implementation.
 
 Responsibilities:
 
@@ -97,9 +100,23 @@ Responsibilities:
 
 ---
 
+# src/orion/frameworks/orbit
+
+Static asset allocation framework implementation.
+
+Responsibilities:
+
+* Maintain strategic target allocation
+* Produce rebalance inputs
+* Represent Orbit-specific configuration and state
+
+Orbit implementation is a planned extension; this directory is not yet required to exist in the current runtime.
+
+---
+
 # src/orion/frameworks/aurora
 
-Monitoring engine.
+Monitoring framework implementation.
 
 Responsibilities:
 
@@ -111,7 +128,7 @@ Responsibilities:
 
 # src/orion/frameworks/supernova
 
-Equity portfolio engine.
+Equity satellite framework implementation.
 
 Responsibilities:
 
@@ -123,7 +140,7 @@ Responsibilities:
 
 # src/orion/frameworks/phoenix
 
-Digital asset portfolio engine.
+Digital asset satellite framework implementation.
 
 Responsibilities:
 

@@ -245,15 +245,82 @@ Fields:
 
 ---
 
+## Asset
+
+Represents the canonical identity/reference of an investable instrument. Framework-specific scores, research results, and governance states do not belong to Asset.
+
+Fields may include:
+
+- id
+- symbol/ticker
+- name
+- instrument type
+
+---
+
+## Position
+
+Represents an actual holding of an Asset within an Account. Position is the canonical source for actual quantity and holding value.
+
+Fields may include:
+
+- account
+- asset
+- quantity
+- market value
+- valuation timestamp
+
+---
+
+## Cash
+
+Represents an Account-level cash balance. Cash is not modeled as a generic Position, although cash exposure may appear in Portfolio allocation/state.
+
+---
+
+## Account
+
+Represents a custody/accounting boundary containing Positions and Cash. A Portfolio may be implemented through one or more Accounts.
+
+---
+
 ## Portfolio
 
-Represents the aggregated Moon portfolio.
+Represents a logical investment unit managed by an Investment Framework. Portfolio is not synonymous with an Account.
 
-Fields:
+A Portfolio may be implemented through one or more Accounts.
 
-- Holdings
-- Allocation
-- Rebalance Date
+---
+
+## PortfolioTarget
+
+Represents the desired allocation for a Portfolio.
+
+---
+
+## PortfolioState
+
+Represents the current state of a Portfolio, derived from its underlying Position and Cash state.
+
+Current Portfolio Value and Current Allocation are derived values, not independent sources of truth.
+
+---
+
+## RebalancePlan
+
+Represents the changes required to move PortfolioState toward PortfolioTarget.
+
+---
+
+## ExecutionOrder
+
+Represents a concrete trade instruction derived from a RebalancePlan.
+
+---
+
+## Transfer
+
+Represents movement of an Asset/value between Portfolios or Accounts. Transfer is distinct from Rebalance.
 
 ---
 

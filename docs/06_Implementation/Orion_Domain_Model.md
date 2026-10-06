@@ -63,8 +63,7 @@ Framework
     └── Strategy
 ```
 
-For portfolio-producing frameworks such as Moon, the canonical portfolio
-decision flow is:
+For any portfolio-producing framework, the common portfolio lifecycle is:
 
 ```text
 StrategyResult
@@ -78,19 +77,21 @@ RebalancePlan
 ExecutionOrder
 ```
 
-Current portfolio state is represented independently:
+Current portfolio state is represented by `PortfolioState`. Historical captures are represented by `PortfolioSnapshot`.
 
 ```text
-PortfolioSnapshot
+Account
+├── Position → Asset
+└── Cash
       ↓
-Current Holdings
+PortfolioState
 ```
 
 A rebalance plan is derived from the desired portfolio target and the
 current portfolio state:
 
 ```text
-PortfolioTarget + PortfolioSnapshot
+PortfolioTarget + PortfolioState
             ↓
        RebalancePlan
 ```
@@ -297,18 +298,41 @@ PortfolioTarget represents a desired state, not current holdings.
 
 ---
 
+# Portfolio
+
+Represents a logical investment unit managed by an Investment Framework.
+Portfolio is distinct from Account.
+
+# Account
+
+Represents a custody/accounting boundary containing Positions and Cash.
+
+# Asset
+
+Represents the canonical identity/reference of an investable instrument.
+
+# Position
+
+Represents an actual holding of an Asset within an Account. Position is the canonical source for actual quantity and market value.
+
+# Cash
+
+Represents an Account-level cash balance.
+
+# PortfolioState
+
+Represents the current state of a Portfolio derived from underlying Position and Cash state.
+
+Fields may include:
+
+* current allocation
+* portfolio value
+* status
+* valuation timestamp
+
 # PortfolioSnapshot
 
-Represents the actual portfolio state at a specific point in time.
-
-Fields:
-
-* holdings
-* captured_at
-* source
-
-PortfolioSnapshot represents current holdings independently from
-PortfolioTarget.
+Represents a historical, time-stamped capture of PortfolioState. It does not compete with PortfolioState as a canonical source of truth.
 
 ---
 
@@ -320,14 +344,14 @@ to the desired portfolio target.
 It is derived from:
 
 ```text
-PortfolioTarget + PortfolioSnapshot
+PortfolioTarget + PortfolioState
             ↓
        RebalancePlan
 ```
 
 Fields:
 
-* source_snapshot
+* source_state
 * target
 * changes
 * created_at
@@ -346,6 +370,10 @@ Fields and execution semantics are implementation concerns.
 Actual order execution is outside the current Moon MVP scope.
 
 ---
+
+# Transfer
+
+Represents movement of an asset/value between Portfolios or Accounts. Transfer is distinct from Rebalance.
 
 # Allocation
 
@@ -558,6 +586,10 @@ Fields:
 * state
 
 ---
+
+# Transfer
+
+Represents movement of an asset/value between Portfolios or Accounts. Transfer is distinct from Rebalance.
 
 # Allocation
 

@@ -142,13 +142,62 @@ A collection of investable assets managed by a framework.
 
 Examples:
 
-* Moon ETF Portfolio
-* Supernova Equity Portfolio
-* Phoenix Digital Asset Portfolio
+* Moon Portfolio
+* Orbit Portfolio
+* Supernova Portfolio
+* Phoenix Portfolio
 
 ---
 
 # Operating Architecture Terms
+
+## Account
+
+The custody/accounting boundary that contains Positions and Cash. An Account is distinct from a Portfolio.
+
+## Asset
+
+The canonical identity/reference of an investable instrument. Framework-specific scores and research do not belong to Asset.
+
+## Position
+
+An actual holding of an Asset within an Account. Position is the canonical source for actual quantity and market value.
+
+## Cash
+
+An Account-level cash balance. Cash is distinct from an investable Asset Position.
+
+## PortfolioTarget
+
+The desired allocation state of a Portfolio.
+
+## PortfolioState
+
+The current state of a Portfolio, derived from underlying Position and Cash state.
+
+## PortfolioSnapshot
+
+A historical, time-stamped capture of PortfolioState. It is not a competing source of truth.
+
+## RebalancePlan
+
+A derived plan describing changes required to move PortfolioState toward PortfolioTarget.
+
+## ExecutionOrder
+
+A concrete trade instruction derived from a RebalancePlan.
+
+## Transfer
+
+A Portfolio Operation that moves assets/value between Portfolios or Accounts. Transfer is distinct from Rebalance.
+
+## Current Allocation
+
+The allocation derived from actual Position and Cash values at a valuation time.
+
+## Target Allocation
+
+The desired allocation defined by PortfolioTarget.
 
 ## Monitoring Framework
 
@@ -160,15 +209,17 @@ Current Monitoring Framework:
 
 ---
 
-## Portfolio Framework
+## Investment Framework
 
-A framework that manages investable assets according to predefined rules.
+An independently governed investment methodology/system within Orion.
 
-Current Portfolio Frameworks:
+Current Investment Frameworks:
 
-* Moon
-* Supernova
-* Phoenix
+* Aurora — Monitoring / Market Environment
+* Moon — Dynamic Asset Allocation
+* Orbit — Static Asset Allocation
+* Supernova — Equity Satellite
+* Phoenix — Digital Asset Satellite
 
 ---
 

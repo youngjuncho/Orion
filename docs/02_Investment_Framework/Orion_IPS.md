@@ -34,7 +34,11 @@ Market state is more important than daily news flow.
 
 # Portfolio Architecture
 
-Orion consists of one Monitoring Framework and three independent Portfolio Engines.
+Orion consists of five independent Investment Frameworks.
+
+Aurora is the Monitoring / Market Environment Framework. Moon, Orbit, Supernova, and Phoenix are independent Investment Frameworks that manage Orion portfolios.
+
+The term "Engine" refers to an implementation/runtime component and is not an investment-architecture category.
 
 ## Aurora
 
@@ -66,7 +70,7 @@ Aurora does not manage portfolios.
 
 ## Moon
 
-ETF Portfolio Engine
+Dynamic Asset Allocation Framework
 
 Purpose:
 
@@ -88,7 +92,7 @@ Primary Question:
 
 ## Supernova
 
-Equity Portfolio Engine
+Equity Satellite Framework
 
 Purpose:
 
@@ -114,7 +118,7 @@ Framework:
 
 ## Phoenix
 
-Digital Asset Portfolio Engine
+Digital Asset Satellite Framework
 
 Purpose:
 
@@ -132,6 +136,24 @@ References:
 * D-022
 
 ---
+
+---
+
+## Orbit
+
+Static Asset Allocation Framework
+
+Purpose:
+
+* Maintain a strategic, static asset allocation
+* Apply the approved New All Weather portfolio targets
+* Rebalance toward target allocations on the defined rebalance schedule
+
+Primary Question:
+
+"What strategic allocation should be maintained?"
+
+Orbit is independent of Moon. A Moon-to-Orbit asset movement is an operational Transfer and does not create a decision dependency between the two frameworks.
 
 # Moon Policy
 

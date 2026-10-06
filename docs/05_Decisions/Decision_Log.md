@@ -754,7 +754,7 @@ Orion Operating Architecture Established
 
 Status:
 
-Approved
+Superseded by D-042
 
 ---
 
@@ -936,6 +936,10 @@ Approved
 ---
 
 ## D-027
+
+### Status
+
+Superseded in scope by D-042 and D-043. The Moon-specific StrategyResult and ConsensusAllocation concepts remain valid; the common PortfolioTarget / PortfolioState / RebalancePlan / ExecutionOrder concepts are now part of the common Orion Portfolio Domain.
 
 ### Decision
 
@@ -2193,125 +2197,71 @@ Replace applies only to an Approved company undergoing a documented replacement 
 This preserves the distinction between deterministic score aggregation and qualitative investment governance. It prevents a high or low score from becoming an unintended trading or lifecycle signal.
 
 
-## D-047 — Supernova Replacement Risk Definition
+---
 
-Date:
+## D-042 — Orion Investment Framework and Common Portfolio Domain Architecture
 
-2026-10-05
-
-Status:
+### Status
 
 Approved
 
-Category:
-
-Supernova
-
 ### Decision
 
-Supernova Replacement Risk is an independent governance assessment of the
-likelihood that an Approved Company may no longer deserve its portfolio position
-and may require Replacement or Retirement at a future governance review. It is
-not a short-term price, valuation, or market-volatility risk measure and is not
-mechanically derived from Company Score.
+The previous "one Monitoring Framework + three Portfolio Engines" model is superseded. Orion shall use five Investment Frameworks:
 
-Replacement Risk shall be assessed using four evidence-based axes:
+* Aurora — Monitoring / Market Environment Framework
+* Moon — Dynamic Asset Allocation Framework
+* Orbit — Static Asset Allocation Framework
+* Supernova — Equity Satellite Framework
+* Phoenix — Digital Asset Satellite Framework
 
-* Leadership Threat
-* Moat Deterioration
-* Growth / Execution Deterioration
-* Thesis Integrity
+Moon, Orbit, Supernova, and Phoenix are equal-level, independently governed Investment Frameworks. Engine is an implementation/runtime concept and is not an investment-level category.
 
-A challenger is not required for Replacement Risk to escalate. Conversely, a
-stronger challenger does not automatically imply high Replacement Risk when the
-Approved Company's leadership and thesis remain durable.
+### Common Portfolio Domain
 
-Risk levels remain qualitative:
+PortfolioTarget, PortfolioState, RebalancePlan, ExecutionOrder, and Transfer are common Orion Portfolio Domain concepts. Moon-specific StrategyResult and ConsensusAllocation remain framework-specific.
 
-* Very Low — no material replacement evidence; leadership and thesis remain strong
-* Low — concerns exist but long-term leadership and thesis remain durable
-* Medium — material warning signals warrant focused monitoring or review
-* High — core leadership, moat, growth, execution, or thesis has materially weakened
-* Critical — structural leadership or thesis is substantially broken and Replace or
-  Retire is a realistic governance outcome
+### Scope
 
-Replacement Risk escalation is a review trigger, not an automatic trading rule.
-Final action remains a separate Governance Decision.
+Orion manages the investment Frameworks and Portfolios for Moon, Orbit, Supernova, and Phoenix. Planet KRW, Planet USD, Deep AN/PN/DC, and Asteroid are outside Orion's managed Portfolio scope because they do not require Orion framework-level monitoring or decision support.
 
-### Rationale
+### Portfolio / Account Boundary
 
-This definition preserves the governance boundary established in D-046 while
-making Replacement Risk operationally assessable. It also prevents Supernova from
-becoming a copy of Phoenix's challenger-relative replacement model: Supernova must
-be able to recognize replacement risk caused by deterioration of the Approved
-Company itself, even without a clear challenger.
+Portfolio is a logical investment-management unit. Account is a custody/accounting boundary. A Portfolio may be implemented through one or more Accounts. Position is the canonical actual holding of an Asset within an Account. Cash is an Account-level balance.
 
+Portfolio Value and Current Allocation are derived from Position and Cash. PortfolioTarget is the canonical source for desired allocation. PortfolioState is the canonical current Portfolio state; PortfolioSnapshot is a historical capture of that state.
 
-## D-048 — Supernova Governance Review Reproducibility Contract
+Transfer is distinct from Rebalance. Moon → Orbit asset movement is an operational Transfer and does not create an architectural dependency between Moon and Orbit.
 
-Date:
+### Consequences
 
-2026-10-05
+* The Portfolio Domain is reusable across all four portfolio-producing frameworks.
+* Orion does not need to model every real-world account or asset held by YJ.
+* Overall Portfolio View, when needed, is derived and is not a canonical source of truth.
+* Existing Moon-specific portfolio concepts are promoted only where they are framework-independent.
 
-Status:
+### References
+
+* Orion_Technical_Architecture.md
+* Orion_Operating_Architecture.md
+* Orion_Data_Model.md
+* Orion_Domain_Model.md
+* Orion_State_Model.md
+
+---
+
+## D-043 — Portfolio State and Custody Truth Boundary
+
+### Status
 
 Approved
 
-Category:
-
-Supernova
-
 ### Decision
 
-Supernova V1 defines reproducibility at the **governance-record level**, not as identical independent human numeric scoring. A complete review must preserve sufficient evidence, assessments, dimension scores, temporal cutoff, Replacement Risk assessment, action, and governance decision to allow another reviewer to reconstruct the reasoning path.
-
-Company Score aggregation remains deterministic under D-045 once the five dimension scores are assigned. V1 does not introduce numeric calibration thresholds for assigning the individual 0–100 dimension scores.
-
-The canonical governance action vocabulary from D-046 is authoritative: `Continue`, `Promote`, `Review`, `Replace`, and `Retire`. Descriptive phrases may be used in rationale but must not become alternative action types.
-
-`Primary Risk Driver` identifies the most decision-relevant concern. `None material` is valid when no material concern is identified.
-
-`Evidence As Of` records the temporal evidence cutoff considered by the review and is distinct from `Review Date`.
+Asset is reference/master data. Position is the canonical actual holding state. Cash is an Account-level balance. Portfolio Value and Current Allocation are derived valuation outputs. PortfolioTarget is desired state, while PortfolioState is current Portfolio state. PortfolioSnapshot is a historical capture.
 
 ### Rationale
 
-The five-company baseline demonstrated that Company Score can be reconstructed deterministically from recorded dimension scores and that Replacement Risk can be documented without a challenger. Requiring identical human scores would introduce false precision into an intentionally evidence-assisted framework. The appropriate V1 control is traceability, canonical terminology, and explicit governance decisions.
+This separation prevents target allocation, actual holdings, valuation, custody state, and execution instructions from being collapsed into one Portfolio object.
 
-### Consequence
-
-No additional Replacement Risk formula or numeric threshold is required for Supernova V1. Future calibration may be introduced only through an explicit governance decision if repeated reviews demonstrate unacceptable reviewer divergence.
-
-
-## D-049 — Supernova Five-Company Baseline Governance Approval
-
-Date:
-
-2026-10-05
-
-Status:
-
-Approved
-
-Category:
-
-Supernova
-
-### Decision
-
-YJ approved the 2026-10-05 Supernova governance baseline for the five current Approved Companies: NVDA, GOOGL, ISRG, PLTR, and CEG.
-
-The approved baseline is:
-
-* NVDA — Company Score 97, Approved, Leader, Replacement Risk Low, Action Continue
-* GOOGL — Company Score 93, Approved, Leader, Replacement Risk Low, Action Continue
-* ISRG — Company Score 97, Approved, Leader, Replacement Risk Very Low, Action Continue
-* PLTR — Company Score 95, Approved, Leader, Replacement Risk Low, Action Continue
-* CEG — Company Score 91, Approved, Leader, Replacement Risk Low, Action Continue
-
-This decision confirms the governance state for the review cycle. It is not an automatic trade instruction and does not override the existing Portfolio Transition process. Future changes require the normal Supernova governance review and decision process.
-
-Approver: YJ
-
-### Rationale
-
-The five-company baseline was reviewed after completion of the Supernova governance contracts, including Company Score aggregation, Replacement Risk, score-to-governance boundaries, lifecycle governance, and reproducibility. YJ approved the resulting records without requiring further governance redesign.
+---

@@ -10,7 +10,7 @@ Orion is designed as a modular Personal Investment Operating System consisting o
 
 # System Overview
 
-Orion OS consists of one Monitoring Framework and three Portfolio Engines.
+Orion OS consists of five Investment Frameworks. Aurora is a Monitoring / Market Environment Framework; Moon, Orbit, Supernova, and Phoenix are independently governed Investment Frameworks that manage portfolios.
 
 ```text
 Orion OS
@@ -18,10 +18,12 @@ Orion OS
   Monitoring Framework
     Aurora
 
-  Portfolio Engines
-    Moon
-    Supernova
-    Phoenix
+  Investment Frameworks
+    Aurora      (Monitoring / Market Environment)
+    Moon        (Dynamic Asset Allocation)
+    Orbit       (Static Asset Allocation)
+    Supernova   (Equity Satellite)
+    Phoenix     (Digital Asset Satellite)
 ```
 
 Aurora provides market context.
@@ -86,9 +88,10 @@ Data Layer
   -> CLI / Web UI
 ```
 
-Aurora is the Monitoring Layer. It provides market context to the investor
-and does not control the portfolio engines. Moon, Supernova, and Phoenix are
-independently governed Portfolio Engines.
+Aurora provides market context and does not control the other Investment Frameworks.
+Moon, Orbit, Supernova, and Phoenix are independently governed Investment Frameworks.
+
+The term Engine denotes an implementation/runtime component and is not an investment-level architectural category.
 
 ---
 
@@ -162,7 +165,35 @@ Framework logic belongs inside:
 
 ---
 
-## Dashboard Layer
+## Common Portfolio Domain
+
+The common Portfolio Domain is shared by Moon, Orbit, Supernova, and Phoenix.
+It is independent of any one investment methodology.
+
+```text
+Portfolio
+戍式式 PortfolioTarget
+戍式式 PortfolioState
+戌式式 Operations
+    戍式式 Rebalance
+    戍式式 Execution
+    戌式式 Transfer
+```
+
+Custody/accounting state is represented separately:
+
+```text
+Portfolio
+    ⊿
+Account
+戍式式 Position ⊥ Asset
+戌式式 Cash
+```
+
+Current Portfolio Value and Current Allocation are derived from Position and Cash.
+PortfolioTarget is the canonical source for desired allocation.
+
+# Dashboard Layer
 
 Responsibilities:
 
@@ -186,7 +217,7 @@ Dashboard code belongs inside:
 
 ## Purpose
 
-ETF Portfolio Engine.
+Dynamic Asset Allocation Framework.
 
 ---
 
@@ -266,7 +297,7 @@ Transition Risk
 
 ## Purpose
 
-Equity Portfolio Engine for 5D Megatrend companies.
+Equity Satellite Framework for 5D Megatrend companies.
 
 ---
 
@@ -300,7 +331,7 @@ Accumulation Status
 
 ## Purpose
 
-Digital Asset Portfolio Engine.
+Digital Asset Satellite Framework.
 
 ---
 
@@ -457,7 +488,7 @@ Phoenix
 
 Objective:
 
-Digital asset portfolio engine
+Digital Asset Satellite Framework
 
 ---
 
