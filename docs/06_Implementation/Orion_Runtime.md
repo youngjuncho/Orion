@@ -103,9 +103,23 @@ registry, event store, and state store for one execution. These components are
 temporary and are not durable persistence.
 
 After frameworks are registered, `RuntimeSession.build_context()` creates the
-read-only `RuntimeContext` consumed by framework code. This helper only
-assembles current in-memory values; it does not execute frameworks, publish
-events, or persist state.
+read-only `RuntimeContext` consumed by framework code. The Runtime now also
+provides `RuntimeSession.execute_frameworks()`, which accepts explicit framework
+executors, invokes them in registry order, validates the canonical
+`FrameworkResult` contract, and assembles the public `OrionResult`.
+
+The Runtime now also provides the Decision Resolution → State Transition →
+StateStore commit boundary. Frameworks propose `DecisionCandidate` values only.
+An explicit acceptance callback produces `AcceptedDecision` values; an explicit
+transition callback produces `StateTransition` values; the resulting transitions
+are committed as one authoritative `OrionStateSnapshot` for the execution. No
+decision is accepted implicitly. After a successful state commit, an optional
+Runtime event factory may create correlated Domain Events, which are then appended
+to the execution-scoped `EventStore`. `RuntimeSession.record_events()` rejects
+events whose `execution_id` does not match the current execution. EventStore is
+append-only in-memory storage for the MVP; durable persistence remains a later
+workstream. Framework code does not mutate StateStore, EventStore, or Dashboard
+state directly.
 
 ## Configuration
 
@@ -233,9 +247,7 @@ Purpose:
 
 Provide normalized data for dashboard visualization.
 
-The Dashboard consumes runtime data.
-
-It performs no investment calculations.
+The Dashboard consumes runtime data through the official `OrionResult.dashboard_data` boundary. It performs no investment calculations and does not call Framework Engines directly.
 
 ---
 

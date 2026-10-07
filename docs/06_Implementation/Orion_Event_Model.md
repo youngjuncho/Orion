@@ -38,6 +38,24 @@ EventStore is append-only historical storage; Event Sourcing is not adopted.
 
 ---
 
+
+## Runtime Event Correlation
+
+`RuntimeSession.record_events()` is the MVP EventStore boundary. It accepts only
+canonical `Event` instances whose `execution_id` matches the current
+`ExecutionMetadata.execution_id`, rejects duplicate event identifiers, and appends
+them to the execution-scoped in-memory EventStore.
+
+For state-changing operations, `resolve_and_commit()` publishes the authoritative
+`OrionStateSnapshot` first and then invokes its optional event factory. This keeps
+the runtime ordering aligned with the canonical contract:
+
+```text
+Accepted Decision → State Transition → successful State Commit → Domain Event
+```
+
+The current implementation does not add durable persistence or Event Sourcing.
+
 # Orion Event Model
 
 Version: 1.0

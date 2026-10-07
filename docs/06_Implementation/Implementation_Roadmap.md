@@ -18,14 +18,14 @@ Core architecture is **closed** by `CORE-001` through `CORE-020`. Remaining work
 
 Status: Implementation Pending
 
-1. Public Orion Runtime entry point
-2. Full runtime lifecycle orchestration
-3. Framework execution isolation
-4. FrameworkResult collection/validation
-5. Decision resolution boundary
-6. State Transition + StateStore commit
-7. Domain/Lifecycle Event creation
-8. RuntimeResult construction
+1. Public Orion Runtime entry point — Partial: `RuntimeSession.execute_frameworks()` now provides the initial orchestration boundary
+2. Full runtime lifecycle orchestration — Pending: Decision/State/Event pipeline remains
+3. Framework execution isolation — Partial: explicit executor boundary and failure transition are implemented
+4. FrameworkResult collection/validation — Implemented for the initial orchestration boundary
+5. Decision resolution boundary — implemented in RuntimeSession
+6. State Transition + StateStore commit — implemented in RuntimeSession
+7. Domain/Lifecycle Event creation — implemented: execution-correlated EventStore append boundary; state-transition events are created only after successful StateStore commit
+8. RuntimeResult construction — partial: OrionResult now returns the execution EventStore view
 
 ## Workstream B — Data Pipeline
 
@@ -65,8 +65,8 @@ Implement only after each Framework's governing specification is sufficiently co
 
 ## Workstream E — Presentation / API
 
-* CLI full Runtime integration
-* Dashboard Runtime integration
+* CLI full Runtime integration — Pending: command handlers still expose legacy framework-specific commands
+* Dashboard Runtime integration — Partial: Dashboard consumes only `OrionResult.dashboard_data`; framework-engine dependency is explicitly prohibited and regression-tested
 * API implementation when required
 
 ## Workstream F — Future Infrastructure

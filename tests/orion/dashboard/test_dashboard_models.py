@@ -46,3 +46,21 @@ def test_dashboard_models_reject_invalid_values_and_component_types() -> None:
         AuroraSummary(80, "Neutral", "Unknown", "Stable")  # type: ignore[arg-type]
     with pytest.raises(ValueError, match="portfolio"):
         OrionDashboardView(None, None, None, None, None)  # type: ignore[arg-type]
+
+
+def test_dashboard_module_has_no_framework_engine_dependency() -> None:
+    from pathlib import Path
+
+    source = Path(__file__).resolve().parents[3] / "src" / "orion" / "dashboard"
+    forbidden = ("orion.frameworks", "FrameworkEngine")
+    for path in source.glob("*.py"):
+        text = path.read_text(encoding="utf-8")
+        assert not any(token in text for token in forbidden), path.name
+
+
+def test_dashboard_result_mapping_is_read_only() -> None:
+    result = _result()
+    view = OrionDashboard().build_view(result)
+    with pytest.raises(TypeError):
+        result.dashboard_data["aurora"] = {"market_regime": "tampered"}
+    assert view.aurora.market_regime == "Risk On"

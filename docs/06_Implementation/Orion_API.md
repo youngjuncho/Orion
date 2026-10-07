@@ -295,6 +295,7 @@ Contains:
 * Framework Results
 * State Snapshot
 * Generated Events
+* Dashboard Data
 
 ---
 
@@ -307,6 +308,9 @@ Contains:
 * State
 * Score
 * Generated Events
+
+Runtime orchestration accepts explicit Framework executors and requires each
+executor to return this canonical contract.
 
 ---
 
@@ -373,6 +377,8 @@ The Orion API consumes:
 The CLI specification is defined in:
 
 * Orion_CLI_Spec.md
+
+The Dashboard consumes the official `OrionResult` presentation boundary. It does not import or execute Framework Engines. Dashboard rendering is therefore a read-only projection of Runtime output; Runtime execution and decision logic remain outside the presentation layer.
 
 The Dashboard specification is defined in:
 

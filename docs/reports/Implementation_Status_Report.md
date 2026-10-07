@@ -91,3 +91,8 @@ A green test suite validates implemented contracts; it does not make incomplete 
 ## Architecture vs Implementation
 
 Do not interpret an incomplete implementation item above as an architecture blocker. The architecture baseline is `CORE-001` through `CORE-020`.
+
+
+## 2026-10-07 Runtime Integration Step 2
+
+Runtime now implements the Decision Candidate → Accepted Decision → State Transition → StateStore commit boundary. Acceptance and transition policies remain explicit callables; no Framework directly mutates StateStore. Multiple accepted transitions from one execution are committed as one authoritative `OrionStateSnapshot`. Domain Event creation and EventStore persistence remain the next Runtime workstream.

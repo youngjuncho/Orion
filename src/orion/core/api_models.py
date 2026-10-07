@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Mapping, TypeVar
 
+from .decision import DecisionCandidate
 from .events import Event
 from .execution import ExecutionMetadata
 from .models import Score, State
@@ -23,6 +24,7 @@ class FrameworkResult:
     state: State | None = None
     score: Score | None = None
     events: tuple[Event, ...] = ()
+    decision_candidates: tuple[DecisionCandidate, ...] = ()
 
     def __post_init__(self) -> None:
         _require_non_empty_string("framework_name", self.framework_name)
@@ -32,6 +34,7 @@ class FrameworkResult:
         if self.score is not None and not isinstance(self.score, Score):
             raise ValueError("score must be a Score when provided")
         object.__setattr__(self, "events", _typed_tuple(self.events, Event, "events"))
+        object.__setattr__(self, "decision_candidates", _typed_tuple(self.decision_candidates, DecisionCandidate, "decision_candidates"))
 
 
 @dataclass(frozen=True)
