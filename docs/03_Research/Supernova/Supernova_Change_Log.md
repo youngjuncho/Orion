@@ -203,6 +203,27 @@ Status:
 Approved
 
 
+## S-008
+
+Supernova Governance Review Reproducibility Contract Established
+
+Type:
+
+Governance
+
+Date:
+
+2026-10-05
+
+Summary:
+
+Established the V1 governance reproducibility contract for Supernova. Reproducibility is defined at the governance-record level through evidence, assessment, dimension scores, Evidence As Of, Replacement Risk, action, and governance decision. Canonical action vocabulary, Primary Risk Driver semantics, and Evidence As Of semantics are fixed by the contract.
+
+Status:
+
+Approved
+
+
 ## S-009
 
 Supernova Five-Company Baseline Governance Approval

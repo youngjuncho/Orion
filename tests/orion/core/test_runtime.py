@@ -63,3 +63,8 @@ def test_runtime_context_rejects_empty_framework_registry() -> None:
 
     with pytest.raises(ValueError, match="at least one"):
         RuntimeContext(config, execution, registered_frameworks=())
+
+
+def test_default_frameworks_include_all_five_canonical_frameworks() -> None:
+    from orion.core import DEFAULT_FRAMEWORKS
+    assert DEFAULT_FRAMEWORKS == ("Aurora", "Moon", "Orbit", "Supernova", "Phoenix")

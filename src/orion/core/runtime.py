@@ -12,7 +12,7 @@ from .config_loader import OrionConfig
 from .execution import ExecutionMetadata
 from .state import OrionStateSnapshot
 
-DEFAULT_FRAMEWORKS = ("Aurora", "Moon", "Supernova", "Phoenix")
+DEFAULT_FRAMEWORKS = ("Aurora", "Moon", "Orbit", "Supernova", "Phoenix")
 
 
 @dataclass(frozen=True)

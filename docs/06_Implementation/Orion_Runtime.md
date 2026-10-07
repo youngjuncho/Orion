@@ -1,3 +1,20 @@
+# 2026-10-07 Core Reconciliation Addendum
+
+> **Current authority:** The canonical Runtime lifecycle is defined by `CORE-004` and `CORE-012`. Historical references to “Orion Engine” mean the application Runtime and should not be interpreted as a separate Core component.
+
+Canonical lifecycle:
+
+```text
+Initialize → Configuration → Data → State Restore → Context
+→ Framework Execution → Result Validation → Decision Resolution
+→ State Transition → State Commit → Event Creation
+→ Persistence → Presentation → Completion
+```
+
+`RuntimeSession` is one execution lifecycle boundary; `RuntimeContext` is the execution-scoped input bundle. `build_context()` is assembly only. Framework-local failure preserves prior Framework state and permits independent Frameworks to continue where possible.
+
+---
+
 # Orion Runtime
 
 Version: 1.0
@@ -122,7 +139,7 @@ Examples:
 * Index Data
 * Economic Indicators
 
-The runtime provides read-only access.
+The runtime provides read-only access. Dashboard data is exposed through the official runtime result boundary; presentation code does not call Framework Engines directly.
 
 ---
 
@@ -136,6 +153,7 @@ Current Frameworks:
 
 * Aurora
 * Moon
+* Orbit
 * Supernova
 * Phoenix
 
@@ -326,7 +344,7 @@ Persistent information is stored separately after execution.
 
 Examples:
 
-* Portfolio State / Snapshots
+* Portfolio Snapshots
 * Regime History
 * Review Records
 * Execution Logs

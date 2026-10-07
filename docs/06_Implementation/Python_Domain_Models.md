@@ -1,3 +1,24 @@
+# 2026-10-07 Core Reconciliation Addendum
+
+> **Current authority:** The canonical domain ownership/mapping is defined by `CORE-019`. The mapping table later in this historical implementation document must be read together with that baseline.
+
+Canonical portfolio concepts are separate:
+
+```text
+StrategyResult
+  → ConsensusAllocation
+  → PortfolioTarget
+  → RebalancePlan
+  → ExecutionOrder
+  → ExecutionResult
+
+PortfolioSnapshot = independent current holdings
+```
+
+The existing minimal Moon `Portfolio` class is an implementation scaffold, not permission to collapse these concepts into one canonical domain object.
+
+---
+
 # Python Domain Models
 
 Version: 1.0

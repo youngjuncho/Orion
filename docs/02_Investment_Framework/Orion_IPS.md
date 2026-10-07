@@ -34,11 +34,17 @@ Market state is more important than daily news flow.
 
 # Portfolio Architecture
 
-Orion consists of five independent Investment Frameworks.
+Orion consists of five independently governed Investment Frameworks:
 
-Aurora is the Monitoring / Market Environment Framework. Moon, Orbit, Supernova, and Phoenix are independent Investment Frameworks that manage Orion portfolios.
+* Aurora — Market Environment / Monitoring Framework
+* Moon — Dynamic Asset Allocation Framework
+* Orbit — Static Asset Allocation Framework
+* Supernova — Equity Satellite Framework
+* Phoenix — Digital Asset Satellite Framework
 
-The term "Engine" refers to an implementation/runtime component and is not an investment-architecture category.
+Moon, Orbit, Supernova, and Phoenix are equal-level portfolio-producing Frameworks.
+`Engine` is an implementation/runtime concept inside a Framework; it is not an
+investment-level category. The canonical application execution boundary is Orion Runtime.
 
 ## Aurora
 
@@ -90,6 +96,26 @@ Primary Question:
 
 ---
 
+## Orbit
+
+Static Asset Allocation Framework
+
+Purpose:
+
+* Maintain the strategic New All Weather target allocation
+* Provide a stable, rules-based long-term portfolio structure
+* Rebalance toward the approved static target weights
+
+Primary Question:
+
+"What strategic allocation should the portfolio maintain?"
+
+Orbit is independently governed from Moon. Moon is Dynamic Asset Allocation; Orbit is
+Static Asset Allocation. A Moon-to-Orbit asset movement is an operational Transfer,
+not an architectural dependency between the two Frameworks.
+
+---
+
 ## Supernova
 
 Equity Satellite Framework
@@ -136,24 +162,6 @@ References:
 * D-022
 
 ---
-
----
-
-## Orbit
-
-Static Asset Allocation Framework
-
-Purpose:
-
-* Maintain a strategic, static asset allocation
-* Apply the approved New All Weather portfolio targets
-* Rebalance toward target allocations on the defined rebalance schedule
-
-Primary Question:
-
-"What strategic allocation should be maintained?"
-
-Orbit is independent of Moon. A Moon-to-Orbit asset movement is an operational Transfer and does not create a decision dependency between the two frameworks.
 
 # Moon Policy
 

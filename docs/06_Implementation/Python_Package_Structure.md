@@ -1,10 +1,10 @@
 # Python Package Structure
 
-Version: 1.1
+Version: 2.0
 
-Status: Active for current scaffolding; future packages remain Draft
+Status: Approved V1 Baseline
 
-Last Updated: 2026-09-06
+Last Updated: 2026-10-07
 
 Depends On:
 

@@ -1,269 +1,89 @@
 # Implementation Roadmap
 
-Version: 1.0
+Version: 2.0
 
 Status: Active
 
-Last Updated: 2026-07-28
+Last Updated: 2026-10-07
 
-Depends On:
+## Purpose
 
-* Orion_Operating_Architecture.md
-* Orion_Runtime.md
-* Orion_Service_Model.md
-* Python_Package_Structure.md
-* Orion_API.md
+Defines the current software implementation sequence after the Core Architecture Review.
 
----
+## Architecture Status
 
-# Purpose
+Core architecture is **closed** by `CORE-001` through `CORE-020`. Remaining work in Core is implementation and validation, not another architecture redesign.
 
-Defines the implementation roadmap for Orion OS.
+## Workstream A — Core Runtime
 
-This roadmap serves as the master development plan and establishes the recommended implementation sequence.
+Status: Implementation Pending
 
-Unlike the Orion Roadmap, which describes long-term project evolution, this document focuses on software implementation.
+1. Public Orion Runtime entry point
+2. Full runtime lifecycle orchestration
+3. Framework execution isolation
+4. FrameworkResult collection/validation
+5. Decision resolution boundary
+6. State Transition + StateStore commit
+7. Domain/Lifecycle Event creation
+8. RuntimeResult construction
 
----
+## Workstream B — Data Pipeline
 
-# Development Principles
+Status: Contract Closed / Implementation Pending
 
-Implementation should proceed in the following order:
+1. Source adapters
+2. Raw-to-normalized transformation
+3. Validation and freshness checks
+4. Canonical MarketDataSet production
+5. Runtime data handoff integration
 
-1. Domain Models
-2. Services
-3. Runtime
-4. Framework Engines
-5. CLI
-6. Dashboard
-7. Testing
-8. Production
+## Workstream C — Moon Vertical Slice
 
-Documentation should always precede implementation.
+Status: Partial
 
----
+Already established:
 
-# Phase 1 — Foundation
+* StrategyResult
+* consensus allocation
+* execution mapping
+* PortfolioTarget
 
-Status:
+Next:
 
-Completed
+* PortfolioSnapshot
+* RebalancePlan
+* Runtime integration
+* CLI end-to-end execution
 
-Tasks:
+## Workstream D — Frameworks
 
-- [x] Vision
-- [x] Architecture
-- [x] Investment Framework
-- [x] Research Documents
-- [x] Interface Specifications
-- [x] Domain Documentation
-- [x] Runtime Documentation
-- [x] API Documentation
+Implement only after each Framework's governing specification is sufficiently complete.
 
-Deliverables:
+* Aurora — methodology first, then implementation
+* Supernova — framework governance first, then engine integration
+* Phoenix — category/leader/scoring governance first, then engine integration
 
-* Orion documentation baseline
+## Workstream E — Presentation / API
 
----
+* CLI full Runtime integration
+* Dashboard Runtime integration
+* API implementation when required
 
-# Phase 2 — Core Platform
+## Workstream F — Future Infrastructure
 
-Status:
+Not current Core blockers:
 
-In Progress
+* durable State/Event persistence
+* replay/event-sourcing capabilities
+* production storage technology
+* retention infrastructure
+* distributed runtime
 
-Tasks:
+## Implementation Rules
 
-- [ ] Python Package Migration
-- [ ] Domain Models
-- [ ] Configuration Loader
-- [ ] Event System
-- [ ] State Management
-- [ ] Service Layer
-
-Deliverables:
-
-* Orion Core Platform
-
----
-
-# Phase 3 — Infrastructure
-
-Status:
-
-Planned
-
-Tasks:
-
-- [ ] Market Data Provider
-- [ ] Storage Layer
-- [ ] Logging
-- [ ] Cache
-- [ ] Scheduler
-
-Deliverables:
-
-* Infrastructure Layer
-
----
-
-# Phase 4 — Moon MVP
-
-Status:
-
-Planned
-
-Tasks:
-
-- [ ] Moon Engine
-- [ ] Strategy Interface
-- [ ] ADM
-- [ ] Portfolio Allocation
-- [ ] Moon CLI
-- [ ] Moon Dashboard
-
-Deliverables:
-
-* First production investment engine
-
----
-
-# Phase 5 — Aurora MVP
-
-Status:
-
-Planned
-
-Tasks:
-
-- [ ] Indicator Engine
-- [ ] Regime Engine
-- [ ] Aurora Dashboard
-
-Deliverables:
-
-* Market Regime Framework
-
----
-
-# Phase 6 — Supernova MVP
-
-Status:
-
-Planned
-
-Tasks:
-
-- [ ] Theme Engine
-- [ ] Company Engine
-- [ ] Watchlist Engine
-- [ ] Supernova Dashboard
-
-Deliverables:
-
-* Equity Research Framework
-
----
-
-# Phase 7 — Phoenix MVP
-
-Status:
-
-Planned
-
-Tasks:
-
-- [ ] Category Engine
-- [ ] Candidate Evaluation
-- [ ] Leader Selection
-- [ ] Phoenix Dashboard
-
-Deliverables:
-
-* Digital Asset Framework
-
----
-
-# Phase 8 — Orion Integration
-
-Status:
-
-Planned
-
-Tasks:
-
-- [ ] Orion Engine
-- [ ] Runtime Integration
-- [ ] Workflow Automation
-- [ ] Event Bus
-- [ ] Unified Dashboard
-
-Deliverables:
-
-* Fully integrated Orion OS
-
----
-
-# Phase 9 — Production Release
-
-Status:
-
-Planned
-
-Tasks:
-
-- [ ] Unit Tests
-- [ ] Integration Tests
-- [ ] Performance Optimization
-- [ ] Documentation Review
-- [ ] Packaging
-- [ ] Version 1.0 Release
-
-Deliverables:
-
-* Orion OS v1.0
-
----
-
-# Priority
-
-## Priority A
-
-- Domain Models
-- Configuration
-- Runtime
-- Moon Engine
-- ADM Strategy
-
----
-
-## Priority B
-
-- Aurora
-- Supernova
-- Phoenix
-
----
-
-## Priority C
-
-- REST API
-- Web Dashboard
-- Cloud Deployment
-- Notification Services
-
----
-
-# Relationship with Other Documents
-
-Orion_Roadmap.md
-
-Defines the long-term evolution of Orion.
-
-Implementation_Roadmap.md
-
-Defines the implementation sequence.
-
-Implementation_Status_Report.md
-
-Tracks implementation progress.
+* Documentation/approved contract precedes new business behavior.
+* Do not invent investment methodology.
+* Do not activate unresolved strategies.
+* Do not move investment logic into CLI, Dashboard, or Data layer.
+* Do not create generic abstractions without a concrete responsibility.
+* Do not reopen Core architecture for normal implementation gaps.

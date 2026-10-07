@@ -1,3 +1,6 @@
+
+> **Historical snapshot:** This report predates the 2026-10-07 Core Architecture closure. For current Core terminology and status, use `docs/05_Decisions/Core_Architecture_Decision_Baseline.md` and `docs/reports/Implementation_Status_Report.md`. Historical terms such as Portfolio Engine are retained only as evidence of the earlier architecture discussion.
+
 # Architecture Reconciliation Summary
 
 Date: 2026-06-23
@@ -167,7 +170,7 @@ Resolved Critical issue:
 
 Resolved Major issues:
 
-* Technical architecture no longer treats Aurora, Moon, Supernova, and Phoenix as equivalent primary engines.
+* Technical architecture no longer treats Aurora, Moon, Orbit, Supernova, and Phoenix as equivalent primary engines.
 * Technical architecture now follows D-023:
   * Aurora = Monitoring Framework
   * Moon = ETF Portfolio Engine

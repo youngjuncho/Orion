@@ -47,7 +47,7 @@ Orion Engine
  ┌──────┼───────────────┐
  │      │       │       │
  ▼      ▼       ▼       ▼
-Aurora Moon Supernova Phoenix
+Aurora Moon Orbit Supernova Phoenix
  │      │       │       │
  ▼      ▼       ▼       ▼
 Pipelines

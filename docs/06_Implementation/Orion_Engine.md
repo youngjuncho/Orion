@@ -1,3 +1,11 @@
+# 2026-10-07 Core Reconciliation Addendum
+
+> **Current authority:** The canonical term is **Orion Runtime**. This legacy `Orion_Engine.md` filename is retained for compatibility only.
+
+The Runtime is the public application execution boundary and orchestrates Configuration, Data, State, Framework execution, Decision resolution, State Transition, Events, and `RuntimeResult`. It does not contain Framework investment methodology.
+
+---
+
 # Orion Engine
 
 Version: 1.0
@@ -67,7 +75,7 @@ The Orion Engine does not implement investment logic.
         │
         ├───────────┬───────────────┐
         │           │               │
-Aurora Engine  Moon Engine  Supernova Engine  Phoenix Engine
+Aurora Engine  Moon Engine  Orbit Engine  Supernova Engine  Phoenix Engine
 ```
 
 ---

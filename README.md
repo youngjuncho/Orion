@@ -1,3 +1,18 @@
+
+## 2026-10-07 Core Architecture Status
+
+Core Architecture is **CLOSED** under `CORE-001` through `CORE-020`. The canonical application execution boundary is **Orion Runtime**; Aurora, Moon, Orbit, Supernova, and Phoenix are Frameworks. Remaining gaps are implementation, validation, Framework-specific specification, or future infrastructure.
+
+Current navigation:
+
+- `docs/05_Decisions/Core_Architecture_Decision_Baseline.md` - Core closure baseline
+- `docs/06_Implementation/Orion_Runtime.md` - Runtime lifecycle
+- `docs/06_Implementation/Orion_State_Model.md` - State/transition semantics
+- `docs/06_Implementation/Orion_Event_Model.md` - Event semantics
+- `docs/06_Implementation/Python_Domain_Models.md` - canonical domain -> Python mapping
+- `docs/reports/Implementation_Status_Report.md` - current implementation status
+- `docs/review/blocker_registry.md` - current blockers (Core architecture: 0)
+
 # Orion
 
 ## Personal Investment Operating System
@@ -21,78 +36,28 @@ The goal is to observe the current state of markets and make systematic investme
 
 ## Orion Architecture
 
-### Moon
-
-Dynamic asset allocation engine.
-
-Purpose:
-
-* Monthly portfolio rebalancing
-* Tactical asset allocation
-* Evidence-based investment strategies
-
-Planned strategies:
-
-* ADM
-* BAA
-* BDA
-* HAA
-* VAA
+Orion is organized around five independently governed Investment Frameworks:
 
 ### Aurora
+Market environment / monitoring framework.
 
-Market climate monitoring engine.
+### Moon
+Dynamic Asset Allocation framework.
 
-Purpose:
-
-* Liquidity monitoring
-* Volatility monitoring
-* Macro regime detection
-
-Outputs:
-
-* Risk On
-* Neutral
-* Risk Off
+### Orbit
+Static Asset Allocation framework.
 
 ### Supernova
-
-5D Megatrend investment framework.
-
-Purpose:
-
-* Long-term accumulation of dominant companies
-* Monitoring structural economic trends
-* Tracking moat and leadership changes
-
-5D Themes:
-
-* Decoupling
-* Deglobalization
-* Demographics
-* Decarbonization
-* Digital Transformation
+5D Megatrend equity satellite framework.
 
 ### Phoenix
+Digital asset category-leader satellite framework.
 
-Digital asset ecosystem monitoring framework.
+The common Portfolio Domain is shared by Moon, Orbit, Supernova, and Phoenix.
+Aurora remains outside the Portfolio Domain.
 
-Purpose:
-
-* Identify emerging sector leaders
-* Monitor on-chain strength and adoption
-* Maintain a curated digital asset watchlist
-
-Current focus areas:
-
-* AI Networks
-* Oracle Infrastructure
-* RWA
-* Decentralized GPU
-* Layer 1 Ecosystems
-* Digital Identity
-
----
+The canonical application execution boundary is **Orion Runtime**.
+Frameworks return framework results and do not directly mutate StateStore/EventStore.
 
 ## Development Roadmap
 
@@ -124,7 +89,7 @@ Web Dashboard
 
 ## Status
 
-Implementation scaffolding complete; documentation closure in progress.
+Core architecture is closed; implementation and Framework-specific integration continue.
 
 The repository currently contains tested core contracts, CLI/dashboard
 routing, framework scaffolds, and a partial Moon ADM path. Research and

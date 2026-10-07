@@ -1,3 +1,18 @@
+# 2026-10-07 Core Reconciliation Addendum
+
+> **Current authority:** `CORE-002`, `CORE-008`, and `CORE-015` supersede older generalized “framework results become State” wording in this document.
+
+Current rules:
+
+* State = current authoritative domain facts.
+* `OrionStateSnapshot` = immutable materialized representation of State at a point in time.
+* A calculation result does not automatically become State.
+* Authoritative State changes only through an explicit State Transition from an Accepted Decision or approved domain operation.
+* StateStore is the authoritative current-state commit boundary.
+* A Domain Event is created only after successful State commit.
+
+---
+
 # Orion State Model
 
 Version: 1.0
@@ -58,7 +73,6 @@ Orion State
 
 ├── Aurora State
 ├── Moon State
-├── Orbit State
 ├── Supernova State
 └── Phoenix State
 ```
@@ -75,8 +89,7 @@ Fields:
 * Execution ID
 * Orion Version
 * Framework States
-* Framework States
-* Derived Overall Portfolio View (optional)
+* Portfolio State
 * System Status
 
 ---
@@ -201,24 +214,16 @@ FET
 
 Purpose:
 
-Represent the current state of one Portfolio managed by one portfolio-producing Investment Framework.
+Represent the consolidated portfolio managed by Orion.
 
-PortfolioState is not a consolidated cross-framework source of truth.
+Fields:
 
-Fields may include:
+* ETF Allocation
+* Equity Holdings
+* Digital Asset Holdings
+* Cash Allocation
 
-* Current Allocation
-* Portfolio Value
-* Position references
-* Cash exposure
-* Valuation Timestamp
-* Status
-
-Current Allocation and Portfolio Value are derived from underlying Position and Cash state.
-
-# Overall Portfolio View
-
-An optional derived aggregate view across Moon, Orbit, Supernova, and Phoenix. It is not a canonical source of truth and must not replace individual PortfolioState objects.
+Portfolio State aggregates outputs from all portfolio frameworks.
 
 ---
 

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import TypeVar
+from dataclasses import dataclass, field
+from types import MappingProxyType
+from typing import Mapping, TypeVar
 
 from .events import Event
 from .execution import ExecutionMetadata
@@ -63,6 +64,7 @@ class OrionResult:
     framework_results: tuple[FrameworkResult, ...] = ()
     state_snapshot: OrionStateSnapshot | None = None
     generated_events: tuple[Event, ...] = ()
+    dashboard_data: Mapping[str, object] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not isinstance(self.runtime_summary, ExecutionMetadata):
@@ -78,6 +80,9 @@ class OrionResult:
                 self.framework_results, FrameworkResult, "framework_results"
             ),
         )
+        if not isinstance(self.dashboard_data, Mapping):
+            raise ValueError("dashboard_data must be a mapping")
+        object.__setattr__(self, "dashboard_data", MappingProxyType(dict(self.dashboard_data)))
         object.__setattr__(
             self,
             "generated_events",

@@ -1,3 +1,28 @@
+# 2026-10-07 Core Reconciliation Addendum
+
+> **Current authority:** The canonical application execution boundary is **Orion Runtime**. The historical ※Portfolio Engine§ wording below is superseded by `CORE-001` and `CORE-019`: Moon, Orbit, Supernova, and Phoenix are Portfolio / Investment Frameworks; their Engines are framework-internal.
+
+Current package baseline:
+
+```text
+src/
+戍式式 data/
+戌式式 orion/
+    戍式式 cli/
+    戍式式 core/
+    戍式式 dashboard/
+    戍式式 frameworks/
+    弛   戍式式 aurora/
+    弛   戍式式 moon/
+    弛   戍式式 phoenix/
+    弛   戌式式 supernova/
+    戌式式 services/
+```
+
+Current Core rule: Frameworks consume canonical `MarketDataSet` through `RuntimeContext`, return `FrameworkResult`, and do not directly mutate StateStore/EventStore or Dashboard state.
+
+---
+
 # Orion Technical Architecture
 
 ## Purpose
@@ -10,25 +35,24 @@ Orion is designed as a modular Personal Investment Operating System consisting o
 
 # System Overview
 
-Orion OS consists of five Investment Frameworks. Aurora is a Monitoring / Market Environment Framework; Moon, Orbit, Supernova, and Phoenix are independently governed Investment Frameworks that manage portfolios.
+Orion OS consists of five independently governed Frameworks. Aurora is the
+market/environment monitoring Framework; Moon, Orbit, Supernova, and Phoenix
+are portfolio/investment Frameworks. Framework Engines are implementation
+modules inside their respective Frameworks.
 
 ```text
 Orion OS
 
-  Monitoring Framework
+  Frameworks
     Aurora
-
-  Investment Frameworks
-    Aurora      (Monitoring / Market Environment)
-    Moon        (Dynamic Asset Allocation)
-    Orbit       (Static Asset Allocation)
-    Supernova   (Equity Satellite)
-    Phoenix     (Digital Asset Satellite)
+    Moon
+    Orbit
+    Supernova
+    Phoenix
 ```
 
-Aurora provides market context.
-
-Moon, Supernova, and Phoenix provide portfolio intelligence.
+Aurora provides market context. Moon and Orbit provide portfolio allocation
+logic, while Supernova and Phoenix provide satellite investment intelligence.
 
 Each framework is independently executable and independently testable.
 
@@ -88,10 +112,10 @@ Data Layer
   -> CLI / Web UI
 ```
 
-Aurora provides market context and does not control the other Investment Frameworks.
-Moon, Orbit, Supernova, and Phoenix are independently governed Investment Frameworks.
-
-The term Engine denotes an implementation/runtime component and is not an investment-level architectural category.
+Aurora is the Monitoring Framework. It provides market context and does not
+control the other Frameworks. Moon, Orbit, Supernova, and Phoenix are
+independently governed Frameworks; their Engines are framework-internal
+calculation/analysis modules.
 
 ---
 
@@ -108,6 +132,7 @@ orion/
       frameworks/
         aurora/
         moon/
+        orbit/
         phoenix/
         supernova/
       services/
@@ -165,35 +190,7 @@ Framework logic belongs inside:
 
 ---
 
-## Common Portfolio Domain
-
-The common Portfolio Domain is shared by Moon, Orbit, Supernova, and Phoenix.
-It is independent of any one investment methodology.
-
-```text
-Portfolio
-戍式式 PortfolioTarget
-戍式式 PortfolioState
-戌式式 Operations
-    戍式式 Rebalance
-    戍式式 Execution
-    戌式式 Transfer
-```
-
-Custody/accounting state is represented separately:
-
-```text
-Portfolio
-    ⊿
-Account
-戍式式 Position ⊥ Asset
-戌式式 Cash
-```
-
-Current Portfolio Value and Current Allocation are derived from Position and Cash.
-PortfolioTarget is the canonical source for desired allocation.
-
-# Dashboard Layer
+## Dashboard Layer
 
 Responsibilities:
 
@@ -217,7 +214,7 @@ Dashboard code belongs inside:
 
 ## Purpose
 
-Dynamic Asset Allocation Framework.
+ETF Portfolio Engine.
 
 ---
 
@@ -297,7 +294,7 @@ Transition Risk
 
 ## Purpose
 
-Equity Satellite Framework for 5D Megatrend companies.
+Equity Portfolio Engine for 5D Megatrend companies.
 
 ---
 
@@ -331,7 +328,7 @@ Accumulation Status
 
 ## Purpose
 
-Digital Asset Satellite Framework.
+Digital Asset Portfolio Engine.
 
 ---
 
@@ -488,7 +485,7 @@ Phoenix
 
 Objective:
 
-Digital Asset Satellite Framework
+Digital asset portfolio engine
 
 ---
 

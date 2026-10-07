@@ -2,6 +2,7 @@
 
 from .events import EVENT_CATEGORIES, EVENT_SEVERITIES, Event
 from .event_store import EventStore
+from .portfolio import ExecutionOrder, OrderAction
 from .execution import ExecutionMetadata
 from .framework_registry import FrameworkRegistry
 from .config_loader import (
@@ -59,6 +60,8 @@ __all__ = [
     "DecisionRecord",
     "Event",
     "EventStore",
+    "ExecutionOrder",
+    "OrderAction",
     "ExecutionMetadata",
     "FrameworkRegistry",
     "DEFAULT_FRAMEWORKS",

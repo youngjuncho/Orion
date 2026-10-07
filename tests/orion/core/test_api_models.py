@@ -47,15 +47,14 @@ def test_api_contracts_reject_empty_names() -> None:
 
 def test_result_contracts_snapshot_collection_inputs() -> None:
     event = Event(
-        "event-001",
-        "2026-08-01",
-        "System",
-        "Started",
-        "Orion",
-        "Runtime",
-        "Idle",
-        "Running",
-        "Information",
+        event_id="event-001",
+        event_type="Started",
+        event_category="Lifecycle Event",
+        occurred_at="2026-08-01",
+        execution_id="execution-001",
+        entity_type="Runtime",
+        entity_id="Orion",
+        payload={},
     )
     events = [event]
     framework = FrameworkResult("Moon", "Completed", events=events)

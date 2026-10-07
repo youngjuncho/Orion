@@ -1,47 +1,41 @@
 import pytest
-
 from orion.core import Event, EventStore
 
 
 def make_event(event_id: str) -> Event:
-    return Event(event_id, "2026-08-01", "System", "Engine Started", "System", "Orion", "Idle", "Running", "Information")
+    return Event(
+        event_id=event_id,
+        event_type="Engine Started",
+        event_category="Lifecycle Event",
+        occurred_at="2026-08-01T09:00:00+09:00",
+        execution_id="execution-001",
+        entity_type="Runtime",
+        entity_id="Orion",
+        payload={},
+    )
 
 
 def test_event_store_preserves_append_order() -> None:
-    store = EventStore()
-    first = make_event("event-001")
-    second = make_event("event-002")
-
+    store = EventStore(); first = make_event("event-001"); second = make_event("event-002")
     store.extend((first, second))
-
     assert store.events == (first, second)
 
 
 def test_event_store_rejects_duplicate_event_id() -> None:
-    store = EventStore()
-    store.append(make_event("event-001"))
-
+    store = EventStore(); store.append(make_event("event-001"))
     with pytest.raises(ValueError, match="already exists"):
         store.append(make_event("event-001"))
 
 
 def test_event_store_rejects_duplicate_batch_without_partial_append() -> None:
-    store = EventStore()
-    first = make_event("event-001")
-    second = make_event("event-001")
-
+    store = EventStore(); first = make_event("event-001"); second = make_event("event-001")
     with pytest.raises(ValueError, match="duplicate"):
         store.extend((first, second))
-
     assert store.events == ()
 
 
 def test_event_store_rejects_batch_colliding_with_existing_event_atomically() -> None:
-    store = EventStore()
-    existing = make_event("event-001")
-    store.append(existing)
-
+    store = EventStore(); existing = make_event("event-001"); store.append(existing)
     with pytest.raises(ValueError, match="already exists"):
         store.extend((make_event("event-002"), make_event("event-001")))
-
     assert store.events == (existing,)

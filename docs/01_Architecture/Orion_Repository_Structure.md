@@ -1,194 +1,98 @@
 # Orion Repository Structure
 
-Version: 1.0
+Version: 2.0
 
-Status: Draft
+Status: Approved V1 Baseline
 
-Last Updated: 2026-07-26
+Last Updated: 2026-10-07
 
-Depends On:
+## Purpose
 
-* Orion_Operating_Architecture.md
-* Orion_Technical_Architecture.md
-* Orion_Domain_Model.md
+Defines the repository and source structure that is actually implemented. This document is the canonical package baseline for V1; future package decomposition must not be treated as a current requirement.
 
----
-
-# Purpose
-
-This document defines the repository structure of Orion OS.
-
-The objective is to ensure consistent implementation and maintainability.
-
----
-
-# Repository Layout
+## Repository Layout
 
 ```text
 orion/
-  docs/
-  src/
-  tests/
-  config/
-  data/
-  logs/
-  scripts/
-  requirements.txt
-  README.md
+戍式式 docs/
+戍式式 src/
+弛   戍式式 data/
+弛   戌式式 orion/
+弛       戍式式 cli/
+弛       戍式式 core/
+弛       戍式式 dashboard/
+弛       戍式式 frameworks/
+弛       弛   戍式式 aurora/
+弛       弛   戍式式 moon/
+弛       弛   戍式式 phoenix/
+弛       弛   戌式式 supernova/
+弛       戌式式 services/
+戍式式 tests/
+戍式式 config/
+戍式式 requirements.txt
+戌式式 README.md
 ```
 
----
+## `src/orion/core`
 
-# Source Layout
+Owns cross-framework Core contracts and runtime-oriented scaffolding, including configuration, state/event contracts and stores, registries, execution metadata, and API/result contracts.
+
+Core does not own Framework investment methodology.
+
+## `src/data`
+
+Shared normalized data-contract package.
+
+It contains:
+
+* observation contracts
+* MarketDataSet contracts
+* validation boundary
+
+It does not contain:
+
+* investment logic
+* scoring
+* strategy selection
+* portfolio decisions
+* state/events
+
+Source collection and normalization implementation remain future work.
+
+## `src/orion/frameworks/<framework>`
+
+Framework-owned implementation:
+
+* `aurora/` ? market-climate monitoring
+* `moon/` ? ETF portfolio framework
+* `supernova/` ? equity portfolio framework
+* `phoenix/` ? digital-asset portfolio framework
+
+Each Framework may contain its own Engines, Strategies, models, and governance implementation.
+
+## `src/orion/dashboard`
+
+Read-only presentation boundary. It consumes Runtime/Framework outputs and builds presentation models. It does not calculate investment decisions or mutate State.
+
+## `src/orion/cli`
+
+Command routing and application entry-point handling. Business methodology belongs to Frameworks, not CLI commands.
+
+## `src/orion/services`
+
+Current service registry/infrastructure scaffolding. Do not create generic services without a concrete responsibility.
+
+## Future Package Evolution
+
+The following are possible future refactors, not current V1 requirements:
 
 ```text
-src/
-  orion/
-    cli/
-    core/
-    dashboard/
-    frameworks/
-      aurora/
-      moon/
-      orbit/
-      phoenix/
-      supernova/
-    services/
-  data/
+src/orion/
+戍式式 runtime/
+戍式式 domain/
+戍式式 infrastructure/
+戍式式 config/
+戌式式 utils/
 ```
 
----
-
-# src/orion/core
-
-Shared functionality.
-
-The core layer is the intended home for the common Portfolio Domain. The domain contract includes Portfolio, PortfolioTarget, PortfolioState, RebalancePlan, ExecutionOrder, Transfer, Asset, Position, Account, and Cash. Framework-specific concepts remain inside their respective framework packages.
-
-Examples:
-
-* Configuration
-* Logging
-* Scoring
-* Data Models
-* Utilities
-
----
-
-# src/data
-
-Responsibilities:
-
-* Collection
-* Normalization
-* Validation
-* Storage
-
-No investment logic permitted.
-
----
-
-# src/orion/frameworks/moon
-
-Dynamic asset allocation framework implementation.
-
-Responsibilities:
-
-* Strategy execution
-* Consensus allocation
-* Rebalancing calculations
-
----
-
-# src/orion/frameworks/orbit
-
-Static asset allocation framework implementation.
-
-Responsibilities:
-
-* Maintain strategic target allocation
-* Produce rebalance inputs
-* Represent Orbit-specific configuration and state
-
-Orbit implementation is a planned extension; this directory is not yet required to exist in the current runtime.
-
----
-
-# src/orion/frameworks/aurora
-
-Monitoring framework implementation.
-
-Responsibilities:
-
-* Indicator evaluation
-* Regime classification
-* Risk monitoring
-
----
-
-# src/orion/frameworks/supernova
-
-Equity satellite framework implementation.
-
-Responsibilities:
-
-* Theme evaluation
-* Company scoring
-* Replacement risk
-
----
-
-# src/orion/frameworks/phoenix
-
-Digital asset satellite framework implementation.
-
-Responsibilities:
-
-* Category evaluation
-* Leader selection
-* Challenger monitoring
-
----
-
-# src/orion/dashboard
-
-Responsibilities:
-
-* Dashboard rendering
-* Summary generation
-* Visualization
-
-Dashboard is presentation-only.
-
----
-
-# src/orion/cli
-
-Responsibilities:
-
-* Command routing
-* Reporting
-* Operational workflows
-
----
-
-# Tests
-
-Mirror source structure whenever possible.
-
----
-
-# Future Extensions
-
-Potential additions:
-
-* api/
-* database/
-* ai/
-* notifications/
-
----
-
-# Next Document
-
-Orion_Data_Pipeline.md
+Do not perform another package migration solely to make the directory tree match an abstract architecture diagram.

@@ -1,3 +1,43 @@
+# 2026-10-07 Core Reconciliation Addendum
+
+> **Current authority:** `CORE-003` supersedes the historical event ordering/categories below where they conflict.
+
+Two event categories are canonical:
+
+* **Domain Event** — immutable historical fact / confirmed domain change.
+* **Lifecycle Event** — Runtime/Framework execution lifecycle fact.
+
+The canonical event identity contract is:
+
+```text
+event_id
+event_type
+event_category
+occurred_at
+execution_id
+entity_type
+entity_id
+payload
+```
+
+`execution_id` is mandatory and provides correlation from one Runtime execution
+through Framework results, accepted decisions, state transitions, and emitted
+events. Legacy fields such as `source_framework`, state transition labels,
+severity, descriptions, and review/decision references may be retained as
+extension metadata but do not replace the canonical identity fields.
+
+Examples of derived calculations that are not Events by default: ScoreCalculated, MetricCalculated, DashboardRendered, PortfolioWeightCalculated.
+
+For state-changing operations:
+
+```text
+Accepted Decision → State Transition → successful State Commit → Domain Event
+```
+
+EventStore is append-only historical storage; Event Sourcing is not adopted.
+
+---
+
 # Orion Event Model
 
 Version: 1.0
@@ -85,18 +125,19 @@ Future Notification Services
 
 # Event Categories
 
-The Orion Engine recognizes the following event categories.
+The canonical event categories are defined by the Core event contract and are
+independent of the Framework that produced the event. Framework identity, when
+needed, is carried by `source_framework` or payload metadata.
 
 | Category | Purpose |
 |----------|---------|
-| System | Engine lifecycle |
-| Aurora | Market environment |
-| Moon | Dynamic allocation framework |
-| Orbit | Static allocation framework |
-| Supernova | Equity research / satellite governance |
-| Phoenix | Digital asset research / satellite governance |
-| Portfolio | Common portfolio domain |
-| Governance | Documentation and approval |
+| Domain Event | Immutable historical fact or confirmed domain change |
+| Lifecycle Event | Runtime / Framework execution lifecycle fact |
+
+Framework-specific event types such as Aurora, Moon, Supernova, Phoenix,
+Portfolio, or Governance events are expressed through `event_type`,
+`source_framework`, `entity_type`, and `payload`; they are not separate
+canonical event categories.
 
 ---
 
@@ -208,7 +249,7 @@ Examples:
 
 Purpose:
 
-Represent changes within an individual Portfolio.
+Represent consolidated portfolio changes.
 
 Examples:
 

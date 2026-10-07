@@ -1,3 +1,22 @@
+# 2026-10-07 Core Reconciliation Addendum
+
+> **Current authority:** The Core Architecture baseline is `CORE-001` through `CORE-020`. Where the historical sections below use `Engine`, `Portfolio`, `State`, or `Event` semantics that differ from the current baseline, this addendum and the canonical documents listed here take precedence.
+>
+> Canonical references: `docs/05_Decisions/Core_Architecture_Decision_Baseline.md`, `Orion_Operating_Architecture.md`, `Orion_Technical_Architecture.md`, and `Orion_Domain_Model.md`.
+
+Current canonical portfolio model:
+
+```text
+StrategyResult → ConsensusAllocation → PortfolioTarget → RebalancePlan → ExecutionOrder → ExecutionResult
+
+PortfolioSnapshot = independent current portfolio state
+RebalancePlan = derived from PortfolioTarget + PortfolioSnapshot
+```
+
+State is authoritative current domain state; `OrionStateSnapshot` is an immutable representation. Calculation results do not automatically become State.
+
+---
+
 # Orion Data Model
 
 Version: 1.1
@@ -245,82 +264,15 @@ Fields:
 
 ---
 
-## Asset
-
-Represents the canonical identity/reference of an investable instrument. Framework-specific scores, research results, and governance states do not belong to Asset.
-
-Fields may include:
-
-- id
-- symbol/ticker
-- name
-- instrument type
-
----
-
-## Position
-
-Represents an actual holding of an Asset within an Account. Position is the canonical source for actual quantity and holding value.
-
-Fields may include:
-
-- account
-- asset
-- quantity
-- market value
-- valuation timestamp
-
----
-
-## Cash
-
-Represents an Account-level cash balance. Cash is not modeled as a generic Position, although cash exposure may appear in Portfolio allocation/state.
-
----
-
-## Account
-
-Represents a custody/accounting boundary containing Positions and Cash. A Portfolio may be implemented through one or more Accounts.
-
----
-
 ## Portfolio
 
-Represents a logical investment unit managed by an Investment Framework. Portfolio is not synonymous with an Account.
+Represents the aggregated Moon portfolio.
 
-A Portfolio may be implemented through one or more Accounts.
+Fields:
 
----
-
-## PortfolioTarget
-
-Represents the desired allocation for a Portfolio.
-
----
-
-## PortfolioState
-
-Represents the current state of a Portfolio, derived from its underlying Position and Cash state.
-
-Current Portfolio Value and Current Allocation are derived values, not independent sources of truth.
-
----
-
-## RebalancePlan
-
-Represents the changes required to move PortfolioState toward PortfolioTarget.
-
----
-
-## ExecutionOrder
-
-Represents a concrete trade instruction derived from a RebalancePlan.
-
----
-
-## Transfer
-
-Represents movement of an Asset/value between Portfolios or Accounts. Transfer is distinct from Rebalance.
+- Holdings
+- Allocation
+- Rebalance Date
 
 ---
 

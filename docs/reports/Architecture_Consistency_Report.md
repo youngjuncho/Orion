@@ -1,3 +1,6 @@
+
+> **Historical snapshot:** This report predates the 2026-10-07 Core Architecture closure. For current Core terminology and status, use `docs/05_Decisions/Core_Architecture_Decision_Baseline.md` and `docs/reports/Implementation_Status_Report.md`. Historical terms such as “Portfolio Engine” are retained only as evidence of the earlier architecture discussion.
+
 # Architecture Consistency Report
 
 Date: 2026-06-23

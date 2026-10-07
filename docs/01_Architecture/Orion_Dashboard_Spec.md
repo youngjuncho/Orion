@@ -131,7 +131,7 @@ Dashboard refreshes when underlying framework data updates.
 
 Aurora provides context.
 
-Moon, Supernova, and Phoenix provide portfolio intelligence.
+Moon and Orbit provide portfolio allocation logic; Supernova and Phoenix provide satellite investment intelligence.
 
 Dashboard aggregates outputs but does not generate investment decisions.
 

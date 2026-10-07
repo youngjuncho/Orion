@@ -1,3 +1,31 @@
+# 2026-10-07 Core Reconciliation Addendum
+
+> **Current authority:** This document's historical “Monitoring Layer / Portfolio Engines” terminology is retained below for context. For current Core terminology, Aurora, Moon, Orbit, Supernova, and Phoenix are **Frameworks**. An **Engine** is a calculation/analysis module inside a Framework. The canonical application execution boundary is **Orion Runtime**.
+
+Canonical execution boundary:
+
+```text
+Configuration + Validated Data + Authoritative State
+                    ↓
+              RuntimeContext
+                    ↓
+                Framework
+                    ↓
+             FrameworkResult
+                    ↓
+          Decision Candidate → Acceptance → Accepted Decision
+                    ↓
+            State Transition → StateStore commit
+                    ↓
+       Authoritative State + Domain Event → EventStore
+                    ↓
+              RuntimeResult
+```
+
+Frameworks do not directly mutate StateStore/EventStore, update Dashboard state, or execute external trades.
+
+---
+
 # Orion Operating Architecture
 
 Version: 1.0
@@ -33,10 +61,13 @@ Its purpose is to provide structured decision support across multiple asset clas
 
 # Architecture Overview
 
-Orion consists of:
+Orion consists of five Frameworks:
 
-* One Monitoring / Market Environment Framework
-* Four Portfolio Investment Frameworks
+* Aurora — Monitoring Framework
+* Moon — Dynamic Asset Allocation Framework
+* Orbit — Static Asset Allocation Framework
+* Supernova — Equity Satellite Framework
+* Phoenix — Digital Asset Satellite Framework
 
 ```text
                     Orion OS
@@ -48,18 +79,20 @@ Orion consists of:
 
           ▼                             ▼
 
-      Aurora                 Investment Frameworks
+      Aurora                         Portfolio / Investment Frameworks
 
-(Market Monitoring)                   │
+(Market Monitoring)                       │
 
-                      ┌───────┬───────┬──────────┬─────────┐
-                      │       │       │          │
-                      ▼       ▼       ▼          ▼
-                    Moon    Orbit  Supernova  Phoenix
-                      │       │       │          │
-                      ▼       ▼       ▼          ▼
-                    Dynamic  Static  Equity     Digital
-                     AA       AA    Satellite   Asset
+                 ┌──────────┬──────────┬──────────┬──────────┐
+                 │          │          │          │
+                 ▼          ▼          ▼          ▼
+               Moon       Orbit    Supernova   Phoenix
+
+                      │          │          │
+
+                      ▼          ▼          ▼
+
+                     ETF      Equity      Crypto
 ```
 
 ---
@@ -105,10 +138,11 @@ What is the current market environment?
 
 ---
 
-# Investment Frameworks
+# Portfolio Engines
 
-Each portfolio-producing Investment Framework manages its own Portfolio according to its own methodology.
-Each framework operates independently. Engine is an implementation/runtime term, not an investment-level category.
+Portfolio engines manage specific asset classes.
+
+Each engine operates independently.
 
 ---
 
@@ -116,11 +150,11 @@ Each framework operates independently. Engine is an implementation/runtime term,
 
 Purpose:
 
-Dynamic Asset Allocation Framework
+ETF Allocation Engine
 
 Asset Class:
 
-Dynamic Asset Allocation Portfolio
+ETF Portfolio
 
 ---
 
@@ -144,26 +178,6 @@ What should be owned now?
 * Tactical
 * Trend Following
 * Dynamic Asset Allocation
-
----
-
-## Orbit
-
-Purpose:
-
-Static Asset Allocation Framework
-
-Core Question
-
-What is the target allocation for the static portfolio?
-
-Characteristics
-
-* Strategic
-* Static target allocation
-* Periodic rebalancing
-
-Orbit is independent of Moon. Any Moon → Orbit asset movement is a Portfolio Transfer operation and does not represent a decision dependency.
 
 ---
 
@@ -237,31 +251,9 @@ Which digital asset ecosystems are becoming leaders?
 
 ---
 
-# Common Portfolio Domain
-
-Portfolio management is modeled independently from the investment methodology.
-
-```text
-PortfolioTarget + PortfolioState
-             ↓
-       RebalancePlan
-             ↓
-       ExecutionOrder
-```
-
-A Transfer is a separate Portfolio Operation and is not a Rebalance.
-
-```text
-Source Portfolio → Transfer → Destination Portfolio
-```
-
-Portfolio State is derived from actual Position and Cash state. An overall portfolio view, when needed, is a derived aggregate view rather than a canonical source of truth.
-
----
-
 # Portfolio Mapping
 
-## Dynamic Asset Allocation Portfolio
+## ETF Portfolio
 
 Managed By:
 
@@ -341,11 +333,11 @@ Aurora serves as Orion's monitoring and interpretation layer.
 
 Aurora provides context for investment decisions.
 
-Aurora does not control the other Investment Frameworks.
+Aurora does not control portfolio engines.
 
 Aurora informs.
 
-Each Investment Framework decides within its own governance.
+Portfolio engines decide.
 
 ---
 
@@ -363,11 +355,11 @@ Investor Interpretation
 
 ↓
 
-Moon / Supernova / Phoenix
+Moon / Orbit / Supernova / Phoenix
 
 ↓
 
-Portfolio Actions
+Portfolio / Investment Actions
 
 ---
 

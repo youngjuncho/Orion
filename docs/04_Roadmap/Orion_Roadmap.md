@@ -1,342 +1,148 @@
 # Orion Roadmap
 
-Version: 0.1
+Version: 2.0
 
 Status: Active
 
-Last Updated: 2026-06-14
+Last Updated: 2026-10-07
 
----
+## Vision
 
-# Vision
+Build a Personal Investment Operating System that enables the investor to understand asset-allocation status, market climate, megatrend status, and digital-asset status within one minute.
 
-Build a Personal Investment Operating System that enables the investor to understand:
+## Roadmap Model
 
-* Asset Allocation Status
-* Market Climate Status
-* Megatrend Status
-* Digital Asset Status
+The previous phase-only roadmap is superseded because implementation maturity now differs materially by workstream. Current planning uses workstreams and explicit architecture/implementation status.
 
-within one minute.
+### A. Architecture & Contract
 
----
+**Architecture: CLOSED**
 
-# Current Status
+* CORE-001 through CORE-020 established
+* Canonical domain ownership established
+* Runtime lifecycle established
+* State/Event/Decision/Error contracts established
+* Data handoff established
+* Package baseline reconciled
+* Core architectural blockers: 0
 
-Phase 0
+Remaining: documentation reconciliation/maintenance only.
 
-Documentation Foundation
+### B. Core Runtime
 
-Status:
+**Architecture: CLOSED / Implementation: PENDING**
 
-In Progress
+* RuntimeSession ? implemented
+* RuntimeContext ? implemented
+* ServiceRegistry ? implemented
+* StateStore ? in-memory implementation
+* EventStore ? in-memory implementation
+* Public Runtime orchestration ? pending
+* Full Decision ¡æ State Transition ¡æ Event pipeline integration ? pending
+* RuntimeResult integration ? pending
 
-Completed:
+### C. Data Pipeline
 
-* Vision Summary
-* Vision PDF Archive
-* Investment Policy Statement
-* Technical Architecture
-* Decision Log
-* ADM Research
-* ADM Orion Specification
+**Contract: CLOSED / Implementation: PENDING**
 
----
-
-# Phase 1
-
-Moon Foundation
-
-Objective:
-
-Build the first operational investment engine.
-
----
-
-## Deliverables
-
-### Research
-
-* ADM Research
-* BAA Research
-* VAA Research
-* HAA Research
-* BDA Research
-
-### Specifications
-
-* ADM Orion
-* BAA Orion
-* VAA Orion
-* HAA Orion
-* BDA Orion
-
-### Implementation
-
-* Data Layer
-* Signal Engine
-* Rebalance Engine
-
-### CLI
-
-Commands:
-
-```bash
-orion moon
-orion moon adm
-orion moon baa
+```text
+Source ¡æ Raw ¡æ Normalize ¡æ Validate ¡æ Canonical MarketDataSet
 ```
 
-Success Criteria:
+Remaining:
 
-Moon produces deterministic monthly allocation signals.
+* source adapters
+* normalization implementation
+* freshness validation
+* missing-data/source-failure handling
+* production data integration
 
-Status:
+### D. Framework Implementation
 
-Not Started
+#### Moon
 
----
+**Architecture: mostly CLOSED / Implementation: PARTIAL**
 
-# Phase 2
+Established:
 
-Aurora
+* StrategyResult
+* consensus allocation
+* execution mapping
+* PortfolioTarget
 
-Objective:
+Remaining:
 
-Build the market climate engine.
+* PortfolioSnapshot
+* RebalancePlan
+* end-to-end Runtime integration
+* data pipeline integration
 
----
+#### Aurora
 
-## Deliverables
+**Framework specification/implementation: PENDING**
 
-* Market Regime Framework
-* Risk On / Neutral / Risk Off States
-* Macro Indicator Layer
-* Liquidity Monitoring
+Indicator definitions, scoring methodology, regime thresholds, and transition-risk rules must be finalized before production calculation logic is implemented.
+
+#### Supernova
+
+**Framework governance/specification: separately governed**
+
+Core does not redefine Supernova methodology. Core tracks implementation readiness only.
+
+#### Phoenix
+
+**Framework governance/specification: separately governed**
+
+Category/Leader/Scoring governance is Framework-owned. Core tracks implementation readiness only.
+
+### E. Presentation & External Interface
 
 CLI:
 
-```bash
-orion aurora
+* architecture ? CLOSED
+* routing ? IMPLEMENTED
+* full Runtime-backed framework execution ? pending
+
+Dashboard:
+
+* presentation-only boundary ? CLOSED
+* Runtime-integrated view ? pending
+
+API:
+
+* public Runtime/API error contract ? CLOSED
+* concrete endpoint/serialization implementation ? pending/future
+
+## Status Principle
+
+```text
+DECIDED
+  ¡é
+IMPLEMENTATION READY
+  ¡é
+IMPLEMENTED
+  ¡é
+VALIDATED
+  ¡é
+ACTIVE
 ```
 
-Success Criteria:
+Configuration cannot create approval. A strategy or framework becomes executable only when its governing specification and activation state permit execution.
 
-Aurora generates a daily market climate assessment.
+## Next Implementation Direction
 
-Status:
-
-Not Started
-
----
-
-# Phase 3
-
-Supernova
-
-Objective:
-
-Build the 5D Megatrend Engine.
-
----
-
-## Deliverables
-
-* 5D Theme Framework
-* Company Watchlists
-* Moat Scoring
-* Replacement Risk Scoring
-
-CLI:
-
-```bash
-orion supernova
+```text
+Core Runtime implementation
+        ¡é
+Canonical Data pipeline
+        ¡é
+Moon end-to-end vertical slice
+        ¡é
+Framework-specific implementation
+        ¡é
+CLI / Dashboard integration
+        ¡é
+API / durable persistence as required
 ```
 
-Success Criteria:
-
-Monitor approved 5D leaders and detect review candidates.
-
-Status:
-
-Not Started
-
----
-
-# Phase 4
-
-Phoenix
-
-Objective:
-
-Build the digital asset ecosystem engine.
-
----
-
-## Deliverables
-
-* Sector Classification
-* Leader Identification
-* Trend Monitoring
-* Watchlist Governance
-
-CLI:
-
-```bash
-orion phoenix
-```
-
-Success Criteria:
-
-Track digital asset category leaders.
-
-Status:
-
-Not Started
-
----
-
-# Phase 5
-
-Integrated Dashboard
-
-Objective:
-
-Combine all engines into a unified view.
-
----
-
-## Deliverables
-
-* Unified Dashboard
-* Portfolio Summary
-* State Summary
-* Daily Snapshot
-
-CLI:
-
-```bash
-orion dashboard
-```
-
-Success Criteria:
-
-Investor can understand the entire portfolio state within one minute.
-
-Status:
-
-Not Started
-
----
-
-# Phase 6
-
-AI Commentary
-
-Objective:
-
-Generate automated explanations and summaries.
-
----
-
-## Deliverables
-
-* Moon Commentary
-* Aurora Commentary
-* Supernova Commentary
-* Phoenix Commentary
-
-Success Criteria:
-
-Produce consistent daily and monthly summaries.
-
-Status:
-
-Not Started
-
----
-
-# Phase 7
-
-Web Application
-
-Objective:
-
-Build a web-based Orion OS.
-
----
-
-## Candidate Technologies
-
-Backend:
-
-* FastAPI
-
-Frontend:
-
-* Streamlit (initial)
-* React (future)
-
-Success Criteria:
-
-Full browser-based Orion experience.
-
-Status:
-
-Not Started
-
----
-
-# Milestones
-
-M1
-
-Documentation Complete
-
-Target:
-
-Moon Research Library Complete
-
----
-
-M2
-
-Moon Operational
-
-Target:
-
-ADM Production Ready
-
----
-
-M3
-
-Aurora Operational
-
----
-
-M4
-
-Supernova Operational
-
----
-
-M5
-
-Phoenix Operational
-
----
-
-M6
-
-Integrated Orion Dashboard
-
----
-
-M7
-
-Orion v1.0
-
-```
-```
-
+This roadmap does not redefine investment methodology or framework governance.

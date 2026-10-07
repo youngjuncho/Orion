@@ -28,7 +28,7 @@ The Orion API provides a stable contract between the core engine and external co
 * Future REST API
 * Future Web UI
 
-The API exposes Orion functionality without exposing internal implementation details.
+The API exposes Orion functionality without exposing internal implementation details. Dashboard consumers must use the official OrionResult/runtime output contract rather than importing Framework Engines directly.
 
 ---
 
@@ -122,6 +122,10 @@ Moon
 
 ↓
 
+Orbit
+
+↓
+
 Supernova
 
 ↓
@@ -153,6 +157,7 @@ Supported Frameworks:
 
 * Aurora
 * Moon
+* Orbit
 * Supernova
 * Phoenix
 
