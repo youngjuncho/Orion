@@ -1,10 +1,10 @@
 # Implementation Roadmap
 
-Version: 2.0
+Version: 2.1
 
 Status: Active
 
-Last Updated: 2026-10-07
+Last Updated: 2026-10-08
 
 ## Purpose
 
@@ -16,11 +16,11 @@ Core architecture is **closed** by `CORE-001` through `CORE-020`. Remaining work
 
 ## Workstream A — Core Runtime
 
-Status: Partial — Runtime boundaries implemented; end-to-end production lifecycle remains pending
+Status: MVP Complete — canonical Runtime lifecycle implemented; durable persistence remains deferred
 
 1. Public Orion Runtime entry point — Implemented: `OrionRuntime.run()` is the public application boundary and delegates to `RuntimeSession`
-2. Full runtime lifecycle orchestration — Partial: framework execution, decision/state/event contracts, and integration slices are validated; one public `run()` call still stops at FrameworkResult, while production data handoff and full lifecycle completion remain pending
-3. Framework execution isolation — Partial: explicit executor boundary and failure transition are implemented
+2. Full runtime lifecycle orchestration — Implemented for the MVP: public `OrionRuntime.run()` supports the canonical Decision → State Transition → State Commit → Event lifecycle; durable production persistence remains deferred
+3. Framework execution isolation — Implemented: explicit executor boundary and failure transition are implemented and validated
 4. FrameworkResult collection/validation — Implemented for the initial orchestration boundary
 5. Decision resolution boundary — implemented in RuntimeSession
 6. State Transition + StateStore commit — implemented in RuntimeSession
@@ -104,6 +104,14 @@ Not current Core blockers:
 - Added a canonical Decision → StateStore → Domain Event integration slice test.
 - Current verification baseline: 150 tests passing.
 - The public `OrionRuntime.run()` intentionally remains a FrameworkResult execution boundary; full production Decision/State/Event orchestration in one public call is not marked complete until explicit production decision-resolution inputs and data handoff are integrated.
+
+## Runtime Integration Update — Step 18/19
+
+- Public `OrionRuntime.run()` now supports the canonical Decision → State Transition → State Commit → Event lifecycle.
+- Runtime Decision Acceptance Governance defaults to Auto-Approval while preserving an explicit acceptance-handler boundary for rejection or conditional acceptance.
+- Framework-only `run()` remains backward compatible.
+- Durable persistence, replay, broker execution, and investment methodology remain outside the MVP scope.
+- Verification baseline: 176 tests passing.
 
 ## Runtime Integration Update — Step 8
 

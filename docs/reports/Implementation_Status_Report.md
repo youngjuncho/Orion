@@ -1,6 +1,6 @@
 # Orion Implementation Status Report
 
-Version: 2.0
+Version: 2.1
 
 Status: Current Baseline
 
@@ -9,7 +9,7 @@ Last Updated: 2026-10-08
 ## Executive Status
 
 **Core Architecture: CLOSED**  
-**Core Runtime Implementation: INCOMPLETE**  
+**Core Runtime Implementation: MVP COMPLETE**  
 **Framework Implementation: PARTIAL**  
 **Data Pipeline Implementation: INCOMPLETE**
 
@@ -26,7 +26,7 @@ The project is not architecturally blocked. Remaining gaps are implementation, f
 | ServiceRegistry | 🟢 Implemented | in-memory registry |
 | StateStore | 🟢 Implemented | in-memory authoritative-state boundary |
 | EventStore | 🟢 Implemented | in-memory append-only boundary |
-| Full Orion Runtime orchestration | 🟡 Partial | Framework→Result, Decision→State→Event slices implemented; one public run still stops at FrameworkResult |
+| Full Orion Runtime orchestration | 🟢 MVP Complete | Public `OrionRuntime.run()` supports the canonical Decision → State Transition → State Commit → Domain Event lifecycle; durable persistence remains deferred |
 | Persistent State/Event storage | ⚪ Future | not an MVP architecture blocker |
 | Framework contracts | 🟢 Established | Core contract closed |
 | Moon | 🟡 Partial | target established; snapshot/rebalance/E2E pending |
@@ -99,7 +99,7 @@ Runtime now implements the Decision Candidate → Accepted Decision → State Tr
 
 ## 2026-10-08 Runtime Integration Step 7
 
-End-to-end integration verification now covers the Public OrionRuntime with report-capable Framework Adapters and a canonical Decision → StateStore → Domain Event slice. The current Runtime remains intentionally partial: `OrionRuntime.run()` completes the FrameworkResult boundary, while production Decision Resolution, Data handoff, and a single-call full lifecycle remain pending.
+End-to-end integration verification now covers the Public OrionRuntime with report-capable Framework Adapters and a canonical Decision → StateStore → Domain Event slice. The Step 7 state was intentionally partial at that time. Step 18 subsequently closed the public single-call lifecycle gap; the current Runtime status is recorded in the Step 18 and Governance sections below.
 
 
 ## 2026-10-08 Runtime Integration Step 15
@@ -114,7 +114,7 @@ A full five-Framework Runtime matrix now verifies one Public `OrionRuntime.run()
 
 The implemented lifecycle was audited against CORE-012 without introducing new architecture. Current status is: Initialize **Implemented**; Configuration **Implemented**; Data **Implemented** at the canonical handoff boundary; State Restore **Partial** (in-memory restore only); Context **Implemented**; Framework Execution **Implemented**; Result Validation **Implemented**; Decision Resolution **Partial** (Session-level API only); State Transition **Partial** (Session-level API only); State Commit **Partial** (Session-level API only); Event Creation **Partial** (Session-level API only); Persistence **Partial** (MVP in-memory stores; durable persistence remains future); Presentation **Implemented**; Completion **Implemented**.
 
-The remaining Core Runtime integration gap is therefore explicit: the Public `OrionRuntime.run()` path currently ends after FrameworkResult assembly and does not yet connect the existing Decision → State Transition → State Commit → Event pipeline into one public single-call lifecycle.
+The Step 17 audit recorded the pre-Step 18 gap. Step 18 subsequently connected the existing Decision → State Transition → State Commit → Event pipeline into the public single-call lifecycle without changing Core architecture.
 
 ## 2026-10-08 Runtime Integration Step 18 — Public Canonical Lifecycle
 

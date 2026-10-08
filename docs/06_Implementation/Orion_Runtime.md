@@ -473,7 +473,7 @@ This boundary follows D-027: actual order execution remains outside the current
 Moon MVP unless a future architecture decision explicitly brings it into scope.
 
 
-# 2026-10-08 CORE-012 Runtime Lifecycle Audit
+# 2026-10-08 CORE-012 Runtime Lifecycle Audit (Pre-Step 18)
 
 The Runtime implementation has been audited against the canonical CORE-012 lifecycle without changing the architecture or introducing new investment logic.
 
@@ -494,7 +494,7 @@ The Runtime implementation has been audited against the canonical CORE-012 lifec
 | Presentation | Implemented | `OrionResult` / dashboard boundary |
 | Completion | Implemented | session completion after framework execution |
 
-The important implementation boundary is deliberate: `OrionRuntime.run()` currently provides the public Framework Execution → FrameworkResult → OrionResult path, while the canonical Decision → State Transition → State Commit → Event path is already implemented at the `RuntimeSession` level. These paths have not yet been collapsed into one public single-call lifecycle.
+The table above records the pre-Step 18 audit state. Step 18 subsequently closed the public single-call lifecycle gap without changing the Core architecture. The canonical Decision → State Transition → State Commit → Event path is now available through `OrionRuntime.run()` when lifecycle handlers are supplied (with Auto-Approval as the default acceptance policy).
 
 This is an implementation gap, not a Core architecture gap. `CORE-001` through `CORE-020` remain closed. Durable persistence and replay remain outside the MVP boundary defined by D-030.
 
