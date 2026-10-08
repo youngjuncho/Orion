@@ -30,8 +30,17 @@ from .config_loader import (
     validate_required_files,
 )
 from .api_models import FrameworkResult, HealthReport, OrionResult
+from .framework_adapters import (
+    FrameworkAdapter,
+    MoonPortfolioAdapter,
+    ReportFrameworkAdapter,
+    make_moon_portfolio_adapter,
+    make_orbit_portfolio_adapter,
+    make_report_adapter,
+)
 from .logging_utils import configure_logging
 from .runtime import DEFAULT_FRAMEWORKS, RuntimeContext
+from .runtime_engine import OrionRuntime
 from .runtime_session import RuntimeSession
 from .models import (
     DecisionRecord,
@@ -66,9 +75,16 @@ __all__ = [
     "FrameworkRegistry",
     "DEFAULT_FRAMEWORKS",
     "RuntimeContext",
+    "OrionRuntime",
     "RuntimeSession",
     "StateStore",
     "FeatureFlagConfig",
+    "FrameworkAdapter",
+    "ReportFrameworkAdapter",
+    "MoonPortfolioAdapter",
+    "make_report_adapter",
+    "make_moon_portfolio_adapter",
+    "make_orbit_portfolio_adapter",
     "FrameworkResult",
     "HealthReport",
     "IndicatorGroupsConfig",

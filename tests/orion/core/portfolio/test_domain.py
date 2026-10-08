@@ -4,7 +4,8 @@ import pytest
 
 from orion.core.account import Account, CashBalance, Position
 from orion.core.ids import AccountId, AssetId, FrameworkId, PortfolioId, PositionId, TargetId, TransferId
-from orion.core.portfolio import Allocation, Portfolio, PortfolioSnapshot, PortfolioState, PortfolioTarget, Transfer
+from orion.core.portfolio import Allocation, Portfolio, PortfolioSnapshot, PortfolioState, PortfolioTarget, Transfer, build_rebalance_plan
+from orion.core.portfolio.operations import RebalanceAction
 
 
 def test_portfolio_has_identity_not_holdings() -> None:
@@ -53,3 +54,72 @@ def test_execution_order_is_distinct_from_execution_metadata() -> None:
     )
     assert order.asset_id == AssetId("SPYM")
     assert order.action is OrderAction.BUY
+
+
+def test_rebalance_plan_is_derived_from_target_and_current_weights() -> None:
+    target = PortfolioTarget(
+        TargetId("T-RB"), PortfolioId("P1"), 1, date(2026, 11, 2),
+        (
+            Allocation(AssetId("SPYM"), Decimal("0.6")),
+            Allocation(AssetId("QQQM"), Decimal("0.4")),
+        ),
+    )
+    plan = build_rebalance_plan(
+        target,
+        (
+            Allocation(AssetId("SPYM"), Decimal("0.5")),
+            Allocation(AssetId("SGOV"), Decimal("0.5")),
+        ),
+        as_of="2026-11-02",
+    )
+    assert plan.portfolio_id == PortfolioId("P1")
+    assert [(c.asset_id, c.action, c.delta_weight) for c in plan.changes] == [
+        (AssetId("QQQM"), RebalanceAction.BUY, Decimal("0.4")),
+        (AssetId("SGOV"), RebalanceAction.SELL, Decimal("-0.5")),
+        (AssetId("SPYM"), RebalanceAction.BUY, Decimal("0.1")),
+    ]
+
+
+def test_rebalance_plan_omits_zero_delta_assets() -> None:
+    target = PortfolioTarget(
+        TargetId("T-RB2"), PortfolioId("P1"), 1, date(2026, 11, 2),
+        (Allocation(AssetId("SPYM"), Decimal("1.0")),),
+    )
+    plan = build_rebalance_plan(
+        target, (Allocation(AssetId("SPYM"), Decimal("1.0")),), as_of="2026-11-02"
+    )
+    assert plan.changes == ()
+
+
+def test_execution_orders_require_explicit_sizing_inputs():
+    from datetime import datetime, timezone
+    from orion.core.ids import OrderId
+    from orion.core.portfolio import ExecutionSizingInput, build_execution_orders, OrderAction
+
+    target = PortfolioTarget(
+        TargetId("T-EXEC"), PortfolioId("P1"), 1, date(2026, 11, 2),
+        (Allocation(AssetId("SPYM"), Decimal("1.0")),),
+    )
+    plan = build_rebalance_plan(
+        target, (Allocation(AssetId("SPYM"), Decimal("0.5")),), as_of="2026-11-02"
+    )
+    sizing = ExecutionSizingInput(
+        quantities={AssetId("SPYM"): Decimal("2")},
+        order_ids={AssetId("SPYM"): OrderId("O-SPYM")},
+    )
+    orders = build_execution_orders(
+        plan, sizing, created_at=datetime(2026, 11, 2, tzinfo=timezone.utc)
+    )
+    assert len(orders) == 1
+    assert orders[0].quantity == Decimal("2")
+    assert orders[0].action is OrderAction.BUY
+
+
+def test_execution_sizing_must_match_rebalance_assets():
+    from orion.core.ids import OrderId
+    from orion.core.portfolio import ExecutionSizingInput
+    with pytest.raises(ValueError, match="same assets"):
+        ExecutionSizingInput(
+            quantities={AssetId("SPYM"): Decimal("1")},
+            order_ids={AssetId("QQQM"): OrderId("O-QQQM")},
+        )

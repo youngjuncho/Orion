@@ -2,7 +2,7 @@
 
 Version: 1.0
 
-Status: Draft
+Status: Draft — Runtime vertical-slice integration added
 
 Last Updated: 2026-07-27
 
@@ -282,3 +282,30 @@ Not Approved
 * Moon_Service_Model.md
 * Moon_Execution_Pipeline.md
 * Orion_Runtime.md
+
+## Runtime Integration Boundary
+
+The existing Moon lifecycle can be exposed to the canonical Runtime without moving
+investment methodology into the Runtime layer:
+
+```text
+StrategyResult
+    ↓
+ConsensusAllocation
+    ↓
+Execution Asset Mapping
+    ↓
+PortfolioTarget
+    ↓
+DecisionCandidate
+    ↓
+Runtime
+```
+
+`MoonPortfolioAdapter` performs this translation. It does not accept decisions,
+commit state, create execution orders, or execute trades. Acceptance remains an
+explicit Runtime decision boundary.
+
+`RebalancePlan` and `ExecutionOrder` require current portfolio state and executable
+quantity inputs that are not part of this adapter's contract, so they remain outside
+this vertical slice.

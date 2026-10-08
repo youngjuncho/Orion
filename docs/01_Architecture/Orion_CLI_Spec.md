@@ -165,3 +165,7 @@ Potential support:
 # Next Document
 
 Orion_Dashboard_Spec.md
+
+## Runtime Integration
+
+Framework report commands are routed through the public `OrionRuntime` boundary via CLI adapter helpers. `orion.cli.main` does not directly execute framework engines. Framework-specific report formatting remains a presentation concern after successful Runtime execution.

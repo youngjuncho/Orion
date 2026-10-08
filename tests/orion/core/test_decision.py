@@ -1,4 +1,4 @@
-from orion.core.decision import AcceptedDecision, DecisionCandidate, StateTransition
+from orion.core.decision import AcceptedDecision, DecisionCandidate, StateTransition, auto_approve
 
 
 def candidate():
@@ -21,3 +21,14 @@ def test_invalid_decision_candidate_rejected():
         assert "candidate_id" in str(exc)
     else:
         raise AssertionError("expected ValueError")
+
+
+def test_auto_approve_materializes_existing_accepted_decision_contract():
+    candidate = DecisionCandidate("c-auto", "Moon", "allocation", "Portfolio", "p-1")
+
+    accepted = auto_approve(candidate)
+
+    assert accepted.candidate is candidate
+    assert accepted.decision_id == "accepted:c-auto"
+    assert accepted.accepted_by == "orion-runtime:auto-approval"
+    assert accepted.conditions is None

@@ -104,7 +104,9 @@ temporary and are not durable persistence.
 
 After frameworks are registered, `RuntimeSession.build_context()` creates the
 read-only `RuntimeContext` consumed by framework code. The Runtime now also
-provides `RuntimeSession.execute_frameworks()`, which accepts explicit framework
+provides `OrionRuntime.run()` as the public application entry point. It creates a
+`RuntimeSession` and delegates canonical framework orchestration to it. The
+underlying `RuntimeSession.execute_frameworks()` accepts explicit framework
 executors, invokes them in registry order, validates the canonical
 `FrameworkResult` contract, and assembles the public `OrionResult`.
 
@@ -429,3 +431,131 @@ Not Approved
 * Moon_Interface.md
 * Supernova_Interface.md
 * Phoenix_Interface.md
+
+## Step 5 — Framework Adapter / CLI Boundary
+
+The public `OrionRuntime` boundary now accepts canonical framework adapters. Existing framework engines are adapted without changing their domain APIs through `orion.core.framework_adapters`.
+
+Report-capable framework CLI commands (`aurora report`, `moon report`, `supernova report`, `phoenix report`) invoke the public Runtime boundary through `orion.cli.runtime`. The CLI may format the original framework report after the adapter has executed, but it does not execute the engine directly from `orion.cli.main`.
+
+Orbit does not receive a report adapter in this step because its current engine contract requires explicit Portfolio/Target identifiers and an effective date; inventing those values at the CLI boundary would violate the Common Portfolio Domain contract. Orbit remains a Runtime-capable framework once its execution inputs are supplied explicitly.
+
+## Canonical Market Data Handoff — Runtime Integration Step 8
+
+`OrionRuntime.run()` accepts either an already validated `MarketDataSet` or a
+runtime-facing `MarketDataProvider` whose `load()` method returns one.
+
+The Runtime does not collect, normalize, or freshness-score external data. The
+provider boundary exists only to hand a canonical dataset into
+`RuntimeContext.market_data` before Framework execution.
+
+The two input forms are mutually exclusive. Source adapters, raw-to-normalized
+transformation, validation/freshness policy, and production storage remain
+outside the current Runtime implementation.
+
+### Portfolio valuation handoff
+
+The common portfolio layer now accepts an explicit `PortfolioValuation` boundary. Runtime callers may supply canonical, already-normalized prices to value a `PortfolioState`; the portfolio layer performs no price discovery or FX conversion. `current_allocations_from_valuation()` projects asset weights using total portfolio value, including explicit cash value in the denominator. This closes the current-state/valuation input needed for deterministic `RebalancePlan` construction without introducing synthetic prices or quantities.
+
+
+### Execution-order sizing handoff — Runtime Integration Step 12
+
+The common portfolio layer now exposes `ExecutionSizingInput` and `build_execution_orders()`. The boundary accepts already-resolved executable quantities and order identities and materializes canonical `ExecutionOrder` objects from a `RebalancePlan`. Quantity calculation, price selection, fees, lot sizes, fractional-share rules, and broker constraints remain outside the common Portfolio Domain.
+
+### Execution boundary validation — Runtime Integration Step 13
+
+The Runtime integration now treats canonical `ExecutionOrder` materialization as
+the terminal output of the current Moon execution-domain slice. Materializing an
+`ExecutionOrder` does not imply broker submission, fill, settlement, ledger update,
+or mutation of actual holdings.
+
+This boundary follows D-027: actual order execution remains outside the current
+Moon MVP unless a future architecture decision explicitly brings it into scope.
+
+
+# 2026-10-08 CORE-012 Runtime Lifecycle Audit
+
+The Runtime implementation has been audited against the canonical CORE-012 lifecycle without changing the architecture or introducing new investment logic.
+
+| Lifecycle stage | Current implementation status | Boundary |
+|---|---|---|
+| Initialize | Implemented | `RuntimeSession` creation |
+| Configuration | Implemented | `OrionConfig` supplied to session/context |
+| Data | Implemented | canonical `MarketDataSet` / provider handoff |
+| State Restore | Partial | in-memory `StateStore` restore; durable restore is future |
+| Context | Implemented | read-only `RuntimeContext` |
+| Framework Execution | Implemented | registry-ordered Framework adapters |
+| Result Validation | Implemented | `FrameworkResult` validation |
+| Decision Resolution | Partial | `RuntimeSession.resolve_and_commit()` only |
+| State Transition | Partial | canonical transition callback at Session boundary |
+| State Commit | Partial | `StateStore` commit at Session boundary |
+| Event Creation | Partial | correlated Domain Events at Session boundary |
+| Persistence | Partial | in-memory MVP `StateStore` / `EventStore` |
+| Presentation | Implemented | `OrionResult` / dashboard boundary |
+| Completion | Implemented | session completion after framework execution |
+
+The important implementation boundary is deliberate: `OrionRuntime.run()` currently provides the public Framework Execution → FrameworkResult → OrionResult path, while the canonical Decision → State Transition → State Commit → Event path is already implemented at the `RuntimeSession` level. These paths have not yet been collapsed into one public single-call lifecycle.
+
+This is an implementation gap, not a Core architecture gap. `CORE-001` through `CORE-020` remain closed. Durable persistence and replay remain outside the MVP boundary defined by D-030.
+
+# Runtime Integration Step 15
+
+Supernova and Phoenix are integrated through report adapters at the Framework boundary. Their satellite semantics remain Framework-owned and are not converted into Common Portfolio Domain decisions.
+
+# Runtime Integration Step 16
+
+The Public Runtime is validated against all five Frameworks: Aurora, Moon, Orbit, Supernova, and Phoenix. The registry order is authoritative for one Runtime execution, and Framework failure stops the current execution without returning a partial successful `OrionResult`.
+
+# Runtime Integration Step 18
+
+The Public `OrionRuntime.run()` can now execute the canonical Decision → State
+Transition → State Commit → Event path in the same public lifecycle when explicit
+Decision lifecycle handlers are supplied.
+
+The public boundary accepts three required handlers for a decision lifecycle:
+
+* `accept(DecisionCandidate) -> AcceptedDecision | None` (optional; defaults to the
+  Runtime Auto-Approval policy)
+* `transition(AcceptedDecision) -> StateTransition`
+* `snapshot(tuple[StateTransition, ...]) -> OrionStateSnapshot`
+
+An optional `event_factory(StateTransition) -> Event` creates correlated Domain
+Events after the authoritative StateStore commit. The default Runtime acceptance
+policy is Auto-Approval: each candidate is explicitly materialized as an
+`AcceptedDecision` with `accepted_by = "orion-runtime:auto-approval"`. Frameworks
+continue to propose `DecisionCandidate` values only and cannot self-accept. A
+caller may provide an explicit acceptance handler when rejection or conditional
+acceptance is required.
+
+The existing framework-only `OrionRuntime.run()` path remains backward compatible
+when no lifecycle handlers are supplied. This preserves report-only and framework
+integration callers while making the full canonical lifecycle available through
+one public call when an explicit decision policy is present.
+
+The Runtime does not introduce investment methodology, broker execution, or
+persistent storage in this step. Durable State/Event persistence remains outside
+the MVP boundary defined by D-030.
+
+## 2026-10-08 CORE-012 Step 18 Reconciliation
+
+| Lifecycle stage | Status after Step 18 | Boundary |
+|---|---|---|
+| Initialize | Implemented | `OrionRuntime.create_session()` |
+| Configuration | Implemented | `OrionConfig` |
+| Data | Implemented | canonical `MarketDataSet` / provider |
+| State Restore | Partial | in-memory `StateStore`; durable restore future |
+| Context | Implemented | `RuntimeContext` |
+| Framework Execution | Implemented | registry-ordered adapters |
+| Result Validation | Implemented | `FrameworkResult` validation |
+| Decision Resolution | Implemented | Public `run()` + default Auto-Approval or explicit acceptance handler |
+| State Transition | Implemented | Public `run()` + explicit transition handler |
+| State Commit | Implemented | `StateStore.publish()` |
+| Event Creation | Implemented | optional event factory after commit |
+| Persistence | Partial | in-memory MVP stores; durable persistence future |
+| Presentation | Implemented | `OrionResult` / dashboard boundary |
+| Completion | Implemented | Public lifecycle completes after decision path |
+
+Step 18 closes the previous **public single-call lifecycle integration gap**
+without changing the Core architecture or introducing an implicit investment
+policy. The remaining partial lifecycle items are State Restore and durable
+Persistence, both intentionally outside the current MVP scope.

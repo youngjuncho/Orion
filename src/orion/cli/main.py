@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from orion.dashboard import render_dashboard
+from orion.cli.runtime import run_framework_report
 from orion.core.config_loader import ConfigError, load_config
 from orion.frameworks.aurora.main import run_report as run_aurora_report
 from orion.frameworks.moon.main import run_report as run_moon_report
@@ -142,14 +143,7 @@ def _make_framework_handler(framework: str, action: str) -> Handler:
 
 
 def _make_framework_report_handler(framework: str) -> Handler:
-    handlers: dict[str, Callable[[], int]] = {
-        "moon": run_moon_report,
-        "aurora": run_aurora_report,
-        "supernova": run_supernova_report,
-        "phoenix": run_phoenix_report,
-    }
-
     def _handler(_: argparse.Namespace) -> int:
-        return handlers[framework]()
+        return run_framework_report(framework)
 
     return _handler

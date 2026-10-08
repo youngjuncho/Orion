@@ -24,10 +24,25 @@ class ExecutionMapper:
         missing = sorted({a.asset for a in allocations if a.asset not in self.mappings})
         if missing:
             raise ValueError(f"no approved execution mapping for: {', '.join(missing)}")
-        mapped: dict[str, float] = {}
+        mapped: dict[str, Decimal] = {}
         for allocation in allocations:
             asset = self.mappings[allocation.asset]
-            mapped[asset] = mapped.get(asset, 0.0) + allocation.weight
-        if abs(sum(a.weight for a in allocations) - sum(mapped.values())) > 1e-12:
+            weight = Decimal(str(allocation.weight))
+            mapped[asset] = mapped.get(asset, Decimal("0")) + weight
+
+        source_total = sum((Decimal(str(a.weight)) for a in allocations), Decimal("0"))
+        if abs(float(source_total) - 1.0) <= 1e-12:
+            source_total = Decimal("1")
+        mapped_total = sum(mapped.values(), Decimal("0"))
+        if abs(float(mapped_total) - float(source_total)) > 1e-12:
             raise ValueError("execution mapping must preserve total allocation weight")
-        return tuple(Allocation(AssetId(asset), Decimal(str(weight))) for asset, weight in mapped.items())
+
+        # Consensus is calculated in floating-point space, while the common
+        # PortfolioTarget contract requires an exact Decimal total of 1.0.
+        # Preserve the mapped weights and absorb only the representational
+        # remainder into the final allocation.
+        items = list(mapped.items())
+        if items:
+            running = sum((weight for _, weight in items[:-1]), Decimal("0"))
+            items[-1] = (items[-1][0], source_total - running)
+        return tuple(Allocation(AssetId(asset), weight) for asset, weight in items)

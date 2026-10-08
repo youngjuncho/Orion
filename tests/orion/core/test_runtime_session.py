@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from orion.core import ExecutionMetadata, RuntimeSession, load_config
+from orion.core import ExecutionMetadata, FrameworkRegistry, FrameworkResult, RuntimeContext, RuntimeSession, load_config
 
 
 def make_session() -> RuntimeSession:
@@ -241,3 +241,24 @@ def test_runtime_emits_transition_events_only_after_state_commit() -> None:
     assert observed[0].framework_states["Moon"] == "new"
     assert session.events.events[0].related_decision == "d-1"
     assert session.events.events[0].execution_id == session.execution.execution_id
+
+
+def test_public_orion_runtime_delegates_to_runtime_session() -> None:
+    from orion.core import OrionRuntime
+
+    config = load_config(Path(__file__).resolve().parents[3] / "config")
+    execution = ExecutionMetadata("execution-public", "2026-08-01T09:00:00+09:00", "1.0")
+    registry = FrameworkRegistry()
+    registry.register("Aurora", object())
+    runtime = OrionRuntime(config, execution, registry=registry)
+
+    def aurora(context: RuntimeContext) -> FrameworkResult:
+        assert context.execution.execution_id == "execution-public"
+        return FrameworkResult("Aurora", "Completed")
+
+    result = runtime.run({"Aurora": aurora})
+
+    assert result.runtime_summary.execution_id == "execution-public"
+    assert result.framework_results[0].framework_name == "Aurora"
+    assert runtime.events.events == ()
+    assert runtime.states.current is None

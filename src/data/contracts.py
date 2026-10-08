@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from math import isfinite
 from types import MappingProxyType
-from typing import Mapping
+from typing import Mapping, Protocol
 
 
 @dataclass(frozen=True)
@@ -82,3 +82,11 @@ class MarketDataSet:
         if len(identities) != len(set(identities)):
             raise ValueError("observations must not contain duplicate identities")
         object.__setattr__(self, "observations", observations)
+
+
+class MarketDataProvider(Protocol):
+    """Runtime-facing provider that returns one canonical market-data batch."""
+
+    def load(self) -> MarketDataSet:
+        """Return validated canonical market data for the current execution."""
+        ...

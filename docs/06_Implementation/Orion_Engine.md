@@ -37,14 +37,15 @@ Individual investment logic remains the responsibility of each framework.
 
 # Current Implementation Boundary
 
-The current code does not yet provide a public `OrionEngine` class. The
-implemented lifecycle coordinator is `orion.core.runtime_session.RuntimeSession`,
-which manages one in-memory execution's status, event store, state store, and
-framework registry. It does not yet load and execute framework engines.
+The canonical public application boundary is now `orion.core.OrionRuntime`.
+`OrionRuntime.run()` creates a `RuntimeSession` and delegates the existing
+Runtime orchestration contract to it. `RuntimeSession` remains the per-execution
+in-memory lifecycle coordinator for framework results, decisions, state, and
+events.
 
-The operations described below are therefore target contracts, not available
-runtime behavior. A concrete `OrionEngine` contract must be specified before
-the public coordinator is implemented.
+The public boundary still accepts explicit framework executors; full production
+framework adapters, data ingestion, and CLI wiring remain implementation work.
+No investment methodology is implemented by `OrionRuntime`.
 
 ---
 

@@ -62,3 +62,17 @@ def test_market_data_set_snapshots_observations_and_rejects_invalid_members() ->
     assert dataset.observations == (point,)
     with pytest.raises(ValueError, match="MarketDataPoint"):
         MarketDataSet(["not-an-observation"], "2026-07-31")  # type: ignore[arg-type]
+
+
+def test_market_data_provider_contract_returns_canonical_dataset() -> None:
+    class Provider:
+        def load(self) -> MarketDataSet:
+            return MarketDataSet(
+                (MarketDataPoint("SPY", "close", "2026-10-08", 1.0, "test"),),
+                "2026-10-08",
+            )
+
+    from data import MarketDataProvider
+
+    provider: MarketDataProvider = Provider()
+    assert provider.load().as_of == "2026-10-08"

@@ -101,6 +101,8 @@ PortfolioTarget + PortfolioState
 
 Represents a concrete trade instruction produced from a RebalancePlan. It is downstream of portfolio decision logic.
 
+`ExecutionSizingInput` is the explicit handoff for already-resolved executable quantities and order identities. The common Portfolio Domain materializes `ExecutionOrder` from those inputs but does not calculate sizing policy, prices, fees, lot sizes, fractional-share rules, or broker constraints.
+
 ### Transfer
 
 Represents movement of an asset or value between portfolios/accounts. Transfer is distinct from Rebalance.

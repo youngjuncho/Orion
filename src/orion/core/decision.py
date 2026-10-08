@@ -31,7 +31,7 @@ class DecisionCandidate:
 
 @dataclass(frozen=True)
 class AcceptedDecision:
-    """An explicitly accepted candidate; acceptance is not automatic."""
+    """An accepted candidate produced by an explicit Runtime policy."""
 
     decision_id: str
     candidate: DecisionCandidate
@@ -44,6 +44,22 @@ class AcceptedDecision:
             raise ValueError("candidate must be DecisionCandidate")
         if self.conditions is not None:
             object.__setattr__(self, "conditions", _mapping(self.conditions, "conditions"))
+
+
+def auto_approve(candidate: DecisionCandidate) -> AcceptedDecision:
+    """Accept one candidate under Orion's default Runtime governance policy.
+
+    Auto-approval is a governance acceptance policy, not investment methodology
+    or broker execution. The accepted decision remains an explicit
+    ``AcceptedDecision`` in the canonical lifecycle.
+    """
+    if not isinstance(candidate, DecisionCandidate):
+        raise TypeError("candidate must be DecisionCandidate")
+    return AcceptedDecision(
+        decision_id=f"accepted:{candidate.candidate_id}",
+        candidate=candidate,
+        accepted_by="orion-runtime:auto-approval",
+    )
 
 
 @dataclass(frozen=True)

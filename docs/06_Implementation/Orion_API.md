@@ -400,3 +400,7 @@ Status:
 Research Only
 
 Not Approved
+
+## Framework Adapter Contract
+
+`FrameworkAdapter` is the application boundary from an existing framework engine to the canonical `FrameworkResult`. `ReportFrameworkAdapter` is the initial adapter for report-producing engines. Adapters must not introduce framework methodology or alter the framework domain model.

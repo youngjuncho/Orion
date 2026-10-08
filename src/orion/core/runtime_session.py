@@ -59,13 +59,72 @@ class RuntimeSession:
         market_data: MarketDataSet | None = None,
         dashboard_data: Mapping[str, object] | None = None,
     ) -> OrionResult:
-        """Execute registered framework adapters and assemble one OrionResult.
+        """Execute frameworks and finalize the framework-only Runtime path.
 
-        This is the first Runtime orchestration boundary: framework execution
-        is supplied as an explicit adapter/callable and must return the
-        canonical FrameworkResult contract. Decision resolution, state
-        transitions, event creation, and persistence remain outside this step.
+        This preserves the historical public framework-execution boundary. The
+        full canonical lifecycle is exposed separately by ``execute_lifecycle``.
         """
+        results = self._execute_frameworks(
+            executors,
+            market_data=market_data,
+            dashboard_data=dashboard_data,
+        )
+        self.complete()
+        return self._build_result(results, dashboard_data=dashboard_data)
+
+    def execute_lifecycle(
+        self,
+        executors: Mapping[str, Callable[[RuntimeContext], FrameworkResult]],
+        *,
+        accept: Callable[[DecisionCandidate], AcceptedDecision | None],
+        transition: Callable[[AcceptedDecision], StateTransition],
+        snapshot: Callable[[tuple[StateTransition, ...]], OrionStateSnapshot],
+        event_factory: Callable[[StateTransition], Event] | None = None,
+        market_data: MarketDataSet | None = None,
+        dashboard_data: Mapping[str, object] | None = None,
+    ) -> OrionResult:
+        """Execute one public canonical Runtime lifecycle.
+
+        Frameworks propose ``DecisionCandidate`` values. The Runtime applies
+        the configured acceptance policy (the public Runtime defaults to
+        Auto-Approval), then requires explicit transition and snapshot handlers.
+        State commit remains authoritative before transition
+        events are created.
+        """
+        results = self._execute_frameworks(
+            executors,
+            market_data=market_data,
+            dashboard_data=dashboard_data,
+        )
+        candidates = tuple(
+            candidate
+            for result in results
+            for candidate in result.decision_candidates
+        )
+
+        try:
+            self.resolve_and_commit(
+                candidates,
+                accept,
+                transition,
+                snapshot,
+                event_factory,
+            )
+            self.complete()
+        except Exception:
+            self.fail()
+            raise
+
+        return self._build_result(results, dashboard_data=dashboard_data)
+
+    def _execute_frameworks(
+        self,
+        executors: Mapping[str, Callable[[RuntimeContext], FrameworkResult]],
+        *,
+        market_data: MarketDataSet | None = None,
+        dashboard_data: Mapping[str, object] | None = None,
+    ) -> tuple[FrameworkResult, ...]:
+        """Execute and validate framework adapters without finalizing the session."""
         if self.status != "Initializing":
             raise RuntimeError(f"cannot execute frameworks from status: {self.status}")
 
@@ -109,7 +168,14 @@ class RuntimeSession:
             for event in result.events
         )
         self.record_events(generated_events)
-        self.complete()
+        return tuple(results)
+
+    def _build_result(
+        self,
+        results: Sequence[FrameworkResult],
+        *,
+        dashboard_data: Mapping[str, object] | None = None,
+    ) -> OrionResult:
         return OrionResult(
             runtime_summary=self.execution,
             framework_results=tuple(results),

@@ -2324,3 +2324,66 @@ Approver: YJ
 ### Rationale
 
 The five-company baseline was reviewed after completion of the Supernova governance contracts, including Company Score aggregation, Replacement Risk, score-to-governance boundaries, lifecycle governance, and reproducibility. YJ approved the resulting records without requiring further governance redesign.
+
+
+---
+
+## D-050 — Runtime Default Decision Acceptance Policy
+
+Date:
+
+2026-10-08
+
+Status:
+
+Approved
+
+Category:
+
+Runtime Governance
+
+### Decision
+
+The Orion Runtime default Decision Acceptance Policy is **Auto-Approval**.
+
+A Framework continues to produce only a `DecisionCandidate`. The Framework does
+not accept its own candidate and does not directly create authoritative state.
+When the public Runtime executes the canonical decision lifecycle without an
+explicit acceptance handler, the Runtime applies the Auto-Approval policy and
+materializes the candidate as the existing `AcceptedDecision` contract.
+
+The canonical lifecycle remains:
+
+```text
+DecisionCandidate
+    → Acceptance Policy
+    → AcceptedDecision
+    → StateTransition
+    → StateStore
+    → Domain Event
+    → EventStore
+    → RuntimeResult
+```
+
+Auto-Approval is a Runtime Governance acceptance policy. It is not investment
+methodology, broker execution, order submission, fill, settlement, or a guarantee
+that an external action occurs.
+
+An explicit acceptance handler remains supported and takes precedence when a
+caller requires rejection or conditional acceptance. `AcceptedDecision` remains
+the authoritative acceptance representation.
+
+### Rationale
+
+The acceptance boundary is already part of the Core Runtime architecture. The
+current MVP requires an acceptance handler even though Orion's intended operating
+mode is automated. Making Auto-Approval the default removes unnecessary orchestration
+friction while preserving the existing governance boundary and future ability to
+introduce explicit review, rejection, or conditional acceptance.
+
+### Consequence
+
+No new Decision type or Framework responsibility is introduced. State transition,
+StateStore commit, Domain Event creation, EventStore publication, failure isolation,
+and the D-030 in-memory MVP boundary remain unchanged. Durable persistence, replay,
+and external execution remain outside scope.
