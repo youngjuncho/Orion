@@ -2,9 +2,9 @@
 
 Version: 1.0
 
-Status: Draft
+Status: MVP Implemented
 
-Last Updated: 2026-06-23
+Last Updated: 2026-10-08
 
 Depends On:
 
@@ -88,8 +88,7 @@ Phoenix
 
 These are candidate source categories only. Source-specific fields,
 freshness rules, normalization rules, and approval status are not yet closed
-for production collection. The current `src/data` package therefore stops at
-validated observation and batch contracts.
+for production collection. The current `src/data` package provides canonical observation/batch contracts plus deterministic source-agnostic normalization and structural validation. Source-specific freshness, semantic field rules, and production collection remain intentionally open.
 
 | Framework | Data readiness |
 |---|---|
@@ -102,21 +101,32 @@ validated observation and batch contracts.
 
 # Normalization Layer
 
+MVP implementation: `src/data/pipeline.py`
+
 Responsibilities:
 
-* Field mapping
-* Date standardization
-* Currency standardization
+* Map source observations into `MarketDataPoint`
+* Trim and canonicalize required textual fields
+* Normalize optional currency values
+* Build one validated `MarketDataSet` per input batch
+
+The MVP does not infer field semantics, exchange calendars, FX conversions, or source-specific timestamps. Those rules require closed source contracts.
 
 ---
 
 # Validation Layer
 
+MVP implementation: `MarketDataPoint` / `MarketDataSet` contracts plus `validate_dataset`.
+
 Responsibilities:
 
-* Missing value checks
-* Duplicate checks
-* Data freshness checks
+* Required field checks
+* Supported value-type checks
+* Finite numeric checks
+* Duplicate observation checks
+* Canonical dataset type checks
+
+Freshness validation is intentionally deferred until framework/source freshness policies are closed.
 
 ---
 
