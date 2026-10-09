@@ -9,6 +9,7 @@ Last Updated: 2026-10-08
 Depends On:
 
 * Orion_Domain_Model.md
+* Orion_Framework_Data_Contracts.md
 
 ---
 
@@ -110,7 +111,7 @@ Responsibilities:
 * Normalize optional currency values
 * Build one validated `MarketDataSet` per input batch
 
-The MVP does not infer field semantics, exchange calendars, FX conversions, or source-specific timestamps. Those rules require closed source contracts.
+The MVP does not infer field semantics, exchange calendars, FX conversions, or source-specific timestamps. Those rules require closed source contracts. The shared envelope, candidate price vocabulary, framework matrix, and production-collector closure checklist are specified in `Orion_Framework_Data_Contracts.md`.
 
 ---
 
