@@ -182,3 +182,89 @@ def test_validate_dataset_preserves_canonical_identity() -> None:
     )
 
     assert validate_dataset(dataset) is dataset
+
+
+def test_provider_neutral_adapter_normalizes_complete_fake_provider_batch() -> None:
+    from data import ProviderNeutralMarketDataAdapter
+
+    class FakeSource:
+        def fetch(self) -> dict[str, object]:
+            return {
+                "as_of": " 2026-10-09 ",
+                "observations": [
+                    {
+                        "symbol": " VTI ",
+                        "field": " adjusted_close ",
+                        "observed_at": " 2026-10-08 ",
+                        "value": 300.5,
+                        "source": " fake-provider ",
+                        "currency": " USD ",
+                        "metadata": {"provider_field": "adjclose", "fixture": "true"},
+                    },
+                    {
+                        "symbol": " VEU ",
+                        "field": " adjusted_close ",
+                        "observed_at": " 2026-10-08 ",
+                        "value": 70.25,
+                        "source": " fake-provider ",
+                    },
+                ],
+            }
+
+    dataset = ProviderNeutralMarketDataAdapter(FakeSource()).load()
+    assert dataset.as_of == "2026-10-09"
+    assert [item.symbol for item in dataset.observations] == ["VTI", "VEU"]
+    assert dataset.observations[0].field == "adjusted_close"
+    assert dataset.observations[0].metadata["provider_field"] == "adjclose"
+    assert dataset.observations[1].currency is None
+
+
+def test_provider_neutral_adapter_propagates_source_failure_without_partial_dataset() -> None:
+    from data import ProviderNeutralMarketDataAdapter
+
+    class FailingSource:
+        def fetch(self) -> dict[str, object]:
+            raise RuntimeError("fixture source unavailable")
+
+    with pytest.raises(RuntimeError, match="fixture source unavailable"):
+        ProviderNeutralMarketDataAdapter(FailingSource()).load()
+
+
+@pytest.mark.parametrize(
+    "batch, message",
+    [
+        (None, "provider batch must be a mapping"),
+        ({"observations": []}, "must include as_of"),
+        ({"as_of": "2026-10-09"}, "must include observations"),
+        ({"as_of": "2026-10-09", "observations": "not-a-list"}, "iterable of mappings"),
+        ({"as_of": "2026-10-09", "observations": [{"symbol": "VTI"}]}, "field"),
+    ],
+)
+def test_provider_neutral_adapter_rejects_malformed_batch(batch: object, message: str) -> None:
+    from data import ProviderNeutralMarketDataAdapter
+
+    class FakeSource:
+        def fetch(self) -> object:
+            return batch
+
+    with pytest.raises(ValueError, match=message):
+        ProviderNeutralMarketDataAdapter(FakeSource()).load()  # type: ignore[arg-type]
+
+
+def test_provider_neutral_adapter_rejects_duplicate_observations_fail_closed() -> None:
+    from data import ProviderNeutralMarketDataAdapter
+
+    point = {
+        "symbol": "VTI",
+        "field": "adjusted_close",
+        "observed_at": "2026-10-08",
+        "value": 300.5,
+        "source": "fake-provider",
+    }
+
+    class FakeSource:
+        def fetch(self) -> dict[str, object]:
+            return {"as_of": "2026-10-09", "observations": [point, point.copy()]}
+
+    with pytest.raises(ValueError, match="duplicate"):
+        ProviderNeutralMarketDataAdapter(FakeSource()).load()

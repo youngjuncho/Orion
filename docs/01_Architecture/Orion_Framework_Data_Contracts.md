@@ -66,6 +66,8 @@ and compatibility with D-028.
 No `dividend`, `total_return`, or FX-converted field is inferred or generated
 by this contract review.
 
+Moon ADM’s current precomputed-input boundary and minimum source-adapter requirements are detailed in `Moon_ADM_Data_Contract.md` and `Moon_ADM_Data_Readiness_and_Closure.md`. That document records existing requirements without approving a production provider or filling unresolved policy gaps.
+
 ## Framework data contract matrix
 
 | Framework | Data domain | Shared-envelope use | Framework-specific semantic contract still required |
@@ -116,3 +118,6 @@ Until those items are closed, the existing source-agnostic normalization and
 structural validation remain the supported MVP boundary. No external API,
 network dependency, scoring logic, or investment rule is introduced by this
 document.
+
+
+Moon ADM implementation boundary: `docs/01_Architecture/Moon_ADM_Data_Implementation_Boundary.md`.
