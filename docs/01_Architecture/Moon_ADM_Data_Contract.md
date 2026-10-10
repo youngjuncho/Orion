@@ -6,7 +6,7 @@ Last Updated: 2026-10-10
 
 ## Purpose
 
-This document records the minimum data requirements implied by the existing ADM implementation specification and D-028. D-055 approves SGOV as the absolute-momentum comparison benchmark and strict greater-than comparison, with equality false. This document does not approve a provider or authorize production collection.
+This document records the minimum data requirements implied by the existing ADM implementation specification and D-028. D-055 approves SGOV as the absolute-momentum comparison benchmark and strict greater-than comparison, with equality false. D-056 approves provider-independent engineering defaults for prior-on-or-before selection and fail-closed missing/conflicting data handling. Neither decision approves a provider or authorizes production collection.
 
 ## Existing strategy contract
 
@@ -54,10 +54,14 @@ and selected observations for auditability.
 
 This is the selected prior-observation policy for the engineering baseline,
 not proof that the selected observation is a valid exchange trading day; it
-also does not impose a maximum age. Provider bar calendars, timezone,
-stale-data thresholds, missing-bar behavior, and revised historical values
-remain separate source-contract decisions. Production collection remains
-gated on those decisions and adjusted-price semantic approval.
+also does not impose a numeric maximum age. Under D-056, the same field,
+targets, and selection rule apply to VTI, VEU, and the SGOV comparison input.
+Required missing, invalid, stale under an explicit caller policy, or
+conflicting observations fail closed; no fill, interpolation, or partial
+success is allowed. Provider bar calendars, timezone, numeric freshness
+limits, conflict/revision semantics, and adjusted-price semantics remain
+separate source-contract decisions. Production collection remains gated on
+those decisions and provider approval.
 
 ## Defensive benchmark dependency
 

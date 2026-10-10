@@ -8,7 +8,22 @@ Last Updated: 2026-10-10
 
 This register consolidates decisions that must be resolved before a concrete market-data provider adapter can be implemented or connected to Moon ADM. It is a decision-tracking artifact, not itself an approval record. Listing a candidate or an acceptance test does not authorize that candidate or close a policy gate.
 
-The provider-neutral adapter and fixture-based acceptance tests are implemented. D-055 approves the SGOV/strict-greater-than methodology. The live provider boundary remains closed. Core Runtime remains frozen, and Moon's `active_strategies` remains unchanged (`[]`).
+The provider-neutral adapter and fixture-based acceptance tests are implemented. D-055 approves the SGOV/strict-greater-than methodology. D-056 approves limited provider-independent engineering defaults for endpoint selection and fail-closed handling; it does not close provider-specific gates. The live provider boundary remains closed. Core Runtime remains frozen, and Moon's `active_strategies` remains unchanged (`[]`).
+
+## D-056 engineering defaults
+
+For explicit evaluation and trailing targets, the engineering selector may use
+the latest eligible observation on or before each target and must never use a
+future observation. VTI, VEU, and the SGOV comparison input use the same field,
+targets, and selection rule. Missing, invalid, caller-defined stale, or
+conflicting required observations fail closed without fills, interpolation,
+or partial success. The calculation boundary retains selected-observation
+identity and source metadata where supplied.
+
+These defaults do not choose target dates, a calendar or timezone, numeric
+freshness limits, provider conflict or revision precedence, a source, or
+adjusted-price semantics. No provider, live collection, signal assembly, or
+ADM activation is approved. See D-056 in the Decision Log.
 
 ## Decision register
 
@@ -49,6 +64,10 @@ A status change in this register is not sufficient evidence of approval by itsel
 2. Close PCD-08 through PCD-12 to define data quality, revision, provenance, and operations.
 3. PCD-13 and PCD-14 are approved by D-055; do not reopen them to unblock provider work.
 4. Close PCD-15 and PCD-16 before end-to-end signal integration or activation review.
+
+D-056 supplies engineering defaults only; it does not close PCD-01 through
+PCD-12. A numeric freshness limit and provider-specific response/revision
+semantics still require evidence and explicit resolution.
 
 This order does not require all decisions to be made in one session and does not imply that any particular provider is preferred.
 

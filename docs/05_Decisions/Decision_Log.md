@@ -2594,3 +2594,32 @@ The approved comparison is implemented as the default `D-055` policy for
 source semantics, calendar interpretation, freshness limits, and production
 governance provenance remain separate data-contract gates. ADM remains
 inactive; this decision alone does not authorize signal assembly or activation.
+
+---
+
+## D-056 — ADM Provider-Independent Data Handling Defaults
+
+Status: **Approved — engineering defaults only; provider contract remains open**
+Date: 2026-10-10
+
+The owner accepted the recommended provider-independent defaults for the ADM
+data calculation boundary. For an explicitly supplied evaluation target and
+12-month trailing target, select the latest eligible observation on or before
+each target; never select a future observation. Use the same requested field,
+target dates, and selection rule for VTI, VEU, and the SGOV comparison input.
+If any required symbol, field, or endpoint is missing, invalid, stale under an
+explicit caller policy, or conflicting, the calculation must fail closed and
+must not fill, interpolate, or return a success-shaped partial result.
+
+These defaults make selection deterministic and prevent look-ahead and silent
+data substitution. They do not define how target dates are generated, approve
+an exchange calendar or timezone, set a numeric freshness limit, resolve
+provider-specific conflicts or revisions, or establish the permitted use or
+adjustment semantics of any provider's price series. Those matters remain open
+under PCD-01 through PCD-12. In particular, D-056 does not approve Yahoo
+Finance or any other provider and does not authorize live collection, signal
+assembly, or ADM activation.
+
+The engineering boundary must retain enough selected-observation identity and
+source metadata to explain a result. Durable snapshot storage and provider
+revision precedence are not specified by this decision.
