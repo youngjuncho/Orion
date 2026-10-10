@@ -2,7 +2,7 @@
 
 Version: 1.0
 
-Status: Approved Contract — partial implementation
+Status: Approved contract — partial implementation
 
 ## Purpose
 
@@ -37,6 +37,9 @@ Core fields currently implemented:
 * account_id
 * asset_id
 * quantity
+
+Quantity must be finite and non-negative. NaN and infinity are invalid because
+they make valuation results undefined.
 
 ### Account
 
@@ -90,6 +93,8 @@ Represents a historical, time-stamped capture of PortfolioState. It is not the c
 ### RebalancePlan
 
 Represents the changes required to move PortfolioState toward PortfolioTarget.
+Each asset may appear at most once in the current-allocation input; duplicate
+asset entries are rejected instead of silently overriding an earlier weight.
 
 ```text
 PortfolioTarget + PortfolioState
