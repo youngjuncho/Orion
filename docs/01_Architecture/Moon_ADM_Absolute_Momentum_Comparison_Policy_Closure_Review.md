@@ -1,26 +1,26 @@
 # Moon ADM Absolute Momentum Comparison Policy Closure Review
 
 Version: 1.0  
-Status: Research Reconciliation — Methodology Direction Identified; Production Policy Still Open  
-Last Updated: 2026-10-09
+Status: Research Reconciliation - D-055 Methodology Approved; Data Gates Open
+Last Updated: 2026-10-10
 
 ## Purpose
 
-This review reconciles the existing ADM research wording with the implementation boundary. It distinguishes a methodological direction already present in the research from decisions that still require explicit approval. It does not itself approve a benchmark, validate a provider's adjusted-price series, or activate ADM.
+This review reconciles the existing ADM research wording with the implementation boundary. D-055 now approves SGOV and the strict benchmark-relative comparison; provider adjusted-price validation and ADM activation remain open.
 
 ## Findings from the existing research
 
 `docs/03_Research/Moon/ADM/ADM_Research.md` describes absolute momentum as assessing whether the selected asset has performed positively relative to a risk-free alternative. Its original GEM decision process explicitly says to compare the winning risk asset's momentum with the cash return. `ADM_Orion.md` carries forward a trailing 12-month adjusted-price total-return formula and lists SGOV as the primary defensive-asset candidate, with BIL and SHY as backups; the defensive instrument is marked pending final approval.
 
-The most faithful reading of the existing research is therefore **benchmark-relative comparison against a cash/defensive return**, rather than silently replacing the benchmark with zero return. However, the exact benchmark instrument is not approved, and the return-measurement standard remains marked pending validation. This research reconciliation is not a new investment-methodology decision.
+The research direction is **benchmark-relative comparison against a cash/defensive return**, rather than comparison against zero. D-055 approves SGOV as the benchmark and strict greater-than comparison, with equality false. The return-measurement standard remains pending source validation.
 
 ## Classification of policy items
 
 | Item | Finding | Status |
 |---|---|---|
-| Comparison concept | Compare the selected risk asset's trailing momentum return with a cash/defensive benchmark return | Documented research direction; formal policy closure still required |
-| Benchmark instrument | SGOV primary candidate; BIL and SHY backups | Open — no instrument is approved by this review |
-| Comparison operator | Research implies a benchmark-relative comparison, but does not explicitly define the exact boolean expression or tie treatment | Open — do not encode an operator or equality result by inference |
+| Comparison concept | Compare the selected risk asset's trailing momentum return with a cash/defensive benchmark return | Approved by D-055; provider measurement remains pending |
+| Benchmark instrument | SGOV | Approved by D-055 |
+| Comparison operator | Selected risk return strictly greater than SGOV; equality is false | Approved by D-055 |
 | Return horizon | Trailing 12-month adjusted-price total-return proxy | Specified in research; validation remains pending |
 | Adjusted-price semantics | Must represent the intended total-return proxy | Open per provider/source contract |
 | Date selection and freshness | Use explicit target dates, prior-observation-on-or-before selection, and explicit freshness validation in engineering utilities | Engineering behavior exists; calendar and production thresholds remain open |
@@ -29,15 +29,14 @@ The most faithful reading of the existing research is therefore **benchmark-rela
 
 ## Implementation consequence
 
-Do not implement `absolute_momentum_positive` in this step. `calculate_adm_absolute_momentum_inputs(...)` remains a return-input preparation utility only. The next signal-calculation implementation gate requires a recorded methodology decision that explicitly identifies:
+The methodology items below are resolved by D-055. Before production signal integration, data/governance gates still require:
 
-1. the approved benchmark instrument and whether it must match the configured defensive holding;
-2. the exact comparison expression and equality behavior;
-3. acceptance criteria for the adjusted-price series and confirmation of the intended 12-month horizon;
-4. matched endpoint selection and approved freshness limits for both returns;
-5. fail-closed handling for missing, stale, invalid, or source-incompatible inputs.
+1. acceptance criteria for the provider's adjusted-price series;
+2. matched endpoint selection and approved freshness limits for both returns;
+3. fail-closed handling for missing, stale, invalid, or source-incompatible inputs;
+4. negative tests through the actual orchestration path before activation.
 
-Once those decisions are approved, add deterministic tests for risk return above, below, and equal to benchmark return, as well as missing, stale, non-finite, and invalid inputs. Until then, keep the data-return outputs separate from the strategy input and boolean signal.
+D-055 comparison behavior is implemented and covered for greater, equal, and lower returns. Keep signal assembly and activation blocked until the remaining data gates are closed.
 
 ## Scope guardrails
 

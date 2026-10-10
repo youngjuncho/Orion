@@ -96,7 +96,7 @@ for production collection. The current `src/data` package provides canonical obs
 
 | Framework | Data readiness |
 |---|---|
-| Moon | D-028 establishes adjusted-price-based total-return proxy; Step 28 implements prior-observation-on-or-before target selection; source compatibility, freshness, provider-calendar validation, and defensive benchmark identity, exact comparison operator/equality behavior, and source policies remain open; research direction is benchmark-relative to cash/defensive return |
+| Moon | D-028 establishes adjusted-price-based total-return proxy; Step 28 implements prior-observation-on-or-before target selection; source compatibility, freshness, provider-calendar validation, adjusted-price semantics, and source policies remain open; D-055 approves SGOV and strict greater-than with equality false; research direction is benchmark-relative to cash/defensive return |
 | Aurora | Indicator set, formulas, and source contract remain open |
 | Supernova | Analyst review inputs and fundamental source contract remain open |
 | Phoenix | Leadership review inputs and on-chain/source contract remain open |

@@ -1,8 +1,8 @@
 # Moon ADM Provider Governance Gate Specification
 
-Version: 1.0  
-Status: Specification — no provider, investment policy, signal integration, or activation approved  
-Date: 2026-10-09  
+Version: 1.0
+Status: Specification — no provider, signal integration, or activation approved; D-055 methodology approved
+Date: 2026-10-10
 Baseline: Step 44 — Provider Contract Readiness Audit
 
 ## 1. Purpose
@@ -19,7 +19,7 @@ The current implementation must continue to treat caller-supplied approval refer
 | G1 | Provider and instrument identity | PCD-01, PCD-02 | Provider-specific contract/mapping design within the approved scope | Treating prices as valid ADM inputs |
 | G2 | Observation interpretation | PCD-03–PCD-07 | Provider-specific observation parsing and approved temporal/price interpretation | Production quality or signal generation by itself |
 | G3 | Quality, provenance, operations | PCD-08–PCD-12, scoped to the intended deployment | Implementation of explicitly approved failure, revision, provenance and operational behaviors | Choosing investment methodology |
-| G4 | Investment methodology | PCD-13 and PCD-14 in authoritative investment-policy governance | Calculation/comparison behavior matching the approved methodology | Provider access or strategy activation by itself |
+| G4 | Investment methodology | PCD-13 and PCD-14 approved by D-055 | D-055 SGOV/strict-greater-than comparison behavior | Provider access or strategy activation by itself |
 | G5 | Governance binding | PCD-15 plus a tested authoritative-record resolver | Runtime/configuration may verify decision IDs, versions, scope and status against an authoritative record | Signal integration or activation by itself |
 | G6 | Signal integration acceptance | G1–G5 prerequisites; PCD-16 evidence; end-to-end negative tests | A separately reviewed integration proposal | Enabling ADM in configuration |
 | G7 | Strategy activation | Separate explicit activation authorization after G6 review | Only the exact approved scope and configuration change | Broader provider use or unrelated strategy activation |
@@ -46,7 +46,7 @@ A future resolver must verify that the record exists, is authoritative, is in an
 - **G1:** PCD-01 and PCD-02 must be explicitly approved. Rejection or deferral keeps G1 closed.
 - **G2:** PCD-03–PCD-07 must be approved for the exact data use. Generic field names do not prove financial semantics.
 - **G3:** PCD-08–PCD-12 must be approved to the scope being deployed. An explicit, evidence-backed `Not applicable` decision is required for any intentionally omitted operational behavior; it cannot be inferred from absence.
-- **G4:** PCD-13 and PCD-14 require their own investment-policy authority. Provider engineering cannot select a benchmark, comparator, or equality rule.
+- **G4:** PCD-13 and PCD-14 are approved by D-055. Their implementation does not approve provider semantics, data quality, or strategy activation.
 - **G5:** PCD-15 requires an implemented resolver and tests for unknown IDs, wrong versions, scope mismatch, revoked/superseded records, missing dependencies, and valid approvals.
 - **G6:** PCD-16 requires actual orchestration-path tests showing that provider exceptions, malformed/partial data, missing or stale observations, invalid provenance, and unavailable/unapproved policy cannot yield a valid accepted Moon signal.
 - **G7:** Requires a separate activation record naming the exact strategy, configuration diff, effective time, rollback steps, verification checks, and owner. G6 is necessary but not sufficient.
@@ -82,14 +82,14 @@ Passing tests establishes only the tested contract and fixture behavior. It does
 | G1 | Closed | Provider/use and stable instrument identity are not approved |
 | G2 | Closed | Price semantics and temporal contract are not approved |
 | G3 | Closed | Provider-specific quality, revision, provenance and operations decisions remain open |
-| G4 | Closed | Benchmark and comparator/equality investment-policy decisions remain open |
+| G4 | Methodology approved by D-055 | Provider/data gates and authoritative runtime binding remain open |
 | G5 | Closed | Local schema/digest/dependency validator exists, but trusted authoritative registry and runtime binding are not implemented |
 | G6 | Closed | No approved live provider and no end-to-end Runtime-to-Moon fail-closed integration evidence |
 | G7 | Closed | No activation authorization; `config/moon.yaml` keeps `active_strategies: []` |
 
 ## 8. Explicit non-goals
 
-This specification does not choose a provider, approve any adjusted-price series, select a defensive asset, set freshness thresholds, choose an absolute-momentum comparator, add networking/retry/cache/fallback/persistence/scheduling, assemble `ADMSignalInput`, activate ADM, or modify Core Runtime. Moon's `active_strategies: []` must remain unchanged unless a separate, authorized activation decision is made and verified.
+This specification does not choose a provider, approve any adjusted-price series, select a configured defensive holding, set freshness thresholds, add networking/retry/cache/fallback/persistence/scheduling, assemble `ADMSignalInput`, activate ADM, or modify Core Runtime. Moon's `active_strategies: []` must remain unchanged unless a separate, authorized activation decision is made and verified.
 
 ## Related documents
 

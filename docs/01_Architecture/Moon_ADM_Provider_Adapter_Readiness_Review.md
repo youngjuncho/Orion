@@ -10,7 +10,7 @@ This review determines whether the current Moon ADM data contracts are sufficien
 
 ## Decision
 
-**A provider-neutral adapter boundary may be designed, but a production provider adapter must not yet be implemented or connected.** The reusable `MarketDataProvider` protocol and canonical `MarketDataSet` envelope exist. Step 40 adds `ProviderNeutralMarketDataAdapter`, a fixture-tested wrapper that normalizes raw batches and propagates source errors. However, provider selection, adjusted-price semantics, calendar and timestamp rules, data-quality behavior, historical revision expectations, and the approved absolute-momentum benchmark remain open.
+**A provider-neutral adapter boundary may be designed, but a production provider adapter must not yet be implemented or connected.** The reusable `MarketDataProvider` protocol and canonical `MarketDataSet` envelope exist. Step 40 adds `ProviderNeutralMarketDataAdapter`, a fixture-tested wrapper that normalizes raw batches and propagates source errors. However, provider selection, adjusted-price semantics, calendar and timestamp rules, data-quality behavior, historical revision expectations, and source measurement for the D-055-approved SGOV comparison remain open.
 
 The current engineering date-selection default is retained: for each explicit target date, select the latest observation in the supplied dataset whose date is on or before the target. This avoids future observations and matches the chosen prior-observation rule. It does not certify that the provider's observation is an official exchange trading-day bar or sufficiently fresh.
 
@@ -28,7 +28,7 @@ The current engineering date-selection default is retained: for each explicit ta
 | Revisions/corrections | No as-observed snapshot or revision policy | Decide whether results use latest revised history or preserve retrieval-time snapshots; define reproducibility metadata | Open |
 | Source failure and retry | No provider I/O or retry policy | Specify timeout, rate-limit, retry, cache, and failure semantics only after provider approval | Open |
 | Provenance | Canonical `source` and string metadata are available | Record provider, requested/returned identifiers, retrieval timestamp, selected observation dates, field semantics, and adapter version | Contract design required |
-| Absolute momentum | Inputs can be calculated for explicit risk asset and benchmark | Approve benchmark identity, its relation to defensive holding, comparison operator, and equality behavior | Open; blocks end-to-end signal |
+| Absolute momentum | Inputs can be compared using D-055 SGOV/strict-greater-than policy | Provider source semantics, freshness, and calendar approval remain open |
 | Governance | Caller-supplied approval reference is an attestation only | Bind production approval checks to authoritative decision records | Open |
 
 ## Required source contract before implementation
@@ -57,11 +57,11 @@ A provider-specific adapter may start only after a named provider is approved fo
 - The selected observations and computed returns can be reproduced from recorded provenance and deterministic fixtures.
 - Provider failure cannot produce a partial or successful-looking `MarketDataSet`.
 - No network access is required for unit tests.
-- Adapter output alone cannot activate ADM, bypass the signal integration guard, or create an `ADMSignalInput` while methodology gates remain open.
+- Adapter output alone cannot activate ADM, bypass the signal integration guard, or create an `ADMSignalInput` while provider/data and signal-integration gates remain open.
 
 ## Implementation boundary
 
-The existing source-agnostic calculation helpers can be reused. Do not place provider I/O inside `ADMStrategy` or the Core Runtime. Do not add a provider dependency, scheduled collection, persistent cache, fallback provider, or automatic source precedence until its source contract is approved. Do not select SGOV/BIL/SHY or finalize absolute-momentum comparison behavior by implication.
+The existing source-agnostic calculation helpers can be reused. Do not place provider I/O inside `ADMStrategy` or the Core Runtime. Do not add a provider dependency, scheduled collection, persistent cache, fallback provider, or automatic source precedence until its source contract is approved. D-055 now selects SGOV and strict greater-than comparison; do not infer provider/source approval or signal activation from that methodology decision.
 
 ## Recommended next step
 

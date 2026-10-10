@@ -1,8 +1,8 @@
 # Moon ADM Absolute-Momentum Policy Boundary
 
 Version: 1.0  
-Status: Engineering Boundary — Comparison Rule Not Yet Approved  
-Last Updated: 2026-10-09
+Status: Engineering Boundary — D-055 Comparison Rule Approved; Data Gates Open
+Last Updated: 2026-10-10
 
 ## Purpose
 
@@ -12,24 +12,19 @@ This note separates what the existing ADM research says about absolute momentum 
 
 The current ADM research describes absolute momentum as assessing whether the selected risk asset has performed positively relative to a risk-free alternative. It also specifies a trailing 12-month return formula based on an adjusted-price series treated as a total-return proxy, while marking the measurement standard as pending validation.
 
-The implementation specification lists SGOV as the primary defensive-asset candidate and BIL / SHY as backups, with final approval pending. Therefore, the research establishes the broad purpose of absolute momentum but does not close the exact benchmark instrument or source-specific adjusted-price semantics.
+The implementation specification listed SGOV as the primary defensive-asset candidate and BIL / SHY as backups. D-055 now approves SGOV as the comparison benchmark; this does not approve a provider's adjusted-price series or production data semantics.
 
 ## Decisions still open
 
-The following must remain explicit, separately tracked decisions:
-
-1. **Benchmark identity:** which approved instrument supplies the risk-free/defensive comparison return.
-2. **Comparison expression:** whether the boolean is based on the selected risk asset's return being greater than zero, greater than the benchmark return, or another formally specified expression. The prose phrase “positive performance relative to a risk-free alternative” is not precise enough to infer this silently.
-3. **Measurement consistency:** whether risk and benchmark returns must use the same target dates, lookback endpoint convention, price-field semantics, source approval status, and freshness limits. Engineering should enforce matched conventions when approved, not invent their values.
-4. **Equality boundary:** the outcome when the two compared values are equal, if the final rule compares the two returns.
-5. **Failure behavior:** behavior when either return is unavailable, stale, invalid, or fails source-semantic validation. The current engineering posture is fail-closed; no boolean should be emitted from incomplete inputs.
-6. **Validation status:** the research specification currently marks the trailing-12-month measurement as pending validation. Code implementation does not change that status.
-
+1. **Adjusted-price source:** confirm that the chosen provider's adjusted-price field meets D-028/D-055 total-return requirements.
+2. **Date/calendar policy:** define production calendar interpretation, endpoint selection, and observation freshness thresholds.
+3. **Failure and revision behavior:** define stale, missing, invalid, corrected, and revised observation handling; retain fail-closed behavior.
+4. **Activation and provenance:** bind the approved D-055 policy and data-source evidence to authoritative governance records before signal integration or activation.
 ## Current implementation boundary
 
-`calculate_adm_absolute_momentum_inputs(...)` may calculate and retain comparable returns for a caller-specified risk asset and benchmark. It does not approve that benchmark, compare the returns, emit `absolute_momentum_positive`, or construct `ADMSignalInput`.
+`calculate_adm_absolute_momentum_inputs(...)` calculates comparable returns for an explicit risk asset and benchmark. `compare_adm_absolute_momentum_returns(...)` uses the D-055 SGOV/strict-greater-than rule by default. The data-readiness and caller-attested governance guard still block signal assembly until source and freshness gates are closed.
 
-Do not add an implicit SGOV default, do not treat a configured defensive holding as automatically approved as the comparison benchmark, and do not change `ADMStrategy`'s existing consumer contract as part of this boundary review.
+Do not treat the D-055 policy approval as approval of a provider's adjusted-price semantics, production readiness, or strategy activation. `ADMStrategy` remains a consumer of validated precomputed inputs.
 
 ## Observation-date convention
 
@@ -39,16 +34,15 @@ The monthly research description (“last trading day” and execution on the �
 
 ## Closure criteria
 
-The absolute-momentum boolean may be implemented only after the methodology owner has explicitly approved:
+Production signal integration may proceed only after the data/governance owner has explicitly closed:
 
-- the benchmark instrument and its relationship to the configured defensive holding;
-- the exact comparison expression and equality behavior;
-- the return horizon and adjusted-price acceptance criteria;
+- the adjusted-price source acceptance criteria for D-028/D-055;
 - matched date-selection and freshness rules for both inputs;
+- the provider calendar and missing/stale/revised-data behavior;
 - fail-closed behavior for any invalid input;
-- deterministic test cases that cover positive, negative, equal, missing, stale, and invalid return inputs.
+- end-to-end negative tests before Runtime signal integration or activation.
 
-Until then, retain return inputs as data, not as a signal. No source adapter, external network access, persistence, scheduled collection, strategy activation, broker execution, or Core Runtime change is authorized by this document.
+Until then, retain return inputs and comparison results behind the existing readiness guard; no provider adapter, external network access, persistence, scheduled collection, signal integration, strategy activation, broker execution, or Core Runtime change is authorized by this document.
 
 ## Related documents
 
@@ -61,21 +55,10 @@ Until then, retain return inputs as data, not as a signal. No source adapter, ex
 - `../03_Research/Moon/ADM/ADM_Research.md`
 - `../05_Decisions/Decision_Log.md` (D-026 and D-028)
 
-## Step 35 — research reconciliation of the comparison concept
+## Step 35 — D-055 methodology approval
 
-`Moon_ADM_Absolute_Momentum_Comparison_Policy_Closure_Review.md` reconciles
-the research description with the original GEM decision process. The research
-direction is benchmark-relative comparison against cash/defensive return, not
-an implicit comparison against zero. The benchmark instrument, exact comparison
-operator, equality behavior, adjusted-price acceptance criteria, and production
-data policies remain open. No comparison boolean or signal is implemented.
+D-055 approves SGOV as the absolute-momentum benchmark and strict selected-risk-return greater-than-benchmark comparison, with equality false. The approved comparison helper uses this rule by default. This closes the benchmark/operator question only.
 
-## Step 34 — data readiness does not imply policy approval
+## Step 34 — data readiness boundary
 
-The implementation now has a cross-input readiness audit for relative-momentum
-freshness and caller-supplied absolute-momentum returns. Matching target dates,
-field, selection-policy provenance, and an explicit shared freshness limit are
-required. The audit records the absolute-input freshness checks but deliberately
-keeps `signal_ready` false and lists unresolved investment/source policy gates.
-This does not approve SGOV or any other benchmark and does not define the
-absolute-momentum comparison expression.
+The readiness audit still keeps `signal_ready` false by default because adjusted-price source semantics and provider calendar/data-quality policy remain open. D-055 does not approve a price provider, freshness threshold, signal assembly, or strategy activation.

@@ -1,8 +1,8 @@
 # Moon ADM Comparison-to-Signal Integration Guard
 
 Version: 1.0  
-Status: Engineering Contract — Production Investment Policy Not Approved  
-Last Updated: 2026-10-09
+Status: Engineering Contract - D-055 Approved; Production Data Gates Open
+Last Updated: 2026-10-10
 
 ## Purpose
 
@@ -22,7 +22,7 @@ The guard blocks when any of these apply:
 2. The comparison's risk asset, benchmark, or returns do not match the freshness-checked absolute-momentum inputs in the readiness object.
 3. Data quality has not passed.
 4. Any readiness policy gate remains unresolved.
-5. The policy approval status is not explicitly `APPROVED`.
+5. The caller-attested policy approval status is not explicitly `APPROVED`.
 6. An approval reference is missing.
 7. Available comparison policy provenance is missing.
 
@@ -30,7 +30,7 @@ The guard blocks when any of these apply:
 
 ## Governance provenance limitation
 
-The approval status and reference are supplied by the caller. The guard records that attestation but does not independently verify a decision log, document, or external governance system. A non-empty reference is not proof of approval. Production integration must bind this value to an authoritative governance record before relying on it.
+The comparison methodology is approved by D-055. The guard's approval status and reference are still supplied by the caller; it records that attestation but does not independently verify a decision log, document, or external governance system. Production integration must bind this value to an authoritative governance record before relying on it.
 
 ## Readiness closure
 
@@ -39,7 +39,7 @@ The approval status and reference are supplied by the caller. The guard records 
 ## Scope guardrails
 
 - No `ADMSignalInput` conversion is implemented.
-- No comparison benchmark, comparison operator, or equality behavior is selected by default.
+- D-055 supplies SGOV and strict greater-than comparison by default; no provider/source semantics or data-freshness policy is inferred.
 - No external data provider, network I/O, persistence, scheduler, broker execution, or strategy activation is introduced.
 - `config/moon.yaml`, `ADMStrategy`, Core Runtime, and framework orchestration remain unchanged.
 

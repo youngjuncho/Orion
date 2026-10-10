@@ -70,7 +70,7 @@ A digest must be recalculated after any content change. Recalculating a digest i
 
 ## 6. Gate mapping and current state
 
-- G1–G4 remain closed because provider, data semantics, operational policy, and investment methodology are not approved.
+- G1–G3 remain closed because provider, data semantics, and operational policy are not approved; D-055 approves the G4 benchmark and comparison methodology.
 - G5 remains closed: local schema and resolution behavior exist, but authoritative registry identity, authorized signer/owner verification, durable audit history, and runtime binding do not.
 - G6 remains closed: no actual Runtime-to-Moon end-to-end negative-path integration acceptance.
 - G7 remains closed: no separate strategy activation authorization.

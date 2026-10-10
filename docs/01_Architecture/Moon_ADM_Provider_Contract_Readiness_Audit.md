@@ -36,7 +36,7 @@ Baseline verification: `pytest -q` — 243 passed; `python -m compileall -q src 
 | AUD-04 | Blocker | Timestamp meaning, exchange calendar, evaluation endpoint, and production freshness policy remain unresolved (PCD-05/07; PCD-06 partially defined). | Approved temporal contract and fixtures for month ends, holidays, late publication, stale data, and boundary dates. | Open; current timestamp pass-through is intentional. |
 | AUD-05 | High | Revision/conflict and provenance requirements are not fully operationalized. Current duplicate identity rejection does not define historical correction selection or reproducible snapshots (PCD-09–11). | Explicit revision policy, required provenance schema, repeat-fetch/revision fixtures, and a decision on snapshot needs. | Open; no revision winner chosen. |
 | AUD-06 | High | The provider-failure acceptance test uses a local guarded caller. It proves exception propagation and that this test caller does not invoke its consumer; it does not prove an existing production Runtime-to-Moon signal path is fail-closed. | End-to-end integration tests against the actual approved orchestration path, including failure, stale/missing data, invalid provenance, and unapproved policy cases. | Open; no production integration claimed. |
-| AUD-07 | Blocker | Absolute-momentum benchmark and comparison/equality behavior are investment-policy decisions, not provider-engineering defaults (PCD-13/14). | Separate authoritative investment-policy decisions and boundary/equality tests. | Open; signal assembly remains gated. |
+| AUD-07 | Blocker | Provider/source adjusted-price semantics, freshness, and calendar rules remain open; D-055 approves SGOV and strict greater-than with equality false. | Close provider/data gates and preserve boundary tests. | Open; signal assembly remains gated. |
 | AUD-08 | High | The workflow describes governance binding as required, but no authoritative decision-record validation mechanism is implemented by the generic adapter. | Design and tests proving configuration references resolve to an authoritative, versioned decision record; arbitrary strings must not close gates. | Open; references remain attestations. |
 | AUD-09 | High | Provider-specific timeout, rate-limit, retry, cache, partial-response, and outage behavior is unspecified and intentionally absent (PCD-12). | Approved operational contract and deterministic failure tests before those behaviors are implemented. | Open; no network/retry/cache. |
 | AUD-10 | Blocker | Generic adapter acceptance does not authorize signal assembly or activation. `config/moon.yaml` currently keeps `active_strategies: []`. | Explicit end-to-end review and separate activation authorization with scope, rollback plan, and post-change verification. | Closed as a safety boundary; activation remains unauthorized. |
@@ -61,7 +61,7 @@ The current dependency order is acceptable with these clarifications:
 1. PCD-01 and PCD-02 must be closed before provider-specific mappings are implemented.
 2. PCD-03 through PCD-07 must be approved before selected observations can be treated as valid for the intended calculation.
 3. PCD-08 through PCD-12 must be resolved to the extent required by the proposed operational scope; generic fail-closed normalization does not close provider-specific quality/operations decisions.
-4. PCD-13 and PCD-14 must be decided through investment-policy governance independently of provider selection.
+4. PCD-13 and PCD-14 are approved by D-055; this does not close provider/data or activation gates.
 5. PCD-15 must validate against an authoritative governance record; a non-empty reference string alone is insufficient.
 6. PCD-16 and a separate activation authorization are required before signal integration or configuration activation.
 
@@ -78,7 +78,7 @@ No generic test pass may automatically move a PCD item to `Approved`. A status l
 
 ## 7. Explicit non-goals
 
-This audit does not select a provider, approve any provider's adjusted-price series, choose SGOV/BIL/SHY, set freshness thresholds, select an absolute-momentum comparator, add network/retry/cache/fallback behavior, implement persistence, assemble `ADMSignalInput`, activate ADM, or change Core Runtime. `config/moon.yaml` remains unchanged with `active_strategies: []`.
+This audit does not select a provider, approve any provider's adjusted-price series, select a configured defensive holding, set freshness thresholds, add network/retry/cache/fallback behavior, implement persistence, assemble `ADMSignalInput`, activate ADM, or change Core Runtime. `config/moon.yaml` remains unchanged with `active_strategies: []`.
 
 ## Step 45 follow-up
 

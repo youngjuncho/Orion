@@ -2572,7 +2572,7 @@ acceptance only; it does not submit or execute orders.
 
 ## D-055 — ADM Absolute-Momentum Signal Policy
 
-Status: **Draft — owner decision required**
+Status: **Approved**
 Date: 2026-10-10
 
 The current ADM research describes absolute momentum relative to a cash or
@@ -2583,17 +2583,14 @@ momentum comparison benchmark. D-028 approves adjusted-price-based total-return
 measurement, but the research marks the measurement standard pending
 validation.
 
-Before producing `absolute_momentum_positive` or assembling `ADMSignalInput`,
-the methodology owner must decide:
+The owner approved SGOV as the absolute-momentum comparison benchmark and
+approved a strict comparison: the selected risk asset is positive only when
+its trailing-12-month return is greater than SGOV's trailing-12-month return.
+Equal returns are false (Risk Off). Apply the same return horizon and
+adjusted-price-based total-return convention to both instruments.
 
-1. Whether the comparison benchmark is SGOV, another approved instrument, or
-   separate from the selected defensive holding.
-2. Whether a selected risk asset passes when its trailing return is strictly
-   greater than the benchmark return, greater than or equal to it, or under
-   another explicit expression. Define the equality outcome.
-3. Whether the approved comparison applies the same trailing-12-month
-   adjusted-price return convention to the selected risk asset and benchmark.
-
-Provider choice, adjusted-price source semantics, calendar interpretation, and
-freshness limits remain separate data-contract gates. Until this decision and
-those data gates are closed, keep ADM inactive and do not assemble a signal.
+The approved comparison is implemented as the default `D-055` policy for
+`compare_adm_absolute_momentum_returns()`. Provider choice, adjusted-price
+source semantics, calendar interpretation, freshness limits, and production
+governance provenance remain separate data-contract gates. ADM remains
+inactive; this decision alone does not authorize signal assembly or activation.

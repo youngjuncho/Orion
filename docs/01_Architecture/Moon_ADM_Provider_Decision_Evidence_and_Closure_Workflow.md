@@ -1,8 +1,8 @@
 # Moon ADM Provider Decision Evidence and Closure Workflow
 
-Version: 1.0  
-Status: Proposed workflow — no provider or investment policy approved  
-Last Updated: 2026-10-09
+Version: 1.0
+Status: Proposed workflow — no provider approved; D-055 methodology approved
+Last Updated: 2026-10-10
 
 ## 1. Purpose and authority
 
@@ -70,14 +70,9 @@ Required evidence:
 
 Exit condition: the relevant quality and operational contracts are specified and fixture-tested. Persistence and scheduling remain separate decisions if not in scope.
 
-### Group D — Investment methodology (PCD-13 to PCD-14)
+### Group D - Investment methodology (PCD-13 to PCD-14)
 
-Required evidence:
-- An explicit investment-policy decision identifying the absolute-momentum benchmark and its relationship to the defensive asset.
-- An explicit comparison operator and equality/tie behavior.
-- Rationale and test cases for equality, missing inputs, and boundary values.
-
-Exit condition: the appropriate investment-policy authority has approved the methodology in the authoritative investment-policy record. Provider engineering must not choose these values for convenience.
+D-055 approves SGOV as the absolute-momentum benchmark and strict greater-than comparison, with equality false. PCD-13 and PCD-14 are closed for this methodology. Provider measurement semantics remain in Groups B/C, and D-055 does not authorize signal integration or activation.
 
 ### Group E — Governance binding and activation boundary (PCD-15 to PCD-16)
 
@@ -95,7 +90,7 @@ The following gates are cumulative; a later gate cannot bypass an earlier unreso
 1. **G1 — Provider identity:** PCD-01 and PCD-02 approved.
 2. **G2 — Interpretation contract:** PCD-03 through PCD-07 approved for the proposed use.
 3. **G3 — Quality and operations:** PCD-08 through PCD-12 approved to the extent required by the proposed adapter scope.
-4. **G4 — Investment policy:** PCD-13 and PCD-14 approved independently of provider selection.
+4. **G4 — Investment policy:** PCD-13 and PCD-14 are approved by D-055; provider/data gates remain separate.
 5. **G5 — Governance binding:** PCD-15 implemented and tested against authoritative records.
 6. **G6 — Signal integration proposal:** PCD-16 evidence reviewed; explicit activation authorization still required before configuration changes.
 
@@ -129,7 +124,7 @@ Do not fill `Approved` unless the named authority has made that decision and the
 
 ## 8. Explicit non-goals
 
-This workflow does not select a provider, approve Yahoo Finance or another source, choose SGOV/BIL/SHY, approve adjusted-price semantics, set freshness thresholds, select the absolute-momentum comparator, add network/retry/cache/fallback behavior, implement persistence, activate ADM, or modify Core Runtime. Moon's `active_strategies: []` remains unchanged.
+This workflow does not select a provider, approve Yahoo Finance or another source, approve adjusted-price semantics, set freshness thresholds, add network/retry/cache/fallback behavior, implement persistence, activate ADM, or modify Core Runtime. Moon's `active_strategies: []` remains unchanged.
 
 ## Related documents
 

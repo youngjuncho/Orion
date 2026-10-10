@@ -1,7 +1,7 @@
 # Moon ADM Data Implementation Boundary
 
-Version: 1.0  
-Status: Engineering Baseline — Policy-Explicit Utilities Only  
+Version: 1.0
+Status: Engineering Baseline — Policy-Explicit Utilities Only
 Last Updated: 2026-10-09
 
 ## Purpose
@@ -156,7 +156,7 @@ strategy activation, external provider, or network behavior changed.
 
 ## Step 33 — absolute-momentum policy boundary
 
-`Moon_ADM_Absolute_Momentum_Policy_Boundary.md` records the current research wording and the exact decisions still required before producing `absolute_momentum_positive`. The phrase “positive performance relative to a risk-free alternative” does not by itself settle whether the comparison is against zero, against the benchmark return, or another expression. Benchmark identity, equality behavior, matched measurement rules, and failure behavior remain explicit closure items. No comparison code, boolean signal, strategy input construction, or activation was added in this step.
+`Moon_ADM_Absolute_Momentum_Policy_Boundary.md` records the approved D-055 SGOV/strict-greater-than comparison and the data decisions still required before producing `absolute_momentum_positive`. Adjusted-price source semantics, freshness, and calendar policy remain open. No boolean signal, strategy input construction, or activation was added in this step.
 
 
 ## Step 34 — signal assembly readiness boundary
@@ -169,23 +169,14 @@ absolute risk-asset/benchmark observation pairs and retains their freshness
 audits.
 
 A successful `ADMDataAssemblyReadiness` means only that these specified data
-quality and consistency checks passed. It explicitly records the unresolved
-benchmark approval, comparison expression/equality behavior, adjusted-price
-semantics, and provider-calendar/data-quality policies. Its `signal_ready`
-property remains false; it creates neither `absolute_momentum_positive` nor
+quality and consistency checks passed. It explicitly records unresolved adjusted-price semantics and provider-calendar/data-quality policies. Its `signal_ready` property remains false; it creates neither `absolute_momentum_positive` nor
 `ADMSignalInput`. This step does not authorize provider I/O, strategy
 activation, or a Core Runtime change.
 
 
 ## Step 35 — comparison-policy reconciliation
 
-The existing research's original GEM decision process compares the winning
-risk-asset momentum with cash return. The implementation direction is therefore
-benchmark-relative rather than an implicit comparison against zero. This is a
-reconciliation of existing research text, not approval of a benchmark instrument
-or an exact comparison operator. Benchmark identity, equality behavior, adjusted-
-price acceptance, and production freshness/calendar rules remain open. No
-`absolute_momentum_positive` boolean or `ADMSignalInput` construction was added.
+The existing research's original GEM decision process compares the winning risk-asset momentum with cash return. D-055 approves SGOV as the benchmark and strict greater-than comparison; equality is false. Adjusted-price acceptance and production freshness/calendar rules remain open. No `absolute_momentum_positive` boolean or `ADMSignalInput` construction was added.
 See `Moon_ADM_Absolute_Momentum_Comparison_Policy_Closure_Review.md`.
 
 
@@ -194,8 +185,4 @@ See `Moon_ADM_Absolute_Momentum_Comparison_Policy_Closure_Review.md`.
 `ADMAbsoluteMomentumComparisonStatus`, `ADMAbsoluteMomentumComparisonOperator`,
 `ADMAbsoluteMomentumComparisonPolicy`, and
 `ADMAbsoluteMomentumComparisonResult` define the comparison interface.
-`compare_adm_absolute_momentum_returns(...)` returns `UNAVAILABLE` if no policy
-is provided or if its benchmark does not match the calculated return inputs.
-With a caller-supplied operator it performs only that explicit comparison and
-retains policy provenance. Policy IDs are not governance evidence; no comparison
-result is wired to `ADMSignalInput`, strategy activation, or Runtime.
+`compare_adm_absolute_momentum_returns(...)` applies the approved D-055 policy when none is supplied and returns `UNAVAILABLE` if an explicit policy benchmark does not match the calculated return inputs. It retains policy provenance. Policy IDs are not governance evidence; no comparison result is wired to `ADMSignalInput`, strategy activation, or Runtime.
