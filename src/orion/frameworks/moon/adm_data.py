@@ -434,14 +434,28 @@ class ADMObservationFreshnessResult:
         ):
             if not isinstance(value, str) or not value.strip():
                 raise ValueError(f"{name} must be a non-empty string")
-        for name in ("current_target_date", "trailing_target_date", "current_observed_at", "trailing_observed_at"):
-            _parse_iso_date(getattr(self, name), name)
+        current_target = _parse_iso_date(self.current_target_date, "current_target_date")
+        trailing_target = _parse_iso_date(self.trailing_target_date, "trailing_target_date")
+        current_observed = _parse_iso_date(self.current_observed_at, "current_observed_at")
+        trailing_observed = _parse_iso_date(self.trailing_observed_at, "trailing_observed_at")
         if self.trailing_target_date >= self.current_target_date:
             raise ValueError("trailing_target_date must be earlier than current_target_date")
         if isinstance(self.max_age_days, bool) or not isinstance(self.max_age_days, int) or self.max_age_days < 0:
             raise ValueError("max_age_days must be a non-negative integer")
-        if self.current_age_days < 0 or self.trailing_age_days < 0:
-            raise ValueError("observation age must be non-negative")
+        for name, age in (
+            ("current_age_days", self.current_age_days),
+            ("trailing_age_days", self.trailing_age_days),
+        ):
+            if isinstance(age, bool) or not isinstance(age, int) or age < 0:
+                raise ValueError(f"{name} must be a non-negative integer")
+        if current_observed > current_target or trailing_observed > trailing_target:
+            raise ValueError("observation must not be later than its target date")
+        expected_current_age = (current_target - current_observed).days
+        expected_trailing_age = (trailing_target - trailing_observed).days
+        if self.current_age_days != expected_current_age:
+            raise ValueError("current_age_days does not match target and observation dates")
+        if self.trailing_age_days != expected_trailing_age:
+            raise ValueError("trailing_age_days does not match target and observation dates")
         if self.current_age_days > self.max_age_days or self.trailing_age_days > self.max_age_days:
             raise ValueError("observation exceeds the configured maximum age")
 
@@ -855,6 +869,11 @@ class ADMDataAssemblyReadiness:
                 raise ValueError(f"freshness result for {symbol} does not match absolute inputs")
             if freshness.selection_policy_id != absolute.selection_policy_id:
                 raise ValueError("absolute freshness policy does not match absolute inputs")
+            if (
+                freshness.current_target_date != absolute.current_target_date
+                or freshness.trailing_target_date != absolute.trailing_target_date
+            ):
+                raise ValueError(f"freshness target dates for {symbol} do not match absolute inputs")
             if freshness.current_observed_at != pair.current.observed_at or freshness.trailing_observed_at != pair.trailing.observed_at:
                 raise ValueError(f"freshness observations for {symbol} do not match selected pair")
             if freshness.max_age_days != self.max_age_days:

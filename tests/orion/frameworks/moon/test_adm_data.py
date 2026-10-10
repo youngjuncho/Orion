@@ -459,6 +459,24 @@ def test_adm_freshness_audit_rejects_observation_older_than_explicit_limit() -> 
         validate_adm_observation_pair_freshness(pair, max_age_days=1)
 
 
+def test_adm_freshness_result_rejects_fabricated_age_values() -> None:
+    from orion.frameworks.moon.adm_data import ADMObservationFreshnessResult
+
+    with pytest.raises(ValueError, match="current_age_days does not match"):
+        ADMObservationFreshnessResult(
+            symbol="VTI",
+            field="adjusted_close",
+            selection_policy_id="fixture-policy-v1",
+            current_target_date="2026-10-09",
+            trailing_target_date="2025-10-09",
+            current_observed_at="2026-10-08",
+            trailing_observed_at="2025-10-09",
+            current_age_days=0,
+            trailing_age_days=0,
+            max_age_days=1,
+        )
+
+
 @pytest.mark.parametrize("max_age_days", [-1, True, 1.5])
 def test_adm_freshness_audit_requires_explicit_nonnegative_integer(max_age_days: object) -> None:
     from orion.frameworks.moon.adm_data import (
@@ -881,7 +899,7 @@ def test_absolute_momentum_comparison_rejects_policy_benchmark_mismatch_as_unava
     assert result.reason == "policy_benchmark_does_not_match_input_benchmark"
 
 
-def _readiness_for_comparison_guard():
+def _readiness_for_comparison_guard(*, max_age_days: int = 0):
     from orion.frameworks.moon.adm_data import (
         calculate_adm_absolute_momentum_inputs,
         calculate_adm_relative_momentum,
@@ -904,7 +922,9 @@ def _readiness_for_comparison_guard():
         trailing_target_date="2025-10-09",
         selection_policy_id="fixture-prior-v1",
     )
-    relative_gate = validate_adm_relative_momentum_freshness(relative, max_age_days=0)
+    relative_gate = validate_adm_relative_momentum_freshness(
+        relative, max_age_days=max_age_days
+    )
     absolute = calculate_adm_absolute_momentum_inputs(
         dataset,
         risk_asset_symbol="VTI",
@@ -914,8 +934,26 @@ def _readiness_for_comparison_guard():
         trailing_target_date="2025-10-09",
         selection_policy_id="fixture-prior-v1",
     )
-    readiness = prepare_adm_signal_assembly_readiness(relative_gate, absolute, max_age_days=0)
+    readiness = prepare_adm_signal_assembly_readiness(
+        relative_gate, absolute, max_age_days=max_age_days
+    )
     return readiness
+
+
+def test_adm_readiness_rejects_freshness_for_different_absolute_target() -> None:
+    from dataclasses import replace
+
+    readiness = _readiness_for_comparison_guard(max_age_days=1)
+    forged = replace(
+        readiness.absolute_freshness_by_symbol["VTI"],
+        current_target_date="2026-10-10",
+        current_age_days=1,
+    )
+    freshness_by_symbol = dict(readiness.absolute_freshness_by_symbol)
+    freshness_by_symbol["VTI"] = forged
+
+    with pytest.raises(ValueError, match="target dates.*do not match absolute inputs"):
+        replace(readiness, absolute_freshness_by_symbol=freshness_by_symbol)
 
 
 def _comparison_for_readiness(readiness):
