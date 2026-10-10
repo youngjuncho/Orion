@@ -91,7 +91,7 @@ execution-date/timezone mapping remain engineering/operations items.
 | PCD-12 | Timeout, rate limits, retry, cache, outage | Initial adapter behavior defined by D-057; operational limits remain open | Three sequential requests; 15-second timeout each; no retry/cache/fallback; fail full load; review provider quota before scheduled use | No automatic scheduling or outage recovery |
 | PCD-13 | Absolute-momentum benchmark | SGOV approved by D-055 | Apply SGOV for the approved comparison; source measurement and configured defensive-holding relationship remain separate |
 | PCD-14 | Comparison operator and equality | Approved by D-055 | Selected risk return must be strictly greater than SGOV; equality is false |
-| PCD-15 | Governance approval binding | Open | Define how an implementation validates approval against an authoritative decision record; caller-supplied reference alone is only an attestation | No assumption that an arbitrary approval reference closes a gate |
+| PCD-15 | Governance approval binding | Open; enforced fail-closed in signal guard | Define how an implementation validates approval against an authoritative decision record; caller-supplied status/reference is only an attestation | `guard_adm_comparison_for_signal_assembly()` always blocks while authoritative binding is unimplemented |
 | PCD-16 | End-to-end activation and failure boundary | Open; activation not authorized | Define acceptance evidence showing provider/data failure cannot yield a valid Moon signal and specify the separately approved activation process | No `ADMSignalInput` assembly, ADM activation, or Runtime/Core changes |
 
 ## Closure protocol

@@ -993,7 +993,7 @@ def test_comparison_signal_guard_blocks_comparison_return_mismatch() -> None:
     assert "comparison_does_not_match_readiness_inputs" in result.blocked_reasons
 
 
-def test_comparison_signal_guard_allows_only_explicitly_closed_hypothetical_contract() -> None:
+def test_comparison_signal_guard_blocks_unverified_caller_attestation() -> None:
     from dataclasses import replace
     from orion.frameworks.moon.adm_data import (
         ADMPolicyApprovalStatus,
@@ -1001,8 +1001,8 @@ def test_comparison_signal_guard_allows_only_explicitly_closed_hypothetical_cont
     )
 
     readiness = _readiness_for_comparison_guard()
-    # Fixture-only simulation of future governance closure; no production policy
-    # is being approved by this test.
+    # A caller can clear local readiness flags and claim approval, but PCD-15's
+    # authoritative governance binding is not implemented.
     closed_readiness = replace(readiness, unresolved_policy_gates=())
     result = guard_adm_comparison_for_signal_assembly(
         _comparison_for_readiness(closed_readiness),
@@ -1010,8 +1010,8 @@ def test_comparison_signal_guard_allows_only_explicitly_closed_hypothetical_cont
         policy_approval_status=ADMPolicyApprovalStatus.APPROVED,
         policy_approval_reference="fixture-governance-record-v1",
     )
-    assert result.eligible_for_signal_assembly is True
-    assert result.blocked_reasons == ()
+    assert result.eligible_for_signal_assembly is False
+    assert "authoritative_governance_binding_not_implemented" in result.blocked_reasons
     # Guard emits a readiness decision only; it never constructs ADMSignalInput.
 
 

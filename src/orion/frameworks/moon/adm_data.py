@@ -1125,7 +1125,9 @@ def guard_adm_comparison_for_signal_assembly(
     return inputs, and have an explicit approval status/reference. Unresolved
     source/data gates block eligibility. The D-055 comparison rule is approved;
     the supplied status/reference attest to production data readiness, not to
-    comparison-methodology approval. No signal object is constructed.
+    comparison-methodology approval. PCD-15's authoritative governance binding
+    is not implemented, so a caller-supplied attestation can never make this
+    guard eligible. No signal object is constructed.
     """
 
     if not isinstance(comparison, ADMAbsoluteMomentumComparisonResult):
@@ -1154,6 +1156,7 @@ def guard_adm_comparison_for_signal_assembly(
         reasons.append("data_quality_not_passed")
     if not readiness.signal_ready:
         reasons.append("unresolved_policy_gates")
+    reasons.append("authoritative_governance_binding_not_implemented")
     if policy_approval_status is not ADMPolicyApprovalStatus.APPROVED:
         reasons.append("production_data_governance_not_approved")
     if not policy_approval_reference:
