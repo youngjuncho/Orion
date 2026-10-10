@@ -25,6 +25,28 @@ freshness limits, provider conflict or revision precedence, a source, or
 adjusted-price semantics. No provider, live collection, signal assembly, or
 ADM activation is approved. See D-056 in the Decision Log.
 
+## Provider candidate evidence (not an approval)
+
+Official provider materials reviewed on 2026-10-10 support this limited
+engineering assessment:
+
+| Candidate | Relevant documented behavior | Assessment for ADM | Status |
+|---|---|---|---|
+| Alpha Vantage | Its Daily Adjusted endpoint documents adjusted close and historical split/dividend events. Its support page says adjusted OHLCV accounts for splits and cash dividends. | Best documented first candidate for a fixture-based semantics and coverage review against D-028. This does not establish point-in-time behavior, VTI/VEU/SGOV coverage, or permission for this project's use. | Candidate only; PCD-01/02/04 remain open |
+| Massive | Its aggregate bars are split-adjusted by default; its FAQ states they are not dividend-adjusted. | Does not meet D-028's adjusted-price total-return proxy requirement as-is. Could only be reconsidered with a separately validated dividend adjustment calculation. | Not suitable as-is |
+| Yahoo Finance | No reviewed official evidence in this assessment establishes a supported API contract, adjustment methodology, or permitted use for this project. | Existing research-list mention is not sufficient evidence for production selection. | Unassessed; not approved |
+
+Alpha Vantage's Terms of Service describe the default license as personal,
+non-commercial use and define investment analysis/research among activities
+that may constitute commercial use. Its market-data policy separately
+describes entitlements and onboarding. The project's intended use and the
+applicable plan or written permission must therefore be confirmed before
+selection; this register makes no legal conclusion. Do not add credentials,
+network access, or a provider adapter as a consequence of this candidate
+assessment.
+
+Sources: [Alpha Vantage Daily Adjusted API documentation](https://www.alphavantage.co/documentation/), [Alpha Vantage adjustment-method support](https://www.alphavantage.co/support/), [Alpha Vantage Terms of Service](https://www.alphavantage.co/terms_of_service/), [Alpha Vantage Market Data Policies](https://www.alphavantage.co/realtime_data_policy/), and [Massive stock-data FAQ](https://massive.com/knowledge-base/categories/faq).
+
 ## Decision register
 
 | ID | Decision area | Current status | Required decision / evidence | Consequence while open |
@@ -73,7 +95,7 @@ This order does not require all decisions to be made in one session and does not
 
 ## Explicit non-goals
 
-This register does not select Yahoo Finance or another provider, approve a provider's adjusted-price series, select the configured defensive holding, set a freshness threshold, add live API access, retries, caching, fallback sources, persistence, or scheduling, assemble an ADM signal, activate ADM, or modify Core Runtime. D-055 already approves SGOV as comparison benchmark and strict greater-than operator.
+This register does not select a provider or approve a provider's adjusted-price series, select the configured defensive holding, set a freshness threshold, add live API access, retries, caching, fallback sources, persistence, or scheduling, assemble an ADM signal, activate ADM, or modify Core Runtime. D-055 already approves SGOV as comparison benchmark and strict greater-than operator. The candidate evidence above is not provider approval.
 
 ## Related documents
 
