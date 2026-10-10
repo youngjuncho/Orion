@@ -13,7 +13,7 @@ from calendar import monthrange
 from dataclasses import dataclass
 from datetime import date, timedelta
 from enum import Enum
-from math import isfinite
+from math import isclose, isfinite
 from types import MappingProxyType
 from typing import Mapping
 
@@ -364,6 +364,9 @@ class ADMRelativeMomentumResult:
                 raise ValueError("observation pair field and policy must match result")
             if pair.current_target_date != self.current_target_date or pair.trailing_target_date != self.trailing_target_date:
                 raise ValueError("observation pair target dates must match result")
+            expected_return = calculate_adm_observation_pair_return(pair)
+            if not isclose(float(value), expected_return, rel_tol=0.0, abs_tol=1e-12):
+                raise ValueError(f"relative momentum for {symbol} does not match its observation pair")
             returns[symbol] = float(value)
             pairs[symbol] = pair
         object.__setattr__(self, "relative_momentum", MappingProxyType(returns))
@@ -627,6 +630,14 @@ class ADMAbsoluteMomentumInputs:
                 raise ValueError("observation pairs must use the same field and selection policy")
             if pair.current_target_date != self.current_target_date or pair.trailing_target_date != self.trailing_target_date:
                 raise ValueError("observation-pair target dates must match result")
+            expected_return = calculate_adm_observation_pair_return(pair)
+            actual_return = (
+                self.risk_asset_return
+                if symbol == self.risk_asset_symbol
+                else self.benchmark_return
+            )
+            if not isclose(float(actual_return), expected_return, rel_tol=0.0, abs_tol=1e-12):
+                raise ValueError(f"return for {symbol} does not match its observation pair")
             normalized[symbol] = pair
         object.__setattr__(self, "observation_pairs", MappingProxyType(normalized))
 
@@ -754,6 +765,18 @@ class ADMAbsoluteMomentumComparisonResult:
                 raise ValueError("available comparison requires policy provenance and no reason")
             if not isinstance(self.operator, ADMAbsoluteMomentumComparisonOperator):
                 raise ValueError("available comparison requires a valid operator")
+            expected_match = (
+                self.risk_asset_return > self.benchmark_return
+                if self.operator is ADMAbsoluteMomentumComparisonOperator.RISK_RETURN_GT_BENCHMARK
+                else self.risk_asset_return >= self.benchmark_return
+            )
+            expected_status = (
+                ADMAbsoluteMomentumComparisonStatus.TRUE
+                if expected_match
+                else ADMAbsoluteMomentumComparisonStatus.FALSE
+            )
+            if self.status is not expected_status:
+                raise ValueError("comparison status does not match returns and operator")
 
 
 def compare_adm_absolute_momentum_returns(

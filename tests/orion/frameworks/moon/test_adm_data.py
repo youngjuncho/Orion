@@ -354,6 +354,29 @@ def test_adm_relative_momentum_calculates_vti_and_veu_with_shared_policy() -> No
     assert result.selection_policy_id == "fixture-prior-bar-v1"
 
 
+def test_adm_relative_momentum_rejects_return_not_derived_from_pair() -> None:
+    from dataclasses import replace
+    from orion.frameworks.moon.adm_data import calculate_adm_relative_momentum
+
+    dataset = make_dataset(
+        MarketDataPoint("VTI", "adjusted_close", "2025-10-08", 100.0, "fixture"),
+        MarketDataPoint("VTI", "adjusted_close", "2026-10-08", 112.0, "fixture"),
+        MarketDataPoint("VEU", "adjusted_close", "2025-10-08", 100.0, "fixture"),
+        MarketDataPoint("VEU", "adjusted_close", "2026-10-08", 109.0, "fixture"),
+    )
+    result = calculate_adm_relative_momentum(
+        dataset,
+        field="adjusted_close",
+        current_target_date="2026-10-09",
+        trailing_target_date="2025-10-09",
+    )
+    forged_returns = dict(result.relative_momentum)
+    forged_returns["VTI"] = 0.99
+
+    with pytest.raises(ValueError, match="does not match its observation pair"):
+        replace(result, relative_momentum=forged_returns)
+
+
 def test_adm_relative_momentum_is_immutable_and_contains_only_risk_assets() -> None:
     from orion.frameworks.moon.adm_data import calculate_adm_relative_momentum
 
@@ -600,6 +623,14 @@ def test_absolute_momentum_inputs_calculate_both_returns_without_comparing_them(
     assert result.benchmark_return == pytest.approx(0.04)
     assert set(result.observation_pairs) == {"VTI", "SGOV"}
     assert not hasattr(result, "absolute_momentum_positive")
+
+
+def test_absolute_momentum_inputs_reject_return_not_derived_from_pair() -> None:
+    from dataclasses import replace
+
+    inputs = _absolute_inputs_for_comparison()
+    with pytest.raises(ValueError, match="does not match its observation pair"):
+        replace(inputs, risk_asset_return=0.99)
 
 
 def test_absolute_momentum_inputs_require_explicit_benchmark() -> None:
@@ -879,6 +910,18 @@ def test_absolute_momentum_comparison_operator_explicitly_controls_equality() ->
     )
     result = compare_adm_absolute_momentum_returns(_absolute_inputs_for_comparison(0.04, 0.04), policy=policy)
     assert result.status is ADMAbsoluteMomentumComparisonStatus.TRUE
+
+
+def test_absolute_momentum_comparison_rejects_status_inconsistent_with_operator() -> None:
+    from dataclasses import replace
+    from orion.frameworks.moon.adm_data import (
+        ADMAbsoluteMomentumComparisonStatus,
+        compare_adm_absolute_momentum_returns,
+    )
+
+    result = compare_adm_absolute_momentum_returns(_absolute_inputs_for_comparison())
+    with pytest.raises(ValueError, match="status does not match returns and operator"):
+        replace(result, status=ADMAbsoluteMomentumComparisonStatus.FALSE)
 
 
 def test_absolute_momentum_comparison_rejects_policy_benchmark_mismatch_as_unavailable() -> None:
