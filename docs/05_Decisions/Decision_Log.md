@@ -2692,12 +2692,12 @@ timezone, publication-time SLA, provider revision handling, or ADM activation.
 
 ---
 
-## D-059 — ADM Provider Revision Handling (Recommendation)
+## D-059 — ADM Provider Revision Handling
 
-Status: **Proposed — owner approval required**
+Status: **Approved**
 Date: 2026-10-10
 
-### Recommendation
+### Decision
 
 For each ADM data assessment, use the complete latest history returned by that
 provider invocation. Do not merge observations from separate retrievals or
@@ -2716,8 +2716,8 @@ not guaranteed.
 
 ### Rationale and scope
 
-This recommendation keeps the opt-in private-research adapter bounded and
+This decision keeps the opt-in private-research adapter bounded and
 avoids undocumented cross-run mixing. It does not approve signal assembly,
 live use, caching, persistence, provider fallback, or point-in-time
-reproducibility. PCD-10 remains open until the owner approves or changes this
-recommendation; PCD-11 records the implemented fingerprint and its limits.
+reproducibility. PCD-10 is closed by this decision; PCD-11 records the
+implemented fingerprint and its limits.

@@ -83,9 +83,9 @@ individual research. The adapter is opt-in through
 VEU, and SGOV, and fails the full batch on provider or validation errors.
 Monthly data are last-trading-day labels; they are date-only and are preserved
 without timezone conversion. The adapter makes no retries, cache, persistence,
-signal assembly, or activation. The proposed D-059 policy is to use each
-invocation's complete latest provider response without merging revisions from
-earlier retrievals. This proposal is not approved. Because neither raw
+signal assembly, or activation. D-059 approves using each invocation's
+complete latest provider response without merging revisions from earlier
+retrievals. Because neither raw
 responses nor canonical datasets are persisted, the same historical
 calculation cannot be reconstructed from its digest alone; point-in-time
 replay is not guaranteed.
