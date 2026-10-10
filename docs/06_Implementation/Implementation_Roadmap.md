@@ -135,7 +135,7 @@ Entries below record the status and test count at the time of each dated update.
 - Added a context-aware Moon strategy-results factory so an explicit strategy adapter can consume `RuntimeContext.market_data` and configuration; existing precomputed-result factories remain supported.
 - Runtime data is now delivered to the active Moon adapter path, but ADM signal assembly and activation remain gated by unresolved data freshness, comparison policy, and strategy-approval requirements.
 - Fixed a deterministic Decimal normalization issue in Moon execution-asset mapping so valid consensus weights satisfy the Common `PortfolioTarget` exact-total contract.
-- The adapter can now include a `RebalancePlan` when callers explicitly supply current `PortfolioState` and valuation-price factories; account aggregation remains caller-owned.
+- The adapter can now emit a separate `RebalancePlanProposal` linked to the target when callers explicitly supply current `PortfolioState` and valuation-price factories; Runtime policies can accept or reject each candidate independently, and account aggregation remains caller-owned.
 - `ExecutionOrder` sizing remains outside this slice because executable quantities are not supplied by the Runtime contract.
 - Verification baseline: 155 tests passing.
 

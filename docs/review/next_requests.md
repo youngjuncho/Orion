@@ -44,7 +44,7 @@ Canonical observation contracts, source-agnostic normalization, structural valid
 
 ### Moon
 
-The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. D-053 cash valuation is implemented. The Moon adapter can include a RebalancePlan when the caller supplies current PortfolioState and valuation-price factories; account aggregation remains caller-owned. Keep ADM inactive until its signal/data policy and activation are approved. Execution sizing and broker lifecycle remain out of scope.
+The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. D-053 cash valuation is implemented. The Moon adapter emits a separate RebalancePlanProposal linked to the target when the caller supplies current PortfolioState and valuation-price factories; Runtime policies can accept/reject them independently, and account aggregation remains caller-owned. Keep ADM inactive until its signal/data policy and activation are approved. Execution sizing and broker lifecycle remain out of scope.
 
 ### Framework-Specific Work
 
