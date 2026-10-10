@@ -306,6 +306,12 @@ Runtime
 commit state, create execution orders, or execute trades. Acceptance remains an
 explicit Runtime decision boundary.
 
-`RebalancePlan` and `ExecutionOrder` require current portfolio state and executable
-quantity inputs that are not part of this adapter's contract, so they remain outside
-this vertical slice.
+When explicit `PortfolioState` and valuation-price factories are supplied, the
+adapter adds a canonical `RebalancePlan` to the same proposal candidate. The
+caller owns account aggregation and maps the current data context to prices;
+valuation uses configured `system.currency` and D-053 cash rules. Without both
+factories, the adapter continues to emit only the target proposal.
+
+The plan contains weight deltas only. `ExecutionOrder` sizing still requires
+explicit executable quantities and remains a separate boundary; no broker
+execution occurs here.
