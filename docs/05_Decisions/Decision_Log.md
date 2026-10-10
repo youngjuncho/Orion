@@ -2417,17 +2417,38 @@ The current `config/moon.yaml` sets `active_strategies: []`; this draft records
 a gate before ADM activation and does not claim that an active production run
 currently fails.
 
+### Preliminary Research (2026-10-10)
+
+Vanguard's published expense ratios are 0.03% for VTI, 0.04% for VEU, and
+0.05% for VXUS (figures shown as of 2026-02-27 for VEU and VXUS; VTI's product
+listing is current as of 2026-08-28). VXUS therefore is not cheaper than VEU
+by expense ratio. VEU tracks the FTSE All-World ex-US Index; VXUS tracks the
+FTSE Global All Cap ex US Index, which includes small-cap exposure and is not
+an identical index substitution. A lower share price, if that is what
+"cheaper" refers to, does not mean a lower fund expense ratio or equivalent
+exposure.
+
+Sources: [Vanguard VTI product listing](https://investor.vanguard.com/investment-products/list/all?assetclass=equity&filters=open&managementstyle=index&strategy=total_market_etfs), [Vanguard VEU product page](https://advisors.vanguard.com/investments/products/veu/vanguard-ftse-all-world-ex-us-etf), and [Vanguard VXUS product page](https://advisors.vanguard.com/investments/products/vxus/vanguard-total-international-stock-etf).
+
+Preliminary recommendation for owner review: keep ADM's specified VTI, VEU,
+and SGOV as its execution instruments using explicit identity mappings. This
+preserves the ADM specification and avoids selecting an unapproved
+substitute. It does not activate ADM or approve a production mapping.
+
 ### Decision Required
 
-The owner must choose and approve one policy before ADM target construction is
-enabled:
+The owner must confirm or change the preliminary recommendation before ADM
+target construction is enabled:
 
-1. Use ADM signal instruments as execution instruments.
-2. Define and approve explicit signal-to-execution equivalents for ADM.
-3. Keep ADM target construction blocked until an approved mapping is recorded.
+1. Approve identity mappings: VTI -> VTI, VEU -> VEU, and SGOV -> SGOV.
+2. Specify and approve one or more explicit execution equivalents. For example,
+   VEU -> VXUS would change index exposure and currently has a higher published
+   expense ratio; the other mappings would still need explicit choices.
+3. Keep ADM target construction blocked until mappings are approved.
 
 No mapping is approved by this draft. Existing ETF mappings must not be
-extended by ticker similarity or inferred economic equivalence.
+extended by ticker similarity or inferred economic equivalence. The research
+note is not a fund recommendation or an approval to trade.
 
 ### Required Follow-up
 

@@ -20,7 +20,7 @@ Choose whether ADM should:
 * use explicitly approved signal-to-execution equivalents; or
 * remain unavailable for target construction until mappings are approved.
 
-No mapping should be inferred from the existing broader ETF table. After resolution, update the decision record, mapping contract, and an ADM-output-to-PortfolioTarget integration test together.
+Preliminary research recorded in D-051 finds VEU's published expense ratio is 0.04% and VXUS is 0.05%; VXUS tracks a broader all-cap ex-US index, so it is not a lower-fee like-for-like substitute. The current recommendation for owner review is to identity-map VTI, VEU, and SGOV, preserving ADM's specified instruments. Confirm that recommendation, name any alternatives explicitly, or keep ADM blocked. After resolution, update the decision record, mapping contract, and an ADM-output-to-PortfolioTarget integration test together.
 
 ### 2. Resolve Draft D-052 — Runtime Failure / Commit Semantics
 
