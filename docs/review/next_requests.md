@@ -22,11 +22,11 @@ Choose whether ADM should:
 
 D-051 is approved and implemented: VTI->VTI, VEU->VEU, and SGOV->SGOV. Focused model and Runtime integration coverage passes. VEU->VXUS is not approved. Keep strategy activation separate because `active_strategies` remains empty.
 
-### 2. Resolve Draft D-052 — Runtime Failure / Commit Semantics
+### 2. D-052 — Runtime Failure / Commit Semantics (Implemented)
 
-The proposed MVP policy is all-or-nothing in-memory effects: stage/validate framework events, snapshot, and transition events, then commit both stores together; any earlier failure leaves stores unchanged and closes the session as `Error`. Make each `OrionRuntime` single-run, and validate snapshot execution ID/status plus transition-to-candidate identity. This changes event creation to pre-commit; confirm or revise the proposal before implementation.
+Approved and implemented: stage/validate framework events, snapshot, and transition events, then commit both stores together; failures leave stores unchanged and close the session as `Error`. Each `OrionRuntime` is single-run; snapshot execution ID/status and transition-to-candidate identity are validated.
 
-Do not describe the in-memory lifecycle as all-or-nothing until that behavior is explicitly chosen and validated.
+The all-or-nothing guarantee applies to Orion-owned in-memory stores; it does not roll back external side effects from caller-supplied callbacks.
 
 ### 3. Resolve Draft D-053 — Portfolio Cash Valuation / Target Semantics
 
@@ -36,7 +36,7 @@ Do not describe the in-memory lifecycle as all-or-nothing until that behavior is
 
 ### Core Runtime
 
-Public framework orchestration and the optional in-memory decision/state/event lifecycle are implemented. After D-052 is resolved, reconcile the implementation and Runtime/Event/Handoff contracts for failure status, residual side effects, commit validation, and Runtime reuse. Durable persistence and replay remain future scope.
+Public framework orchestration and the optional in-memory decision/state/event lifecycle are implemented. D-052 failure semantics are approved and implemented; durable persistence and replay remain future scope.
 
 ### Data Pipeline
 

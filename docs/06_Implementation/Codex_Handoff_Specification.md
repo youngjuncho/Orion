@@ -92,9 +92,10 @@ The following ordering is mandatory:
 1. Candidate is produced.
 2. Acceptance policy produces `AcceptedDecision` or rejection.
 3. Accepted decision produces `StateTransition`.
-4. Snapshot is constructed and committed to `StateStore`.
-5. Only after successful state commit may transition events be created.
-6. Events are recorded in `EventStore`.
+4. Snapshot and transition events are constructed and staged.
+5. Runtime validates the snapshot, transition/entity correlation, and complete
+   event batch.
+6. Runtime commits the snapshot and events together to their in-memory stores.
 7. Runtime returns the resulting `OrionResult`.
 
 No event may represent an uncommitted state transition.
@@ -107,6 +108,9 @@ No state commit may occur after a failed transition or failed validation.
 - A failed Framework must not produce a successful partial `OrionResult`.
 - Acceptance, transition, snapshot, state commit, and event creation failures
   must propagate deterministically through the Runtime lifecycle.
+- Any staging, validation, or store-commit failure leaves both stores unchanged
+  and closes the active session as `Error`.
+- One `OrionRuntime` instance accepts one public `run()` call.
 - Runtime failure must not silently convert an error into acceptance.
 
 ## 7. Public Runtime Compatibility
@@ -139,7 +143,7 @@ The MVP supports:
 - DecisionCandidate / AcceptedDecision / StateTransition contracts;
 - Auto-Approval as default acceptance policy;
 - explicit alternative acceptance policy;
-- state commit before event creation;
+- coordinated StateStore/EventStore commit after event staging and validation;
 - five-Framework integration.
 
 ## 9. Explicitly Deferred Scope
@@ -173,7 +177,8 @@ Codex must preserve all of the following:
 6. `DecisionCandidate` is non-authoritative.
 7. `AcceptedDecision` is explicit and authoritative for the acceptance boundary.
 8. Auto-Approval is a Runtime Governance policy, not investment methodology.
-9. State commit precedes Domain Event creation.
+9. Transition events are staged before commit and recorded only with the
+   corresponding successful StateStore commit.
 10. Durable persistence/replay remains deferred.
 11. Existing backward-compatible framework-only Runtime behavior is preserved.
 
@@ -194,7 +199,11 @@ Every Codex implementation must provide:
 - no regression of existing tests;
 - tests for every changed contract or lifecycle behavior;
 - verification that Framework failure does not yield a successful partial result;
-- verification that state is committed before events are recorded;
+- verification that event-factory, validation, and store-append failures leave
+  both stores unchanged;
+- verification that one Runtime instance rejects a second public run;
+- verification that snapshot execution identity and transition-to-candidate
+  identity are enforced;
 - verification that default acceptance is Auto-Approval when lifecycle mode is
   entered without an explicit acceptance handler;
 - verification that explicit acceptance handlers still support rejection;
@@ -202,11 +211,14 @@ Every Codex implementation must provide:
 
 ## 13. Current Baseline
 
-The Step 19 baseline has been validated with:
+The historical Step 19 baseline was validated with:
 
 ```text
 176 passed
 ```
+
+The D-052 Runtime atomicity update was subsequently validated against the full
+repository test suite on 2026-10-10.
 
 This test count is a baseline reference, not a permanent requirement that the
 suite remain exactly 176 tests after legitimate Codex changes. Any changed test

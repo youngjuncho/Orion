@@ -2463,61 +2463,42 @@ Date:
 
 Status:
 
-Draft
+Approved
 
 Category:
 
 Runtime Governance
 
-### Issue Under Review
+### Decision
 
-The Runtime contract specifies that a state snapshot is committed before
-transition events are created. It does not define rollback or residual
-side-effects when a later stage fails. In the current implementation,
-framework-produced events are appended before decision resolution; a snapshot
-can be published before an event factory or EventStore operation fails; and
-Runtime instances retain their StateStore/EventStore and execution metadata
-across calls. A code change now places post-loop Framework-event recording
-inside the session failure boundary so that this failure closes the session as
-`Error`; verification remains pending. Post-commit event failure and
-Runtime-reuse semantics remain unresolved.
+The owner approved the following MVP semantics on 2026-10-10:
 
-### Decision Required
-
-The owner must define:
-
-* whether failure must leave no state/event effects, or may retain already
-  committed state and/or framework lifecycle events;
-* how an event-creation or append failure after state commit is represented;
-* whether a public `OrionRuntime` is single-use or supports repeated runs, and
-  how execution identity and stores behave if it is reused;
-* which snapshot execution/entity relationships are validated at commit.
-
-### Proposed MVP Policy (Owner Confirmation Required)
-
-1. **All-or-nothing in-memory effects.** Stage Framework events, accepted
-   transitions, the snapshot, and transition events; validate the whole batch;
-   then publish state and events together. Any failure before that commit leaves
-   both stores unchanged and closes the session as `Error`.
+1. **All-or-nothing Orion-owned in-memory effects.** Stage Framework events,
+   accepted transitions, the snapshot, and transition events; validate the
+   complete write set; then publish state and events together. Any failed
+   validation or coordinated store commit leaves both stores unchanged and
+   closes an active session as `Error`.
+   This guarantee does not roll back side effects performed externally by
+   caller-supplied callbacks.
 2. **One public run per `OrionRuntime` instance.** A second `run()` call is
    rejected. A separate execution uses a new Runtime with a new execution ID
-   and fresh stores. This avoids reusing stores whose snapshots/events are
-   correlated to the first execution.
-3. **Commit validation.** Require the snapshot execution ID to match the
-   current execution and its status to be `Running`. Require each transition's
-   decision ID and entity type/ID to match its accepted candidate. Validate all
-   event execution IDs and duplicate IDs before publishing anything. Previous
-   state continuity remains outside this MVP until the authoritative entity
-   state projection is defined.
+   and fresh stores.
+3. **Commit validation.** The snapshot execution ID must match the current
+   execution and its status must be `Running`. Each transition's decision ID
+   and entity type/ID must match its accepted candidate. All event execution IDs
+   and duplicate IDs are validated before publishing anything. Previous-state
+   continuity remains outside this MVP until authoritative entity-state
+   projection is defined.
 
-This proposal changes the current post-commit event-creation order: event
-objects must be created and validated before the coordinated in-memory commit.
-The owner must approve or revise the proposal before implementation.
+The decision changes event creation to pre-commit staging. Events are not
+recorded unless the corresponding coordinated store commit succeeds.
 
-### Required Follow-up
+### Implementation and Verification
 
-After owner resolution, reconcile the Runtime, Event Model, and Handoff
-contracts, then implement and test the selected failure semantics.
+Implemented with tests covering event-factory and store-append failures,
+snapshot and entity correlation checks, and Runtime single-use. The full
+repository test suite passed on 2026-10-10; Runtime, Event Model, State Model,
+Handoff, roadmap, and status documentation now reflect the approved semantics.
 
 ---
 

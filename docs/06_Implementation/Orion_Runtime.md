@@ -7,11 +7,11 @@ Canonical lifecycle:
 ```text
 Initialize → Configuration → Data → State Restore → Context
 → Framework Execution → Result Validation → Decision Resolution
-→ State Transition → State Commit → Event Creation
+→ State Transition → Snapshot/Event Staging → Coordinated State/Event Commit
 → Persistence → Presentation → Completion
 ```
 
-`RuntimeSession` is one execution lifecycle boundary; `RuntimeContext` is the execution-scoped input bundle. `build_context()` is assembly only. A Framework executor failure stops the current execution; the public Runtime does not return a partial successful `OrionResult`. Framework-event recording is now inside the failure boundary and closes the session as `Error` if it fails. A transition-event failure can still occur after snapshot commit; remaining residual-side-effect and Runtime-reuse questions are tracked under Draft D-052.
+`RuntimeSession` is one execution lifecycle boundary; `RuntimeContext` is the execution-scoped input bundle. `build_context()` is assembly only. Under approved D-052 semantics, Framework and transition events plus any state snapshot are staged and validated before a coordinated in-memory commit. A staging, validation, or store-commit failure leaves Orion-owned StateStore/EventStore contents unchanged and closes an active session as `Error`. Each `OrionRuntime` instance accepts one public `run()` call. Caller-supplied callbacks remain responsible for avoiding external side effects.
 
 ---
 
@@ -117,9 +117,10 @@ StateStore commit boundary. Frameworks propose `DecisionCandidate` values only.
 An explicit acceptance callback produces `AcceptedDecision` values; an explicit
 transition callback produces `StateTransition` values; the resulting transitions
 are committed as one authoritative `OrionStateSnapshot` for the execution. No
-decision is accepted implicitly. After a successful state commit, an optional
-Runtime event factory may create correlated Domain Events, which are then appended
-to the execution-scoped `EventStore`. `RuntimeSession.record_events()` rejects
+decision is accepted implicitly. An optional Runtime event factory creates
+correlated Domain Events from staged transitions before the coordinated commit.
+Snapshot and event batches are validated before the StateStore and EventStore
+are changed together. `RuntimeSession.record_events()` rejects
 events whose `execution_id` does not match the current execution. EventStore is
 append-only in-memory storage for the MVP; durable persistence remains a later
 workstream. Framework code does not mutate StateStore, EventStore, or Dashboard
@@ -498,6 +499,9 @@ The Runtime implementation has been audited against the canonical CORE-012 lifec
 
 The table above records the pre-Step 18 audit state. Step 18 subsequently closed the public single-call lifecycle gap without changing the Core architecture. The canonical Decision → State Transition → State Commit → Event path is now available through `OrionRuntime.run()` when lifecycle handlers are supplied (with Auto-Approval as the default acceptance policy).
 
+D-052 later changed this historical Step 18 ordering: transition events are
+staged before a coordinated StateStore/EventStore commit.
+
 This is an implementation gap, not a Core architecture gap. `CORE-001` through `CORE-020` remain closed. Durable persistence and replay remain outside the MVP boundary defined by D-030.
 
 # Runtime Integration Step 15
@@ -511,7 +515,7 @@ The Public Runtime is validated against all five Frameworks: Aurora, Moon, Orbit
 # Runtime Integration Step 18
 
 The Public `OrionRuntime.run()` can now execute the canonical Decision → State
-Transition → State Commit → Event path in the same public lifecycle when explicit
+Transition → Snapshot/Event Staging → Coordinated State/Event Commit path in the same public lifecycle when explicit
 Decision lifecycle handlers are supplied.
 
 The public boundary accepts three required handlers for a decision lifecycle:
@@ -522,7 +526,8 @@ The public boundary accepts three required handlers for a decision lifecycle:
 * `snapshot(tuple[StateTransition, ...]) -> OrionStateSnapshot`
 
 An optional `event_factory(StateTransition) -> Event` creates correlated Domain
-Events after the authoritative StateStore commit. The default Runtime acceptance
+Events from staged transitions before the coordinated StateStore/EventStore
+commit. The default Runtime acceptance
 policy is Auto-Approval: each candidate is explicitly materialized as an
 `AcceptedDecision` with `accepted_by = "orion-runtime:auto-approval"`. Frameworks
 continue to propose `DecisionCandidate` values only and cannot self-accept. A
@@ -552,7 +557,7 @@ the MVP boundary defined by D-030.
 | Decision Resolution | Implemented | Public `run()` + default Auto-Approval or explicit acceptance handler |
 | State Transition | Implemented | Public `run()` + explicit transition handler |
 | State Commit | Implemented | `StateStore.publish()` |
-| Event Creation | Implemented | optional event factory after commit |
+| Event Creation | Implemented | optional event factory before coordinated commit |
 | Persistence | Partial | in-memory MVP stores; durable persistence future |
 | Presentation | Implemented | `OrionResult` / dashboard boundary |
 | Completion | Implemented | Public lifecycle completes after decision path |

@@ -9,7 +9,7 @@ Current rules:
 * A calculation result does not automatically become State.
 * Authoritative State changes only through an explicit State Transition from an Accepted Decision or approved domain operation.
 * StateStore is the authoritative current-state commit boundary.
-* A Domain Event is created only after successful State commit.
+* Transition events are staged before commit and recorded only together with a successful State commit.
 
 ---
 

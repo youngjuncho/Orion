@@ -28,10 +28,11 @@ extension metadata but do not replace the canonical identity fields.
 
 Examples of derived calculations that are not Events by default: ScoreCalculated, MetricCalculated, DashboardRendered, PortfolioWeightCalculated.
 
-For state-changing operations:
+For state-changing operations, the Runtime stages the complete write set:
 
 ```text
-Accepted Decision → State Transition → successful State Commit → Domain Event
+Accepted Decision → State Transition → Snapshot + Domain Event staging
+                  → validate → coordinated StateStore + EventStore commit
 ```
 
 EventStore is append-only historical storage; Event Sourcing is not adopted.
@@ -45,12 +46,14 @@ canonical `Event` instances whose `execution_id` matches the current
 `ExecutionMetadata.execution_id`, rejects duplicate event identifiers, and appends
 them to the execution-scoped in-memory EventStore.
 
-For state-changing operations, `resolve_and_commit()` publishes the authoritative
-`OrionStateSnapshot` first and then invokes its optional event factory. This keeps
-the runtime ordering aligned with the canonical contract:
+For state-changing operations, `resolve_and_commit()` validates the snapshot,
+transition events, and Framework events before changing either store. The event
+factory runs before commit; its events are staged and recorded only if the
+coordinated in-memory commit succeeds:
 
 ```text
-Accepted Decision → State Transition → successful State Commit → Domain Event
+Accepted Decision → State Transition → Snapshot + Domain Event staging
+                  → validate → coordinated StateStore + EventStore commit
 ```
 
 The current implementation does not add durable persistence or Event Sourcing.

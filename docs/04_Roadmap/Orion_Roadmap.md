@@ -29,7 +29,7 @@ The previous phase-only roadmap is superseded because implementation maturity no
 * RuntimeSession, RuntimeContext, and ServiceRegistry -> implemented
 * StateStore and EventStore -> in-memory implementations
 * Public OrionRuntime.run() -> implemented
-* Decision -> State Transition -> State Commit -> Event lifecycle -> implemented as an in-memory MVP; failure residual-effect semantics are open in D-052
+* Decision -> State Transition -> coordinated State/Event commit -> implemented as an in-memory MVP under D-052
 * OrionResult construction -> implemented
 
 ### C. Data Pipeline
@@ -57,7 +57,7 @@ Remaining:
 
 * Account aggregation and authoritative PortfolioState projection
 * Runtime handoff and end-to-end Moon rebalance integration
-* ADM signal-to-execution mapping approval (Draft D-051; ADM is inactive in current configuration)
+* ADM activation remains separate; identity mappings are implemented under D-051 and `active_strategies` remains empty
 
 #### Aurora
 
@@ -112,6 +112,6 @@ Configuration cannot create approval. A strategy or framework becomes executable
 
 ## Next Implementation Direction
 
-D-051 is approved and implemented; resolve D-052 and complete the Core decision-evidence traceability audit, then continue with production data policies, authoritative portfolio-state projection, Moon rebalance Runtime integration, and remaining CLI/Dashboard/API work.
+D-051 and D-052 are approved and implemented. Complete the Core decision-evidence traceability audit, then continue with production data policies, authoritative portfolio-state projection, Moon rebalance Runtime integration, and remaining CLI/Dashboard/API work.
 
 This roadmap does not redefine investment methodology or framework governance.

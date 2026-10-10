@@ -9,8 +9,8 @@ Last Updated: 2026-10-10
 ## Executive Status
 
 * Core architecture closure is declared by the 2026-10-07 baseline; per-ID evidence and numbering remain under traceability audit.
-* Core Runtime orchestration and canonical data handoff exist as in-memory MVP boundaries. Runtime failure residual-effect semantics remain under D-052.
-* Framework implementation is partial. ADM is inactive; its signal-to-execution mapping is open under D-051. Portfolio cash valuation/target semantics are open under D-053.
+* Core Runtime orchestration and canonical data handoff exist as in-memory MVP boundaries. D-052 failure and commit semantics are approved and implemented.
+* Framework implementation is partial. ADM remains inactive although D-051 mapping is implemented. Portfolio cash valuation/target semantics remain open under D-053.
 * Data contracts, source-agnostic normalization, structural validation, provider-neutral adaptation, and policy-explicit ADM utilities exist. Production collection and an end-to-end Framework consumer path are not implemented.
 
 ## Current Status
@@ -19,11 +19,11 @@ Last Updated: 2026-10-10
 |---|---|---|
 | Configuration loader | Implemented | typed validation and required-file checks |
 | Core domain models | Partial | shared contracts exist; account aggregation and end-to-end portfolio state projection remain |
-| RuntimeSession / RuntimeContext | Implemented with known failure gaps | executor and event-recording failures close the session as `Error`; transition-event failure can follow state commit; D-052 tracks remaining residual effects |
-| StateStore / EventStore | Implemented | in-memory stores; transition-event failure may follow state commit (D-052) |
-| Public Orion Runtime | MVP implemented | framework orchestration and optional Decision -> State Transition -> State Commit -> Event lifecycle |
+| RuntimeSession / RuntimeContext | Implemented | pre-commit failures close the session as `Error` and leave both stores unchanged; Runtime is single-run |
+| StateStore / EventStore | Implemented | staged snapshot/events are validated then committed together in memory |
+| Public Orion Runtime | MVP implemented | framework orchestration and optional Decision -> State Transition -> staged Snapshot/Events -> coordinated State/Event commit lifecycle |
 | Durable State/Event storage | Future | outside current MVP |
-| Moon | Partial | common target, valuation, rebalance, and explicit sizing-input operations exist; ADM mapping and Runtime rebalance integration remain |
+| Moon | Partial | D-051 identity mapping is implemented; ADM remains inactive and Runtime rebalance integration remains pending |
 | Aurora | Incomplete | methodology and scoring are not finalized |
 | Supernova / Phoenix | Partial | governance and report scaffolding exist; placeholder output is not an authoritative registry |
 | Data contracts | Implemented | `MarketDataPoint` / `MarketDataSet` structural contracts |
@@ -50,8 +50,9 @@ projection, and Runtime rebalance integration remain pending. Cash inclusion,
 target/residual treatment, valuation currency, and FX responsibility remain
 unresolved under D-053.
 
-ADM activation remains blocked by D-051 because the current execution mapper
-does not accept VTI, VEU, or SGOV as signal keys. `active_strategies` is empty.
+ADM remains inactive because `active_strategies` is empty. D-051 has resolved
+the VTI, VEU, and SGOV execution mapping; Runtime rebalance integration is
+still pending.
 
 ## Data Status
 
@@ -102,6 +103,9 @@ A full five-Framework Runtime matrix now verifies one Public `OrionRuntime.run()
 The implemented lifecycle was audited against CORE-012 without introducing new architecture. Current status is: Initialize **Implemented**; Configuration **Implemented**; Data **Implemented** at the canonical handoff boundary; State Restore **Partial** (in-memory restore only); Context **Implemented**; Framework Execution **Implemented**; Result Validation **Implemented**; Decision Resolution **Partial** (Session-level API only); State Transition **Partial** (Session-level API only); State Commit **Partial** (Session-level API only); Event Creation **Partial** (Session-level API only); Persistence **Partial** (MVP in-memory stores; durable persistence remains future); Presentation **Implemented**; Completion **Implemented**.
 
 The Step 17 audit recorded the pre-Step 18 gap. Step 18 subsequently connected the existing Decision → State Transition → State Commit → Event pipeline into the public single-call lifecycle without changing Core architecture.
+
+D-052 later changed this historical Step 18 ordering: transition events are
+staged before a coordinated StateStore/EventStore commit.
 
 ## 2026-10-08 Runtime Integration Step 18 — Public Canonical Lifecycle
 

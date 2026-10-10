@@ -16,15 +16,15 @@ The 2026-10-07 baseline declares Core architecture **closed** by `CORE-001` thro
 
 ## Workstream A — Core Runtime
 
-Status: MVP implemented — canonical Runtime lifecycle exists; failure residual-effect semantics are under D-052; durable persistence remains deferred
+Status: MVP implemented — canonical Runtime lifecycle and D-052 in-memory commit semantics are implemented; durable persistence remains deferred
 
 1. Public Orion Runtime entry point — Implemented: `OrionRuntime.run()` is the public application boundary and delegates to `RuntimeSession`
-2. Full runtime lifecycle orchestration — Implemented for the MVP: public `OrionRuntime.run()` supports the canonical Decision → State Transition → State Commit → Event lifecycle; durable production persistence remains deferred
-3. Framework execution isolation — executor and event-recording failures stop the run and close the session as `Error`; post-commit transition-event failures and remaining side effects are tracked by D-052
+2. Full runtime lifecycle orchestration — Implemented for the MVP: public `OrionRuntime.run()` supports Decision → State Transition → Snapshot/Event Staging → Coordinated State/Event Commit; durable production persistence remains deferred
+3. Framework execution isolation — staging, validation, and store-commit failures leave StateStore/EventStore unchanged and close the session as `Error`
 4. FrameworkResult collection/validation — Implemented for the initial orchestration boundary
 5. Decision resolution boundary — implemented in RuntimeSession
 6. State Transition + StateStore commit — implemented in RuntimeSession
-7. Domain/Lifecycle Event creation — implemented: execution-correlated EventStore append boundary; state-transition events are created only after successful StateStore commit
+7. Domain/Lifecycle Event creation — implemented: events are staged and validated before coordinated StateStore/EventStore commit
 8. RuntimeResult construction — Implemented for the current execution boundary: OrionResult returns FrameworkResults, StateStore snapshot, EventStore view, and dashboard data
 
 ## Workstream B — Data Pipeline
@@ -113,11 +113,11 @@ Entries below record the status and test count at the time of each dated update.
 
 ## Runtime Integration Update — Step 18/19
 
-- Public `OrionRuntime.run()` now supports the canonical Decision → State Transition → State Commit → Event lifecycle.
+- Public `OrionRuntime.run()` supports Decision → State Transition → Snapshot/Event Staging → Coordinated State/Event Commit under D-052.
 - Runtime Decision Acceptance Governance defaults to Auto-Approval while preserving an explicit acceptance-handler boundary for rejection or conditional acceptance.
 - Framework-only `run()` remains backward compatible.
 - Durable persistence, replay, broker execution, and investment methodology remain outside the MVP scope.
-- Verification baseline: 176 tests passing.
+- Historical verification baseline: 176 tests passing. The D-052 update has a newer full-suite verification recorded in the Decision Log.
 
 ## Runtime Integration Update — Step 8
 
