@@ -131,9 +131,10 @@ def test_execution_mapper_returns_common_allocations() -> None:
     assert allocation == (Allocation("SPYM", Decimal("1.0")),)
 
 
-def test_execution_mapper_rejects_unmapped_signal_assets() -> None:
-    with pytest.raises(ValueError, match="VTI"):
-        ExecutionMapper().map_allocations((ConsensusAllocation("VTI", 1.0),))
+@pytest.mark.parametrize("asset", ("VTI", "VEU", "SGOV"))
+def test_execution_mapper_preserves_adm_signal_assets(asset: str) -> None:
+    allocation = ExecutionMapper().map_allocations((ConsensusAllocation(asset, 1.0),))
+    assert allocation == (Allocation(asset, Decimal("1.0")),)
 
 
 def test_moon_engine_builds_common_executable_allocation() -> None:

@@ -9,6 +9,7 @@ from ...core.ids import AssetId
 from .models import ConsensusAllocation
 
 DOCUMENTED_EXECUTION_MAPPING = MappingProxyType({
+    "VTI": "VTI", "VEU": "VEU", "SGOV": "SGOV",
     "SPY": "SPYM", "QQQ": "QQQM", "IWM": "VTWO", "EFA": "VEA", "EEM": "VWO",
     "AGG": "BND", "BIL": "SGOV", "SHY": "SCHO", "IEF": "VGIT", "TLT": "VGLT",
     "TIP": "SCHP", "LQD": "VCIT", "HYG": "SPHY", "BWX": "BNDX", "EMB": "VWOB",

@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal
 
 import pytest
 
@@ -9,6 +10,8 @@ from orion.core import (
     make_moon_portfolio_adapter,
 )
 from orion.core.ids import PortfolioId, TargetId
+from orion.core.portfolio import Allocation
+from orion.frameworks.moon import ADMSignalInput, ADMStrategy
 from orion.frameworks.moon.models import StrategyResult
 
 
@@ -72,3 +75,41 @@ def test_moon_adapter_rejects_non_strategy_results() -> None:
                 )
             }
         )
+
+
+@pytest.mark.parametrize(
+    ("relative_momentum", "absolute_momentum_positive", "expected_asset"),
+    (
+        ({"VTI": 0.20, "VEU": 0.10}, True, "VTI"),
+        ({"VTI": 0.10, "VEU": 0.20}, True, "VEU"),
+        ({"VTI": 0.20, "VEU": 0.10}, False, "SGOV"),
+    ),
+)
+def test_adm_selection_reaches_portfolio_target(
+    relative_momentum: dict[str, float],
+    absolute_momentum_positive: bool,
+    expected_asset: str,
+) -> None:
+    strategy_result = ADMStrategy("SGOV").calculate_signal(
+        ADMSignalInput(
+            signal_date="2026-10-08",
+            relative_momentum=relative_momentum,
+            absolute_momentum_positive=absolute_momentum_positive,
+            defensive_asset="SGOV",
+        )
+    )
+    runtime = _runtime()
+
+    result = runtime.run(
+        {
+            "Moon": make_moon_portfolio_adapter(
+                lambda: (strategy_result,),
+                PortfolioId("moon-main"),
+                target_id=TargetId(f"adm-{expected_asset}"),
+                effective_from=date(2026, 10, 8),
+            )
+        }
+    )
+
+    target = result.framework_results[0].decision_candidates[0].payload["portfolio_target"]
+    assert target.allocations == (Allocation(expected_asset, Decimal("1.0")),)
