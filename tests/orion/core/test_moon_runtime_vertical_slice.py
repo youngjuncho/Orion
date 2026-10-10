@@ -10,9 +10,9 @@ from orion.core import (
     make_moon_portfolio_adapter,
 )
 from orion.core.ids import AccountId, AssetId, PortfolioId, PositionId, TargetId
-from orion.core.account.models import CashBalance
+from orion.core.account.models import Account, CashBalance
 from orion.core.account.position import Position
-from orion.core.portfolio import Allocation, PortfolioState
+from orion.core.portfolio import Allocation, PortfolioState, build_portfolio_state
 from data.contracts import MarketDataPoint, MarketDataSet
 from orion.frameworks.moon import ADMSignalInput, ADMStrategy
 from orion.frameworks.moon.models import StrategyResult
@@ -111,9 +111,10 @@ def test_moon_adapter_context_factory_receives_runtime_market_data_and_configura
 
 
 def test_moon_adapter_adds_rebalance_plan_when_current_state_and_prices_are_supplied() -> None:
-    state = PortfolioState(
+    state = build_portfolio_state(
         PortfolioId("moon-main"),
         datetime.fromisoformat("2026-10-08T00:00:00+00:00"),
+        (Account(AccountId("acct-1"), PortfolioId("moon-main"), "Main", "Fixture", "KRW"),),
         (Position(PositionId("pos-1"), AccountId("acct-1"), AssetId("SPYM"), 2),),
         (CashBalance(AccountId("acct-1"), "KRW", 100),),
     )
