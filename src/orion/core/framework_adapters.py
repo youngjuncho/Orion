@@ -4,12 +4,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
-from typing import Callable, Sequence
+from decimal import Decimal
+from typing import Callable, Mapping, Sequence
 
 from .api_models import FrameworkResult
 from .decision import DecisionCandidate
-from .ids import PortfolioId, TargetId
-from .portfolio import PortfolioTarget
+from .ids import AssetId, PortfolioId, TargetId
+from .portfolio import PortfolioState, PortfolioTarget, build_rebalance_plan_from_state
 from .runtime import RuntimeContext
 
 
@@ -58,10 +59,23 @@ class MoonPortfolioAdapter:
     effective_from: date
     version: int = 1
     context_strategy_results_factory: Callable[[RuntimeContext], Sequence[object]] | None = None
+    portfolio_state_factory: Callable[[RuntimeContext], PortfolioState] | None = None
+    valuation_prices_factory: Callable[
+        [RuntimeContext], Mapping[AssetId, Decimal | int | float]
+    ] | None = None
+    cash_fx_rates_factory: Callable[
+        [RuntimeContext], Mapping[str, Decimal | int | float]
+    ] | None = None
 
     def __post_init__(self) -> None:
-        if (self.strategy_results_factory is None) == (self.context_strategy_results_factory is None):
+        if (self.strategy_results_factory is None) == (
+            self.context_strategy_results_factory is None
+        ):
             raise ValueError("provide exactly one Moon strategy results factory")
+        if (self.portfolio_state_factory is None) != (
+            self.valuation_prices_factory is None
+        ):
+            raise ValueError("provide both Moon portfolio state and valuation price factories")
 
     def __call__(self, context: RuntimeContext) -> FrameworkResult:
         from orion.frameworks.moon import MoonEngine
@@ -82,6 +96,30 @@ class MoonPortfolioAdapter:
             effective_from=self.effective_from,
             version=self.version,
         )
+        rebalance_plan = None
+        if (
+            self.portfolio_state_factory is not None
+            and self.valuation_prices_factory is not None
+        ):
+            portfolio_state = self.portfolio_state_factory(context)
+            if not isinstance(portfolio_state, PortfolioState):
+                raise TypeError("Moon portfolio_state_factory must return PortfolioState")
+            prices = self.valuation_prices_factory(context)
+            if not isinstance(prices, Mapping):
+                raise TypeError("Moon valuation_prices_factory must return a mapping")
+            cash_fx_rates = (
+                self.cash_fx_rates_factory(context)
+                if self.cash_fx_rates_factory is not None
+                else None
+            )
+            rebalance_plan = build_rebalance_plan_from_state(
+                target,
+                portfolio_state,
+                prices,
+                as_of=context.execution.start_time[:10],
+                valuation_currency=context.configuration.system.currency,
+                cash_fx_rates=cash_fx_rates,
+            )
         candidate = DecisionCandidate(
             candidate_id=f"moon-target:{self.target_id}",
             framework_name="Moon",
@@ -91,6 +129,11 @@ class MoonPortfolioAdapter:
             payload={
                 "portfolio_target": target,
                 "strategy_results": results,
+                **(
+                    {"rebalance_plan": rebalance_plan}
+                    if rebalance_plan is not None
+                    else {}
+                ),
             },
         )
         return FrameworkResult(
@@ -162,6 +205,13 @@ def make_moon_portfolio_adapter(
     effective_from: date,
     version: int = 1,
     context_strategy_results_factory: Callable[[RuntimeContext], Sequence[object]] | None = None,
+    portfolio_state_factory: Callable[[RuntimeContext], PortfolioState] | None = None,
+    valuation_prices_factory: Callable[
+        [RuntimeContext], Mapping[AssetId, Decimal | int | float]
+    ] | None = None,
+    cash_fx_rates_factory: Callable[
+        [RuntimeContext], Mapping[str, Decimal | int | float]
+    ] | None = None,
 ) -> FrameworkAdapter:
     """Create the canonical Runtime adapter for Moon PortfolioTarget proposals."""
 
@@ -172,4 +222,7 @@ def make_moon_portfolio_adapter(
         effective_from=effective_from,
         version=version,
         context_strategy_results_factory=context_strategy_results_factory,
+        portfolio_state_factory=portfolio_state_factory,
+        valuation_prices_factory=valuation_prices_factory,
+        cash_fx_rates_factory=cash_fx_rates_factory,
     )

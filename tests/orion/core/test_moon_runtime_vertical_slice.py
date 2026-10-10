@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 
 import pytest
@@ -9,8 +9,10 @@ from orion.core import (
     OrionRuntime,
     make_moon_portfolio_adapter,
 )
-from orion.core.ids import PortfolioId, TargetId
-from orion.core.portfolio import Allocation
+from orion.core.ids import AccountId, AssetId, PortfolioId, PositionId, TargetId
+from orion.core.account.models import CashBalance
+from orion.core.account.position import Position
+from orion.core.portfolio import Allocation, PortfolioState
 from data.contracts import MarketDataPoint, MarketDataSet
 from orion.frameworks.moon import ADMSignalInput, ADMStrategy
 from orion.frameworks.moon.models import StrategyResult
@@ -106,6 +108,35 @@ def test_moon_adapter_context_factory_receives_runtime_market_data_and_configura
 
     assert len(received) == 1
     assert result.framework_results[0].decision_candidates[0].entity_id == "moon-context-target"
+
+
+def test_moon_adapter_adds_rebalance_plan_when_current_state_and_prices_are_supplied() -> None:
+    state = PortfolioState(
+        PortfolioId("moon-main"),
+        datetime.fromisoformat("2026-10-08T00:00:00+00:00"),
+        (Position(PositionId("pos-1"), AccountId("acct-1"), AssetId("SPYM"), 2),),
+        (CashBalance(AccountId("acct-1"), "KRW", 100),),
+    )
+    result = _runtime().run(
+        {
+            "Moon": make_moon_portfolio_adapter(
+                _strategies,
+                PortfolioId("moon-main"),
+                target_id=TargetId("moon-rebalance-target"),
+                effective_from=date(2026, 10, 8),
+                portfolio_state_factory=lambda _: state,
+                valuation_prices_factory=lambda _: {AssetId("SPYM"): Decimal("50")},
+            )
+        }
+    )
+
+    candidate = result.framework_results[0].decision_candidates[0]
+    plan = candidate.payload["rebalance_plan"]
+    assert plan.as_of == "2026-10-08"
+    assert [(change.asset_id, change.delta_weight) for change in plan.changes] == [
+        (AssetId("SPYM"), Decimal("0.2")),
+        (AssetId("VGLT"), Decimal("0.3")),
+    ]
 
 
 @pytest.mark.parametrize(
