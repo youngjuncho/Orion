@@ -86,6 +86,17 @@ It may include:
 
 Portfolio Value and Current Allocation are derived values, not independent sources of truth.
 
+`PortfolioState.cash` is the authoritative cash input for valuation. The caller
+passes configured `system.currency` as `valuation_currency`; asset prices must
+already be denominated in that currency. Cash in another currency requires an
+explicit caller-supplied rate, expressed as valuation-currency units per one
+unit of source currency. The portfolio layer does not discover FX rates.
+Duplicate `(account_id, currency)` cash balances, missing rates, and rates
+that are non-finite or non-positive are rejected. Converted cash contributes
+to total portfolio value and the denominator for current non-cash asset
+weights. `PortfolioTarget` remains fully invested in assets, with cash treated
+as residual funding. FX source, timestamp, and freshness are caller-owned.
+
 ### PortfolioSnapshot
 
 Represents a historical, time-stamped capture of PortfolioState. It is not the canonical current state.
@@ -97,7 +108,7 @@ Each asset may appear at most once in the current-allocation input; duplicate
 asset entries are rejected instead of silently overriding an earlier weight.
 
 ```text
-PortfolioTarget + PortfolioState
+PortfolioTarget + PortfolioState + valuation prices / FX rates
             ↓
        RebalancePlan
 ```

@@ -147,7 +147,7 @@ Entries below record the status and test count at the time of each dated update.
 ### Runtime Integration Update — Step 11
 
 - Added the common `PortfolioValuation` contract for authoritative portfolio valuation inputs.
-- Added `value_portfolio_state()` using caller-supplied normalized prices; no price discovery or FX conversion is performed in the portfolio layer.
+- Added `value_portfolio_state()` using caller-supplied normalized prices and D-053 cash valuation: `PortfolioState.cash` is authoritative, explicit FX rates are required for foreign-currency cash, and converted cash contributes to total value/current-weight denominator. The portfolio layer performs no FX lookup.
 - Added `current_allocations_from_valuation()` with explicit cash included in total portfolio value.
 - Added `build_rebalance_plan_from_state()` to connect `PortfolioState` + valuation inputs to the canonical `RebalancePlan`.
 - Added `ExecutionSizingInput` as the explicit boundary for already-resolved executable quantities and order identities.

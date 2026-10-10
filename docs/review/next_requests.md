@@ -28,9 +28,9 @@ Approved and implemented: stage/validate framework events, snapshot, and transit
 
 The all-or-nothing guarantee applies to Orion-owned in-memory stores; it does not roll back external side effects from caller-supplied callbacks.
 
-### 3. Resolve Draft D-053 — Portfolio Cash Valuation / Target Semantics
+### 3. D-053 — Portfolio Cash Valuation / Target Semantics (Approved and Implemented)
 
-Proposed MVP: use configured `system.currency` (currently KRW), take cash from `PortfolioState.cash`, convert with caller-supplied rates, include it in the total-value denominator, and keep cash as residual funding outside the fully invested `PortfolioTarget`. Reject duplicate `(account_id, currency)` balances and remove the separate `cash_value` argument. Confirm or revise this policy before changing the valuation API; no FX lookup or cross-currency sum is implicit.
+Approved 2026-10-10. The valuation and rebalance APIs take the configured currency as `valuation_currency`, consume cash only from `PortfolioState.cash`, convert via explicit positive finite caller-supplied rates, and include the result in the current-weight denominator. Cash remains residual funding outside the fully invested target. Duplicate `(account_id, currency)` balances and missing foreign-currency rates are rejected. The portfolio layer performs no FX lookup.
 
 ## Next Implementation Work (after the decisions)
 
@@ -44,7 +44,7 @@ Canonical observation contracts, source-agnostic normalization, structural valid
 
 ### Moon
 
-The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. Keep ADM inactive until its data/runtime handoff is implemented; resolve D-053 before integrating cash into valuation. Then implement Account aggregation/current-state projection and the Moon Runtime rebalance handoff.
+The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. D-053 cash valuation is implemented. Keep ADM inactive until its data/runtime handoff is implemented; Account aggregation/current-state projection and the Moon Runtime rebalance handoff remain.
 
 ### Framework-Specific Work
 

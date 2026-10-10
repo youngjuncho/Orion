@@ -481,8 +481,8 @@ Transition monitoring is considered a primary objective of Aurora.
 
 Examples:
 
-* Bull → Bear Watch
-* Bear → Bull Watch
+* Bull ??Bear Watch
+* Bear ??Bull Watch
 
 Aurora must report both:
 
@@ -495,7 +495,7 @@ Date: 2026-06-21
 
 ---
 
-## D-021 — Phoenix Scope and Core Digital Asset Separation
+## D-021 ??Phoenix Scope and Core Digital Asset Separation
 
 Date:
 
@@ -779,20 +779,16 @@ Architecture:
 
 Aurora
 
-↓
-
+??
 Market Context
 
-↓
-
+??
 Investor Interpretation
 
-↓
-
+??
 Moon / Supernova / Phoenix
 
-↓
-
+??
 Portfolio Actions
 
 ---
@@ -847,7 +843,7 @@ Risks:
 
 ### D-023 Terminology Reconciliation Note
 
-D-023 is retained as the historical decision establishing Aurora as monitoring and Moon/Supernova/Phoenix as portfolio-oriented domains. Its historical terms “Monitoring Layer” and “Portfolio Engine” are superseded for Core architecture terminology by D-025 and the CORE-001 baseline: Aurora/Moon/Orbit/Supernova/Phoenix are **Frameworks**, and an **Engine** is a calculation/analysis module inside a Framework. The canonical application execution boundary is **Orion Runtime**.
+D-023 is retained as the historical decision establishing Aurora as monitoring and Moon/Supernova/Phoenix as portfolio-oriented domains. Its historical terms ?�Monitoring Layer??and ?�Portfolio Engine??are superseded for Core architecture terminology by D-025 and the CORE-001 baseline: Aurora/Moon/Orbit/Supernova/Phoenix are **Frameworks**, and an **Engine** is a calculation/analysis module inside a Framework. The canonical application execution boundary is **Orion Runtime**.
 
 ---
 
@@ -949,30 +945,24 @@ Moon shall use the following canonical portfolio domain model.
 
 ```text
 StrategyResult
-      ↓
-ConsensusAllocation
-      ↓
-PortfolioTarget
-      ↓
-RebalancePlan
-      ↓
-ExecutionOrder
+      ??ConsensusAllocation
+      ??PortfolioTarget
+      ??RebalancePlan
+      ??ExecutionOrder
 ```
 
 Current portfolio state is represented independently:
 
 ```text
 PortfolioSnapshot
-      ↓
-Current Holdings
+      ??Current Holdings
 ```
 
 A `RebalancePlan` is derived from:
 
 ```text
 PortfolioTarget + PortfolioSnapshot
-      ↓
-RebalancePlan
+      ??RebalancePlan
 ```
 
 ### Details
@@ -1027,10 +1017,8 @@ The conceptual calculation is:
 
 ```text
 Adjusted Price
-      ↓
-Total Return Measurement
-      ↓
-ADM Strategy Calculation
+      ??Total Return Measurement
+      ??ADM Strategy Calculation
 ```
 
 ADM shall not independently calculate dividend distributions from raw dividend data as part of its core strategy calculation.
@@ -1128,141 +1116,134 @@ Approved
 
 ---
 
-# D.1–D.2 Decision Review & Decision Lifecycle
+# D.1?�D.2 Decision Review & Decision Lifecycle
 
 ## Context
 
-Orion의 Decision Review 영역에서 Analysis, Evidence Snapshot, Recommendation, User Decision, Review Record, Note 및 관계(Relation)의 lifecycle과 provenance를 명확히 정의한다.
+Orion??Decision Review ?�역?�서 Analysis, Evidence Snapshot, Recommendation, User Decision, Review Record, Note �?관�?Relation)??lifecycle�?provenance�?명확???�의?�다.
 
-핵심 목적은 다음과 같다.
+?�심 목적?� ?�음�?같다.
 
-* Analysis와 Recommendation의 lifecycle을 분리한다.
-* Recommendation과 User Decision의 lifecycle을 분리한다.
-* Review가 Recommendation 또는 Decision을 직접 수정하지 않도록 한다.
-* 기존 판단을 수정할 경우 기존 기록을 변경하지 않고 새로운 기록을 생성한다.
-* 모든 중요한 판단과 변경의 provenance를 추적 가능하게 한다.
-* 현재 상태를 mutable pointer나 별도 status field에 의존하지 않고 lifecycle과 lineage에서 결정할 수 있도록 한다.
+* Analysis?� Recommendation??lifecycle??분리?�다.
+* Recommendation�?User Decision??lifecycle??분리?�다.
+* Review가 Recommendation ?�는 Decision??직접 ?�정?��? ?�도�??�다.
+* 기존 ?�단???�정??경우 기존 기록??변경하지 ?�고 ?�로??기록???�성?�다.
+* 모든 중요???�단�?변경의 provenance�?추적 가?�하�??�다.
+* ?�재 ?�태�?mutable pointer??별도 status field???�존?��? ?�고 lifecycle�?lineage?�서 결정?????�도�??�다.
 
 ---
 
-## D.1 — Decision Review Framework
+## D.1 ??Decision Review Framework
 
 ### 1. Architecture Boundary
 
-Orion의 판단 흐름은 다음과 같이 분리한다.
+Orion???�단 ?�름?� ?�음�?같이 분리?�다.
 
 ```text
 Analysis
-   ↓
-Evidence Snapshot
-   ↓
-Recommendation
-   ↓
-User Decision
+   ??Evidence Snapshot
+   ??Recommendation
+   ??User Decision
 
 Review Record
-   └─ Recommendation / Decision에 영향을 주는 trigger와 결과를 기록
+   ?��? Recommendation / Decision???�향??주는 trigger?� 결과�?기록
 ```
 
-Actual Trading은 Orion의 외부 영역이다.
+Actual Trading?� Orion???��? ?�역?�다.
 
 ```text
 Analysis
-→ Recommendation
-→ User Decision
-→ Actual Trading (Outside Orion)
+??Recommendation
+??User Decision
+??Actual Trading (Outside Orion)
 ```
 
-Orion은 실제 주문 실행 여부나 실행 결과를 User Decision의 lifecycle에 반영하지 않는다.
+Orion?� ?�제 주문 ?�행 ?��????�행 결과�?User Decision??lifecycle??반영?��? ?�는??
 
 ### 2. Recommendation Immutability
 
-Recommendation은 Immutable하다.
+Recommendation?� Immutable?�다.
 
-Recommendation의 내용이 변경되어야 하는 경우 기존 Recommendation을 수정하지 않는다.
+Recommendation???�용??변경되?�야 ?�는 경우 기존 Recommendation???�정?��? ?�는??
 
 ```text
 R1 = Superseded
 R2 = Active
 ```
 
-R2는 R1을 `Supersedes`한다.
+R2??R1??`Supersedes`?�다.
 
-Recommendation이 생성되면 새로운 User Decision은 `Pending`으로 시작한다.
+Recommendation???�성?�면 ?�로??User Decision?� `Pending`?�로 ?�작?�다.
 
 ### 3. Evidence Snapshot
 
-Recommendation 생성 시 사용한 Evidence Snapshot은 고정한다.
+Recommendation ?�성 ???�용??Evidence Snapshot?� 고정?�다.
 
-Analysis가 이후 변경되더라도 당시 Recommendation이 어떤 evidence를 기반으로 만들어졌는지 재현할 수 있어야 한다.
+Analysis가 ?�후 변경되?�라???�시 Recommendation???�떤 evidence�?기반?�로 만들?�졌?��? ?�현?????�어???�다.
 
 Provenance:
 
 ```text
 Analysis Version
-      ↓
-Evidence Snapshot
-      ↓
-Recommendation
-      ↓
-User Decision
+      ??Evidence Snapshot
+      ??Recommendation
+      ??User Decision
 ```
 
 ### 4. Review Trigger
 
-Review는 다음 두 종류의 trigger로 발생할 수 있다.
+Review???�음 ??종류??trigger�?발생?????�다.
 
 * Regular Review
 * Material Change
 
-Change Detection과 Material Change 판단은 별개의 개념이다.
+Change Detection�?Material Change ?�단?� 별개??개념?�다.
 
-Review는 변경이 감지되었다는 사실과 그것이 Recommendation 변경을 요구하는지 여부를 분리해서 판단한다.
+Review??변경이 감�??�었?�는 ?�실�?그것??Recommendation 변경을 ?�구?�는지 ?��?�?분리?�서 ?�단?�다.
 
 ### 5. Review Result
 
-Review Result는 다음 세 가지로 구분한다.
+Review Result???�음 ??가지�?구분?�다.
 
 * `No Change`
 * `Reconsideration Required`
 * `Recommendation Change Required`
 
-`No Change`도 명시적인 Review Record로 남긴다.
+`No Change`??명시?�인 Review Record�??�긴??
 
-Review Record 자체가 Recommendation을 직접 변경하지 않는다.
+Review Record ?�체가 Recommendation??직접 변경하지 ?�는??
 
 ### 6. Reconsideration
 
-`Reconsideration Required`인 경우 Recommendation은 유지한다.
+`Reconsideration Required`??경우 Recommendation?� ?��??�다.
 
-기존 Active User Decision은 `Superseded`가 되고 새로운 Pending User Decision을 생성한다.
+기존 Active User Decision?� `Superseded`가 ?�고 ?�로??Pending User Decision???�성?�다.
 
 ```text
 Recommendation R1
-    ↓
-Decision D1 = Superseded
+    ??Decision D1 = Superseded
 Decision D2 = Pending
 ```
 
 ### 7. Recommendation Change
 
-`Recommendation Change Required`인 경우 기존 Recommendation을 Superseded 처리하고 새로운 Recommendation을 생성한다.
+`Recommendation Change Required`??경우 기존 Recommendation??Superseded 처리?�고 ?�로??Recommendation???�성?�다.
 
-기존 Recommendation의 현재 Active/Pending Decision도 Superseded 처리한다.
+기존 Recommendation???�재 Active/Pending Decision??Superseded 처리?�다.
 
-새 Recommendation에는 새로운 Pending Decision을 생성한다.
+??Recommendation?�는 ?�로??Pending Decision???�성?�다.
 
-기존 Decision history를 새로운 Recommendation으로 복사하지 않는다.
+기존 Decision history�??�로??Recommendation?�로 복사?��? ?�는??
 
-Recommendation 간 lineage는 `Supersedes` 관계로 연결한다.
+Recommendation �?lineage??`Supersedes` 관계로 ?�결?�다.
 
 ---
 
-# D.2 — Decision Lifecycle & Relation Model
+# D.2 ??Decision Lifecycle & Relation Model
 
 ## 1. User Decision Lifecycle
 
-User Decision의 lifecycle은 다음 세 가지다.
+User Decision??lifecycle?� ?�음 ??가지??
 
 ```text
 Pending
@@ -1270,126 +1251,122 @@ Active
 Superseded
 ```
 
-`Rejected`는 lifecycle이 아니라 Outcome이다.
+`Rejected`??lifecycle???�니??Outcome?�다.
 
-따라서:
+?�라??
 
 ```text
 Status = Active
 Outcome = Rejected
 ```
 
-가 가능하다.
+가 가?�하??
 
-Outcome은 다음 두 가지로 제한한다.
+Outcome?� ?�음 ??가지�??�한?�다.
 
 * `Accepted`
 * `Rejected`
 
-Conditional Acceptance는 별도 lifecycle이 아니라:
+Conditional Acceptance??별도 lifecycle???�니??
 
 ```text
 Outcome = Accepted
 Conditions = <condition>
 ```
 
-으로 표현한다.
+?�로 ?�현?�다.
 
-조건이 없는 Accepted Decision은 `Conditions = null`이다.
+조건???�는 Accepted Decision?� `Conditions = null`?�다.
 
-Rejected Decision에도 Conditions를 둘 수 있다.
+Rejected Decision?�도 Conditions�??????�다.
 
 ## 2. Decision Immutability
 
-User Decision은 Immutable하다.
+User Decision?� Immutable?�다.
 
-다음 사항이 변경되면 새로운 Decision을 생성한다.
+?�음 ?�항??변경되�??�로??Decision???�성?�다.
 
-* Outcome 변경
-* Conditions의 의미 변경
-* Recommendation 변경에 따른 새로운 판단
-* Reconsideration에 따른 새로운 판단
+* Outcome 변�?* Conditions???��? 변�?* Recommendation 변경에 ?�른 ?�로???�단
+* Reconsideration???�른 ?�로???�단
 
-기존 Decision은 `Superseded`로 남긴다.
+기존 Decision?� `Superseded`�??�긴??
 
-단순한 wording-only clarification은 Decision을 변경하지 않고 별도의 Note/Clarification으로 기록한다.
+?�순??wording-only clarification?� Decision??변경하지 ?�고 별도??Note/Clarification?�로 기록?�다.
 
 ## 3. Decision Supersession
 
-새 Decision이 기존 Decision을 대체하는 경우:
+??Decision??기존 Decision???�체하??경우:
 
 ```text
 New Decision
-   ├─ Supersedes Decision
-   └─ triggered_by_review (해당하는 경우)
+   ?��? Supersedes Decision
+   ?��? triggered_by_review (?�당?�는 경우)
 ```
 
-기존 Decision의 `Superseded Reason`을 필수로 기록한다.
+기존 Decision??`Superseded Reason`???�수�?기록?�다.
 
-Recommendation 변경 때문에 Decision이 Superseded되는 경우:
+Recommendation 변�??�문??Decision??Superseded?�는 경우:
 
 ```text
 Superseded Reason = Recommendation Superseded
 superseded_by_recommendation_id = R2
 ```
 
-Superseded된 Decision의 Outcome과 Conditions는 변경하지 않는다.
+Superseded??Decision??Outcome�?Conditions??변경하지 ?�는??
 
 ## 4. Current Decision
 
-Current Decision은 별도의 `current_decision_id` pointer로 저장하지 않는다.
+Current Decision?� 별도??`current_decision_id` pointer�??�?�하지 ?�는??
 
-Lifecycle을 기반으로 결정한다.
+Lifecycle??기반?�로 결정?�다.
 
-Recommendation 하나에 대해:
+Recommendation ?�나???�??
 
-* Active Decision은 최대 1개
-* Pending Decision은 최대 1개
+* Active Decision?� 최�? 1�?* Pending Decision?� 최�? 1�?
+�??�용?�다.
 
-를 허용한다.
+Reconsideration ??기존 Active Decision??먼�? Supersede?�고 ?�로??Pending Decision???�성?�다.
 
-Reconsideration 시 기존 Active Decision을 먼저 Supersede하고 새로운 Pending Decision을 생성한다.
+?�라???�일 Recommendation ?�래?�서 `Active + Pending` Decision???�시???��??��? ?�는??
 
-따라서 동일 Recommendation 아래에서 `Active + Pending` Decision을 동시에 유지하지 않는다.
+Pending Decision??존재?�는 ?�태?�서 추�? Review가 발생?�면 ?�로??Pending Decision??만들지 ?�고 기존 Pending Decision???��??�며 Review Record�?추�??�다.
 
-Pending Decision이 존재하는 상태에서 추가 Review가 발생하면 새로운 Pending Decision을 만들지 않고 기존 Pending Decision을 유지하며 Review Record만 추가한다.
+?? Recommendation ?�체가 변경되�?기존 Pending Decision??Superseded?�고 ?�로??Recommendation???�로??Pending Decision???�성?�다.
 
-단, Recommendation 자체가 변경되면 기존 Pending Decision도 Superseded되고 새로운 Recommendation에 새로운 Pending Decision을 생성한다.
+## 5. Recommendation?�Decision Relationship
 
-## 5. Recommendation–Decision Relationship
+Recommendation�?User Decision?� 1:N 관계다.
 
-Recommendation과 User Decision은 1:N 관계다.
+?�나??Recommendation?�는 ?�러 historical Decision??존재?????��?�??�재 ?�효??Decision?� lifecycle 규칙???�라 결정?�다.
 
-하나의 Recommendation에는 여러 historical Decision이 존재할 수 있지만 현재 유효한 Decision은 lifecycle 규칙에 따라 결정한다.
-
-새 Recommendation은 이전 Decision history를 복사하지 않는다.
+??Recommendation?� ?�전 Decision history�?복사?��? ?�는??
 
 ---
 
 # Review / Decision Interaction
 
-Review와 User Decision은 독립 객체다.
+Review?� User Decision?� ?�립 객체??
 
-Review Record는 판단을 trigger하고 근거를 남기지만 Recommendation이나 Decision을 직접 수정하지 않는다.
+Review Record???�단??trigger?�고 근거�??�기지�?Recommendation?�나 Decision??직접 ?�정?��? ?�는??
 
 ```text
 Review Record
-   ├─ No Change
-   ├─ Reconsideration Required
-   └─ Recommendation Change Required
+   ?��? No Change
+   ?��? Reconsideration Required
+   ?��? Recommendation Change Required
 ```
 
-새 Decision이 Review 때문에 생성된 경우 `triggered_by_review`로 해당 Review Record를 참조한다.
+??Decision??Review ?�문???�성??경우 `triggered_by_review`�??�당 Review Record�?참조?�다.
 
-`No Change` Review에서는 기존 Active Decision을 그대로 유지한다.
+`No Change` Review?�서??기존 Active Decision??그�?�??��??�다.
 
 ---
 
 # Note / Clarification
 
-Note/Clarification은 Decision 변경을 대신하지 않는다.
+Note/Clarification?� Decision 변경을 ?�?�하지 ?�는??
 
-Note는 Immutable하며 다음 정보를 가진다.
+Note??Immutable?�며 ?�음 ?�보�?가진다.
 
 * `created_at`
 * `created_by`
@@ -1398,7 +1375,7 @@ Note는 Immutable하며 다음 정보를 가진다.
 * `target_type`
 * `target_id`
 
-`created_by`는 현재 단계에서 다음으로 제한한다.
+`created_by`???�재 ?�계?�서 ?�음?�로 ?�한?�다.
 
 * `User`
 * `System`
@@ -1411,9 +1388,9 @@ Note Type 초기 집합:
 * `Observation`
 * `Other`
 
-`Other`를 선택하면 `Other Type Description`을 필수로 한다.
+`Other`�??�택?�면 `Other Type Description`???�수�??�다.
 
-Note는 다음 주요 객체에 attach할 수 있다.
+Note???�음 주요 객체??attach?????�다.
 
 * Analysis
 * Evidence Snapshot
@@ -1421,75 +1398,74 @@ Note는 다음 주요 객체에 attach할 수 있다.
 * User Decision
 * Review Record
 
-Note는 다른 Note에도 연결할 수 있다.
+Note???�른 Note?�도 ?�결?????�다.
 
 초기 Relation Type:
 
 * `Supersedes`
 * `Related To`
 
-`Related To`는 undirected relation이다.
+`Related To`??undirected relation?�다.
 
-`Supersedes`는 directed relation이다.
+`Supersedes`??directed relation?�다.
 
-Self-reference는 금지한다.
+Self-reference??금�??�다.
 
-`Supersedes` cycle은 금지한다.
+`Supersedes` cycle?� 금�??�다.
 
-중복 Relation도 금지한다.
+중복 Relation??금�??�다.
 
 ---
 
 # Supersedes Relation
 
-`Supersedes` 관계 자체도 provenance의 일부로 취급한다.
+`Supersedes` 관�??�체??provenance???��?�?취급?�다.
 
-일반적으로 source의 `created_at`은 target보다 이후여야 한다.
+?�반?�으�?source??`created_at`?� target보다 ?�후?�야 ?�다.
 
-단, migration/import에서는 temporal validation exception을 허용한다.
+?? migration/import?�서??temporal validation exception???�용?�다.
 
-Exception은 다음 정보를 가진다.
+Exception?� ?�음 ?�보�?가진다.
 
 * `exception_type`
 * `exception_description`
 
-`exception_type = Other`인 경우 상세 설명을 필수로 한다.
+`exception_type = Other`??경우 ?�세 ?�명???�수�??�다.
 
-Exception 기록 자체도 Immutable하다.
+Exception 기록 ?�체??Immutable?�다.
 
-잘못 생성된 `Supersedes` 관계는 직접 삭제하거나 취소하지 않는다.
+?�못 ?�성??`Supersedes` 관계는 직접 ??��?�거??취소?��? ?�는??
 
-별도의 `Invalidates Supersedes` 관계를 생성하여 해당 Supersedes 관계를 무효화한다.
+별도??`Invalidates Supersedes` 관계�? ?�성?�여 ?�당 Supersedes 관계�? 무효?�한??
 
 ---
 
 # Invalidates Supersedes
 
-잘못된 `Supersedes` 관계는 다음 구조로 정정한다.
+?�못??`Supersedes` 관계는 ?�음 구조�??�정?�다.
 
 ```text
 Supersedes Relation
-       ↓
-Invalidates Supersedes
+       ??Invalidates Supersedes
 ```
 
-`Invalidates Supersedes`는 특정 `Supersedes Relation ID`를 직접 참조한다.
+`Invalidates Supersedes`???�정 `Supersedes Relation ID`�?직접 참조?�다.
 
-현재 유효성은 별도의 status field가 아니라 lineage에서 도출한다.
+?�재 ?�효?��? 별도??status field가 ?�니??lineage?�서 ?�출?�다.
 
-`Invalidates Supersedes` 관계 자체는 Immutable하다.
+`Invalidates Supersedes` 관�??�체??Immutable?�다.
 
-`Invalidates Supersedes` 자체를 다시 invalidate하는 recursive 구조는 허용하지 않는다.
+`Invalidates Supersedes` ?�체�??�시 invalidate?�는 recursive 구조???�용?��? ?�는??
 
-대신 잘못된 invalidation은 별도의 Correction으로 정정한다.
+?�???�못??invalidation?� 별도??Correction?�로 ?�정?�다.
 
 ---
 
 # Correction
 
-Correction은 특정 `Invalidates Supersedes` 관계를 정정하기 위한 Immutable 기록이다.
+Correction?� ?�정 `Invalidates Supersedes` 관계�? ?�정?�기 ?�한 Immutable 기록?�다.
 
-필수 정보:
+?�수 ?�보:
 
 * `target_relation_id`
 * `correction_type`
@@ -1497,130 +1473,126 @@ Correction은 특정 `Invalidates Supersedes` 관계를 정정하기 위한 Immu
 * `created_at`
 * `created_by`
 
-`created_by`는 현재 단계에서 다음으로 제한한다.
+`created_by`???�재 ?�계?�서 ?�음?�로 ?�한?�다.
 
 * `User`
 * `System`
 
-현재 Correction Type은 최소 모델로 다음 하나만 정의한다.
+?�재 Correction Type?� 최소 모델�??�음 ?�나�??�의?�다.
 
 * `Restore Validity`
 
-즉:
+�?
 
 ```text
 Invalidates Supersedes
-       ↓
-Correction
-       ↓
-Restore Validity
+       ??Correction
+       ??Restore Validity
 ```
 
-Correction은 동일한 Invalidates Supersedes 관계에 대해 여러 개 존재할 수 있다.
+Correction?� ?�일??Invalidates Supersedes 관계에 ?�???�러 �?존재?????�다.
 
-Correction은 기존 Correction을 수정하거나 삭제하지 않는다.
+Correction?� 기존 Correction???�정?�거????��?��? ?�는??
 
-현재 상태를 결정할 때는 가장 최근 Correction을 사용한다.
+?�재 ?�태�?결정???�는 가??최근 Correction???�용?�다.
 
-정렬 규칙:
+?�렬 규칙:
 
 1. `created_at`
-2. 동일 timestamp인 경우 `Correction ID`
+2. ?�일 timestamp??경우 `Correction ID`
 
-`Correction ID` 자체는 순번이나 시간적 의미를 갖지 않는다. 단순 identifier이며 timestamp tie-breaker로만 사용한다.
+`Correction ID` ?�체???�번?�나 ?�간???��?�?갖�? ?�는?? ?�순 identifier?�며 timestamp tie-breaker로만 ?�용?�다.
 
 ---
 
 # Current Relation Validity
 
-현재 관계의 유효성은 저장된 mutable status가 아니라 lineage에서 deterministic하게 계산한다.
+?�재 관계의 ?�효?��? ?�?�된 mutable status가 ?�니??lineage?�서 deterministic?�게 계산?�다.
 
-개념적으로:
+개념?�으�?
 
 ```text
 Supersedes
-   ↓
-Invalidates Supersedes
-   ↓
-Latest Correction
+   ??Invalidates Supersedes
+   ??Latest Correction
 ```
 
-`Restore Validity` Correction이 존재하면 해당 `Invalidates Supersedes`의 효력이 제거된 것으로 간주하고 원래 `Supersedes` 관계가 다시 유효해진다.
+`Restore Validity` Correction??존재?�면 ?�당 `Invalidates Supersedes`???�력???�거??것으�?간주?�고 ?�래 `Supersedes` 관계�? ?�시 ?�효?�진??
 
-따라서 Current State는 별도의 mutable state field가 아니라 relation lineage의 계산 결과다.
+?�라??Current State??별도??mutable state field가 ?�니??relation lineage??계산 결과??
 
 ---
 
 # Core Invariants
 
-다음 규칙은 D.1–D.2에서 확정한 핵심 invariant다.
+?�음 규칙?� D.1?�D.2?�서 ?�정???�심 invariant??
 
-1. Recommendation은 Immutable하다.
-2. User Decision은 Immutable하다.
-3. Review Record는 Recommendation/Decision을 직접 수정하지 않는다.
-4. Analysis 변경 자체는 Recommendation 변경을 의미하지 않는다.
-5. Recommendation 변경이 필요한 경우 새로운 Recommendation을 생성한다.
-6. Decision 변경이 필요한 경우 새로운 Decision을 생성한다.
-7. 기존 기록은 삭제하지 않고 Superseded lineage를 유지한다.
-8. Recommendation 하나에는 최대 하나의 Active Decision이 존재한다.
-9. Recommendation 하나에는 최대 하나의 Pending Decision이 존재한다.
-10. Recommendation reconsideration 시 Active + Pending Decision을 동시에 유지하지 않는다.
-11. Actual Trading execution state는 Orion의 Decision lifecycle에 포함하지 않는다.
-12. Current state는 가능한 경우 mutable pointer/status가 아니라 lifecycle과 lineage에서 도출한다.
-13. 모든 중요한 변경은 provenance를 유지한다.
-14. Supersedes lineage는 cycle을 가질 수 없다.
-15. Invalidates 및 Correction도 Immutable provenance를 유지한다.
+1. Recommendation?� Immutable?�다.
+2. User Decision?� Immutable?�다.
+3. Review Record??Recommendation/Decision??직접 ?�정?��? ?�는??
+4. Analysis 변�??�체??Recommendation 변경을 ?��??��? ?�는??
+5. Recommendation 변경이 ?�요??경우 ?�로??Recommendation???�성?�다.
+6. Decision 변경이 ?�요??경우 ?�로??Decision???�성?�다.
+7. 기존 기록?� ??��?��? ?�고 Superseded lineage�??��??�다.
+8. Recommendation ?�나?�는 최�? ?�나??Active Decision??존재?�다.
+9. Recommendation ?�나?�는 최�? ?�나??Pending Decision??존재?�다.
+10. Recommendation reconsideration ??Active + Pending Decision???�시???��??��? ?�는??
+11. Actual Trading execution state??Orion??Decision lifecycle???�함?��? ?�는??
+12. Current state??가?�한 경우 mutable pointer/status가 ?�니??lifecycle�?lineage?�서 ?�출?�다.
+13. 모든 중요??변경�? provenance�??��??�다.
+14. Supersedes lineage??cycle??가�????�다.
+15. Invalidates �?Correction??Immutable provenance�??��??�다.
 
 ---
 
 # Decision Traceability
 
-이번 D.1–D.2 설계 결정은 Review Session의 개별 결정 번호를 통해 추적한다.
+?�번 D.1?�D.2 ?�계 결정?� Review Session??개별 결정 번호�??�해 추적?�다.
 
-Review Session 결정 번호는 permanent Decision ID가 아니다.
-Permanent architectural record는 본 Decision Log에 기록된 D-xxx Decision과 해당 결정 블록이다.
+Review Session 결정 번호??permanent Decision ID가 ?�니??
+Permanent architectural record??�?Decision Log??기록??D-xxx Decision�??�당 결정 블록?�다.
 
-현재 확인된 Review Session 결정 범위:
+?�재 ?�인??Review Session 결정 범위:
 
-* D.1-54 ~ D.1-67: Review / Recommendation / Decision lifecycle 및 provenance
+* D.1-54 ~ D.1-67: Review / Recommendation / Decision lifecycle �?provenance
 * D.2-01 ~ D.2-10: Review / Decision 기본 lifecycle
 * D.2-11 ~ D.2-46: Decision lifecycle, Outcome, Conditions, Actual Trading boundary
 * D.2-47 ~ D.2-80: Note, Relation, Supersedes, Invalidates 구조
-* D.2-81: Invalidates Supersedes / Correction lifecycle 관련 결정
-* D.2-84 ~ D.2-100: Invalidates Supersedes Correction 및 deterministic validity
+* D.2-81: Invalidates Supersedes / Correction lifecycle 관??결정
+* D.2-84 ~ D.2-100: Invalidates Supersedes Correction �?deterministic validity
 
-D.2-82 및 D.2-83은 현재 Decision Review 기록에서 원문 결정 내용을 복구하지 못했으므로 본 Log에서는 의미를 추정하지 않는다.
+D.2-82 �?D.2-83?� ?�재 Decision Review 기록?�서 ?�문 결정 ?�용??복구?��? 못했?��?�?�?Log?�서???��?�?추정?��? ?�는??
 
-해당 결정이 실제로 존재하고 구현 또는 문서 정합성에 영향을 주는 것으로 확인될 경우, 원래 Review 기록을 복구한 후 별도로 보완한다.
+?�당 결정???�제�?존재?�고 구현 ?�는 문서 ?�합?�에 ?�향??주는 것으�??�인??경우, ?�래 Review 기록??복구????별도�?보완?�다.
 
-개별 Review Session 결정과 본 Decision Log의 permanent record 사이에 불일치가 발견될 경우, 추정으로 수정하지 않고 provenance를 확인한 후 정정한다.
+개별 Review Session 결정�?�?Decision Log??permanent record ?�이??불일치�? 발견??경우, 추정?�로 ?�정?��? ?�고 provenance�??�인?????�정?�다.
 
 ---
 
 # Consequences
 
-이 결정으로 Orion의 Decision Review 모델은 다음 특성을 갖는다.
+??결정?�로 Orion??Decision Review 모델?� ?�음 ?�성??갖는??
 
 * Append-only history
 * Immutable Recommendation
 * Immutable User Decision
 * Explicit Review Record
 * Explicit provenance
-* Recommendation–Decision lineage
+* Recommendation?�Decision lineage
 * Supersedes lineage
 * Invalidates lineage
 * Correction lineage
 * Deterministic current-state derivation
 
-향후 구현에서는 이 규칙을 임의로 단순화하거나 mutable status/pointer로 대체하지 않는다.
+?�후 구현?�서????규칙???�의�??�순?�하거나 mutable status/pointer�??�체하지 ?�는??
 
-구현상 불가피한 변경이 필요한 경우 새로운 Decision Record를 생성하여 본 결정과의 관계를 명시한다.
-
----
+구현??불�??�한 변경이 ?�요??경우 ?�로??Decision Record�??�성?�여 �?결정과의 관계�? 명시?�다.
 
 ---
 
-## D-031 — Phoenix Production Category Set
+---
+
+## D-031 ??Phoenix Production Category Set
 
 Date:
 
@@ -1660,7 +1632,7 @@ Changes to the production category set require a new Decision Log entry before i
 
 ---
 
-## D-032 — Phoenix Multi-Category Membership and Unique-Asset Portfolio Construction
+## D-032 ??Phoenix Multi-Category Membership and Unique-Asset Portfolio Construction
 
 Date:
 
@@ -1686,12 +1658,12 @@ Portfolio construction operates on unique assets. The same asset may appear only
 
 RENDER
 
-* DePIN → Leader
-* AI Infrastructure → Challenger
+* DePIN ??Leader
+* AI Infrastructure ??Challenger
 
 Portfolio:
 
-RENDER → one position maximum
+RENDER ??one position maximum
 
 ### Rationale
 
@@ -1699,7 +1671,7 @@ Category leadership and portfolio identity are separate concepts. Multi-category
 
 ---
 
-## D-033 — Phoenix Judgment-Assisted-by-Metrics Scoring Model
+## D-033 ??Phoenix Judgment-Assisted-by-Metrics Scoring Model
 
 Date:
 
@@ -1717,7 +1689,7 @@ Phoenix
 
 Phoenix scoring shall remain a judgment-assisted-by-metrics model rather than a fully formula-driven quantitative model.
 
-Each 0–10 scoring dimension shall use qualitative anchors. Reviewers shall retain the principal evidence supporting each assigned score.
+Each 0??0 scoring dimension shall use qualitative anchors. Reviewers shall retain the principal evidence supporting each assigned score.
 
 Raw metrics may inform the assessment but shall not mechanically determine the score unless a separate metric-to-score rule is explicitly approved.
 
@@ -1732,11 +1704,11 @@ Each reviewed score should record:
 
 ### Rationale
 
-The existing 0–10 ranges are useful for structured comparison, but the current framework does not define sufficiently reproducible metric-to-score formulas. Requiring full automation at this stage would create false precision and unnecessary implementation scope.
+The existing 0??0 ranges are useful for structured comparison, but the current framework does not define sufficiently reproducible metric-to-score formulas. Requiring full automation at this stage would create false precision and unnecessary implementation scope.
 
 ---
 
-## D-034 — Phoenix Approved Leaders Registry
+## D-034 ??Phoenix Approved Leaders Registry
 
 Date:
 
@@ -1765,11 +1737,11 @@ The current five configuration leaders are recorded as Provisional until explici
 
 ### Current Provisional Leaders
 
-* Smart Contract Platforms → SOL
-* Oracle Networks → LINK
-* Real World Assets → ONDO
-* AI Infrastructure → TAO
-* Data Availability → TIA
+* Smart Contract Platforms ??SOL
+* Oracle Networks ??LINK
+* Real World Assets ??ONDO
+* AI Infrastructure ??TAO
+* Data Availability ??TIA
 
 Only Approved leaders are eligible for formal Phoenix portfolio construction under D-022.
 
@@ -1777,7 +1749,7 @@ Configuration membership alone does not constitute approval evidence.
 
 ---
 
-## D-035 — Phoenix Canonical Replacement Risk and Leadership State Mapping
+## D-035 ??Phoenix Canonical Replacement Risk and Leadership State Mapping
 
 Date:
 
@@ -1798,7 +1770,7 @@ Phoenix shall use one canonical Replacement Risk and Leadership State mapping ac
 Replacement Risk is derived from:
 
 ```text
-Score Gap = Leader Score − Challenger Score
+Score Gap = Leader Score ??Challenger Score
 ```
 
 Canonical mapping:
@@ -1806,8 +1778,8 @@ Canonical mapping:
 | Score Gap | Replacement Risk | Leadership State | Action |
 |---|---|---|---|
 | 20+ | Low | Dominant | Hold |
-| 10–19 | Medium | Stable | Monitor |
-| 0–9 | High | Competitive | Review |
+| 10??9 | Medium | Stable | Monitor |
+| 0?? | High | Competitive | Review |
 | Challenger exceeds Leader | Critical | Transition | Review Required |
 
 `Disrupted` is a confirmed transition state used when the Promotion Rule has been satisfied and the challenger is formally confirmed as the new leader. It is not a separate score-gap band.
@@ -1816,9 +1788,9 @@ The worked examples in Phoenix documentation must use this mapping literally.
 
 ### Rationale
 
-The previous documents contained incompatible risk/state vocabularies and an example that translated `Gap 6 → High Risk` into `Transition` without a defined rule. This decision removes that ambiguity and makes the score-gap calculation, risk, state, and action deterministic.
+The previous documents contained incompatible risk/state vocabularies and an example that translated `Gap 6 ??High Risk` into `Transition` without a defined rule. This decision removes that ambiguity and makes the score-gap calculation, risk, state, and action deterministic.
 
-## D-036 — Supernova Multi-Theme Attribution and Theme Concentration
+## D-036 ??Supernova Multi-Theme Attribution and Theme Concentration
 
 Date:
 
@@ -1844,7 +1816,7 @@ Multi-theme attribution preserves the structural nature of the 5D framework with
 
 ---
 
-## D-037 — Supernova Portfolio State and Leadership Role Separation
+## D-037 ??Supernova Portfolio State and Leadership Role Separation
 
 Date:
 
@@ -1880,8 +1852,8 @@ Only Approved companies are eligible for accumulation. Leadership Role does not 
 Example:
 
 ```text
-NVDA → Approved + Leader
-AMD  → Watchlist + Challenger
+NVDA ??Approved + Leader
+AMD  ??Watchlist + Challenger
 ```
 
 ### Rationale
@@ -1890,7 +1862,7 @@ Separating ownership state from leadership role prevents the existing lifecycle 
 
 ---
 
-## D-038 — Supernova Company Scoring and Evidence Contract
+## D-038 ??Supernova Company Scoring and Evidence Contract
 
 Date:
 
@@ -1908,11 +1880,11 @@ Supernova
 
 Supernova retains the existing five company-scoring dimensions and weights:
 
-* Theme Exposure — 20%
-* Competitive Moat — 25%
-* Leadership Position — 25%
-* Growth Quality — 15%
-* Execution Quality — 15%
+* Theme Exposure ??20%
+* Competitive Moat ??25%
+* Leadership Position ??25%
+* Growth Quality ??15%
+* Execution Quality ??15%
 
 The scoring model is judgment-assisted by evidence rather than fully formula-driven. Each reviewed dimension shall retain Score, Evidence, Assessment, and Review Date. Qualitative anchors shall support score assignment. Raw metrics may inform an assessment but do not mechanically determine the score unless a separate rule is explicitly approved.
 
@@ -1924,7 +1896,7 @@ The existing dimensions and weights provide a stable v1 structure while avoiding
 
 ---
 
-## D-039 — Supernova Approved Company Capacity
+## D-039 ??Supernova Approved Company Capacity
 
 Date:
 
@@ -1944,11 +1916,11 @@ Supernova v1 does not impose a hard maximum Approved Company count. The current 
 
 ### Rationale
 
-The repository contains unresolved maximum-capacity issues, but no canonical approved numeric cap. An earlier proposed 10–15 range is not treated as an approved decision.
+The repository contains unresolved maximum-capacity issues, but no canonical approved numeric cap. An earlier proposed 10??5 range is not treated as an approved decision.
 
 ---
 
-## D-040 — Supernova Equal Weight Target and Smart DCA
+## D-040 ??Supernova Equal Weight Target and Smart DCA
 
 Date:
 
@@ -1988,7 +1960,7 @@ Equal Weight defines the target state; Smart DCA defines the contribution method
 
 ---
 
-## D-041 — Supernova Replacement and Portfolio Transition Governance
+## D-041 ??Supernova Replacement and Portfolio Transition Governance
 
 Date:
 
@@ -2025,7 +1997,7 @@ Separating detection, governance, and execution prevents research signals from b
 
 ---
 
-## D-042 — Supernova Candidate and Watchlist Lifecycle Governance
+## D-042 ??Supernova Candidate and Watchlist Lifecycle Governance
 
 Date:
 
@@ -2062,7 +2034,7 @@ A relative governance decision is more appropriate than an arbitrary numeric thr
 
 ---
 
-## D-043 — Supernova Theme Health and Lifecycle Evaluation
+## D-043 ??Supernova Theme Health and Lifecycle Evaluation
 
 Date:
 
@@ -2078,7 +2050,7 @@ Supernova
 
 ### Decision
 
-Theme Evaluation is a separate layer from Company Evaluation. Supernova may record a 0–100 Theme Health Score as an evidence-assisted governance input, together with Evidence, Assessment, State, Trend, and Review Date.
+Theme Evaluation is a separate layer from Company Evaluation. Supernova may record a 0??00 Theme Health Score as an evidence-assisted governance input, together with Evidence, Assessment, State, Trend, and Review Date.
 
 Theme State remains qualitative:
 
@@ -2098,7 +2070,7 @@ Theme Health evaluates the structural investment environment, while Company Scor
 
 ---
 
-## D-044 — Supernova Evidence, Assessment, and Review Traceability
+## D-044 ??Supernova Evidence, Assessment, and Review Traceability
 
 Date:
 
@@ -2127,7 +2099,7 @@ Traceable evidence prevents scores from becoming unexplained numbers and allows 
 
 ---
 
-## D-045 — Supernova Company Score Aggregation Contract
+## D-045 ??Supernova Company Score Aggregation Contract
 
 Date:
 
@@ -2145,11 +2117,11 @@ Supernova
 
 Supernova Company Score is the weighted aggregation of the five approved company-scoring dimensions:
 
-* Theme Exposure — 20%
-* Competitive Moat — 25%
-* Leadership Position — 25%
-* Growth Quality — 15%
-* Execution Quality — 15%
+* Theme Exposure ??20%
+* Competitive Moat ??25%
+* Leadership Position ??25%
+* Growth Quality ??15%
+* Execution Quality ??15%
 
 All five dimensions are required. Missing dimensions are not imputed and remaining dimensions are not reweighted. Duplicate or unsupported dimensions invalidate the Research Record for scoring. The resulting weighted score is rounded to the nearest integer using conventional half-up rounding.
 
@@ -2160,7 +2132,7 @@ Company Score remains a governance input and does not automatically assign Portf
 A deterministic aggregation rule makes the approved scoring framework reproducible while preserving the existing evidence-assisted judgment model at the dimension level. Requiring complete dimension coverage prevents partial evidence from silently changing the meaning of the score.
 
 
-## D-046 — Supernova Score-to-Governance Decision Boundary
+## D-046 ??Supernova Score-to-Governance Decision Boundary
 
 Date:
 
@@ -2200,7 +2172,7 @@ This preserves the distinction between deterministic score aggregation and quali
 
 ---
 
-## D-047 — Supernova Replacement Risk Definition
+## D-047 ??Supernova Replacement Risk Definition
 
 Date:
 
@@ -2235,11 +2207,11 @@ Approved Company's leadership and thesis remain durable.
 
 Risk levels remain qualitative:
 
-* Very Low — no material replacement evidence; leadership and thesis remain strong
-* Low — concerns exist but long-term leadership and thesis remain durable
-* Medium — material warning signals warrant focused monitoring or review
-* High — core leadership, moat, growth, execution, or thesis has materially weakened
-* Critical — structural leadership or thesis is substantially broken and Replace or
+* Very Low ??no material replacement evidence; leadership and thesis remain strong
+* Low ??concerns exist but long-term leadership and thesis remain durable
+* Medium ??material warning signals warrant focused monitoring or review
+* High ??core leadership, moat, growth, execution, or thesis has materially weakened
+* Critical ??structural leadership or thesis is substantially broken and Replace or
   Retire is a realistic governance outcome
 
 Replacement Risk escalation is a review trigger, not an automatic trading rule.
@@ -2255,7 +2227,7 @@ Company itself, even without a clear challenger.
 
 ---
 
-## D-048 — Supernova Governance Review Reproducibility Contract
+## D-048 ??Supernova Governance Review Reproducibility Contract
 
 Date:
 
@@ -2273,7 +2245,7 @@ Supernova
 
 Supernova V1 defines reproducibility at the **governance-record level**, not as identical independent human numeric scoring. A complete review must preserve sufficient evidence, assessments, dimension scores, temporal cutoff, Replacement Risk assessment, action, and governance decision to allow another reviewer to reconstruct the reasoning path.
 
-Company Score aggregation remains deterministic under D-045 once the five dimension scores are assigned. V1 does not introduce numeric calibration thresholds for assigning the individual 0–100 dimension scores.
+Company Score aggregation remains deterministic under D-045 once the five dimension scores are assigned. V1 does not introduce numeric calibration thresholds for assigning the individual 0??00 dimension scores.
 
 The canonical governance action vocabulary from D-046 is authoritative: `Continue`, `Promote`, `Review`, `Replace`, and `Retire`. Descriptive phrases may be used in rationale but must not become alternative action types.
 
@@ -2291,7 +2263,7 @@ No additional Replacement Risk formula or numeric threshold is required for Supe
 
 ---
 
-## D-049 — Supernova Five-Company Baseline Governance Approval
+## D-049 ??Supernova Five-Company Baseline Governance Approval
 
 Date:
 
@@ -2311,11 +2283,11 @@ YJ approved the 2026-10-05 Supernova governance baseline for the five current Ap
 
 The approved baseline is:
 
-* NVDA — Company Score 97, Approved, Leader, Replacement Risk Low, Action Continue
-* GOOGL — Company Score 93, Approved, Leader, Replacement Risk Low, Action Continue
-* ISRG — Company Score 97, Approved, Leader, Replacement Risk Very Low, Action Continue
-* PLTR — Company Score 95, Approved, Leader, Replacement Risk Low, Action Continue
-* CEG — Company Score 91, Approved, Leader, Replacement Risk Low, Action Continue
+* NVDA ??Company Score 97, Approved, Leader, Replacement Risk Low, Action Continue
+* GOOGL ??Company Score 93, Approved, Leader, Replacement Risk Low, Action Continue
+* ISRG ??Company Score 97, Approved, Leader, Replacement Risk Very Low, Action Continue
+* PLTR ??Company Score 95, Approved, Leader, Replacement Risk Low, Action Continue
+* CEG ??Company Score 91, Approved, Leader, Replacement Risk Low, Action Continue
 
 This decision confirms the governance state for the review cycle. It is not an automatic trade instruction and does not override the existing Portfolio Transition process. Future changes require the normal Supernova governance review and decision process.
 
@@ -2328,7 +2300,7 @@ The five-company baseline was reviewed after completion of the Supernova governa
 
 ---
 
-## D-050 — Runtime Default Decision Acceptance Policy
+## D-050 ??Runtime Default Decision Acceptance Policy
 
 Date:
 
@@ -2356,13 +2328,13 @@ The canonical lifecycle remains:
 
 ```text
 DecisionCandidate
-    → Acceptance Policy
-    → AcceptedDecision
-    → StateTransition
-    → StateStore
-    → Domain Event
-    → EventStore
-    → RuntimeResult
+    ??Acceptance Policy
+    ??AcceptedDecision
+    ??StateTransition
+    ??StateStore
+    ??Domain Event
+    ??EventStore
+    ??RuntimeResult
 ```
 
 Auto-Approval is a Runtime Governance acceptance policy. It is not investment
@@ -2390,7 +2362,7 @@ and external execution remain outside scope.
 
 ---
 
-## D-051 — ADM Signal-to-Execution Mapping
+## D-051 ??ADM Signal-to-Execution Mapping
 
 Date:
 
@@ -2455,7 +2427,7 @@ enable strategy activation or live execution.
 
 ---
 
-## D-052 — Runtime Failure and Commit Semantics
+## D-052 ??Runtime Failure and Commit Semantics
 
 Date:
 
@@ -2502,7 +2474,7 @@ Handoff, roadmap, and status documentation now reflect the approved semantics.
 
 ---
 
-## D-053 — Portfolio Cash Valuation and Target Semantics
+## D-053 ??Portfolio Cash Valuation and Target Semantics
 
 Date:
 
@@ -2519,8 +2491,9 @@ Portfolio Domain / Moon
 ### Issue Under Review
 
 Cash is modeled as an Account-level `CashBalance`, separate from Position.
-However, `value_portfolio_state()` currently ignores `PortfolioState.cash` and
-accepts a separate `cash_value` input. `PortfolioTarget` allocations must sum
+At proposal time, `value_portfolio_state()` ignored `PortfolioState.cash` and
+accepted a separate `cash_value` input. D-053 below resolves that gap.
+`PortfolioTarget` allocations must sum
 to 1 and have no explicit cash sleeve. Consequently, the contract does not say
 whether cash is included in the valuation denominator, represented in target
 weights, or treated as residual execution funding.
@@ -2542,12 +2515,15 @@ The owner must define:
 * the valuation currency and the approved FX conversion boundary for
   multi-currency cash.
 
-### Proposed MVP Policy (Owner Confirmation Required)
+### D-053 ??Portfolio Cash Valuation and Target Semantics
+
+Status: **Approved**
+Decision date: 2026-10-10
 
 1. Use `system.currency` as the valuation currency (currently KRW).
-2. Treat `PortfolioState.cash` as the authoritative cash input. Aggregate at
-   most one `CashBalance` per `(account_id, currency)`; reject duplicate keys
-   rather than risk double-counting. Convert non-valuation currencies using
+2. Treat `PortfolioState.cash` as the authoritative cash input. Reject
+   duplicate `(account_id, currency)` balances rather than risk double-counting.
+   Convert non-valuation currencies using
    caller-supplied, positive finite rates expressed as valuation-currency units
    per one unit of source currency. The portfolio layer performs no FX lookup.
 3. Include converted cash in `PortfolioValuation.total_value` and therefore in
@@ -2557,11 +2533,14 @@ The owner must define:
 4. Remove the separate `cash_value` argument so callers cannot silently omit
    the state cash balances. Missing FX for a non-valuation currency is an error.
 
-The owner must approve or revise this proposal before changing the valuation
-API. FX rate source, timestamp/freshness policy, and account aggregation rules
-beyond duplicate-key rejection remain caller/data-governance concerns.
+The caller supplies `system.currency` as `valuation_currency`; asset prices
+must already use that currency. FX rate source, timestamp/freshness policy,
+and aggregation rules beyond duplicate-key rejection remain
+caller/data-governance concerns.
 
-### Required Follow-up
+### Implementation Evidence
 
-After owner resolution, reconcile the Common Portfolio Domain contract and
-Moon rebalance contract, then update valuation and rebalance integration tests.
+The valuation and rebalance APIs consume `PortfolioState.cash`, convert with
+explicit caller-supplied FX rates, and reject missing/invalid rates and
+duplicate account/currency balances. Focused tests cover state cash valuation
+and rebalance weights.

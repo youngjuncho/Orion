@@ -32,9 +32,9 @@ Therefore the following historical queue items are closed at the architecture le
 |---|---|---|
 | D-051 | ADM signal-to-execution mapping | **Approved 2026-10-10:** ADM identity mappings VTI->VTI, VEU->VEU, and SGOV->SGOV. This resolves mapping only; `config/moon.yaml` still has `active_strategies: []`, so ADM activation remains separate. |
 | D-052 | Runtime failure and commit semantics | **Approved 2026-10-10 and implemented:** stage/validate state and events, commit both stores together, mark failed sessions `Error`, enforce one public run per Runtime, and validate snapshot/transition correlation. |
-| D-053 | Portfolio cash valuation and target semantics | Proposed MVP: use `system.currency` (currently KRW); value `PortfolioState.cash` using caller-supplied FX rates; include cash in the total-value denominator while keeping cash outside the fully invested target as residual funding; reject duplicate account/currency cash rows and remove `cash_value`. Owner confirmation required before API changes. |
+| D-053 | Portfolio cash valuation and target semantics | **Approved 2026-10-10 and implemented:** use `system.currency` as valuation currency; value `PortfolioState.cash` with caller-supplied positive finite FX rates; include cash in the total-value denominator while keeping it outside the fully invested target; reject duplicate account/currency balances and remove the separate `cash_value` input. |
 
-`D-051` and `D-052` are approved. `D-053` remains Draft and requires owner resolution before cash valuation behavior changes.
+`D-051`, `D-052`, and `D-053` are approved. See the Decision Log and portfolio contract for evidence.
 
 ### Core Decision Traceability
 
