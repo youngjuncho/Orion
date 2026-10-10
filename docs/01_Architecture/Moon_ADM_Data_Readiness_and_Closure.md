@@ -57,14 +57,14 @@ The following work is mechanically implementable, but the portions dependent on 
 3. Derive relative momentum for VTI and VEU from the same approved measurement convention.
 4. Step 32 prepares comparable returns for an explicitly supplied risk asset and benchmark. D-055 approves the comparison rule; deriving an ADM signal still requires source semantics, freshness, and orchestration gates to close.
 5. Construct `ADMSignalInput` only when every required value passes validation; otherwise return a typed validation failure rather than a partial signal.
-6. Implemented in Steps 27–28: deterministic tests cover exact selection, prior-observation selection, future-bar exclusion, missing endpoints, invalid prices, identical endpoints, date-format validation, and selection-policy provenance. Duplicate identities are rejected by `MarketDataSet`; stale/revised/conflicting data and provider-calendar validation remain open.
+6. Implemented in Steps 27–28: deterministic tests cover exact selection, prior-observation selection, future-bar exclusion, missing endpoints, invalid prices, identical endpoints, date-format validation, and selection-policy provenance. Duplicate identities fail closed in the provider parser and `MarketDataSet`; D-058 applies the freshness limit and D-059 defines per-invocation revision handling. Provider-calendar validation remains open.
 7. Implemented by D-057: Alpha Vantage monthly adjusted provider maps complete VTI/VEU/SGOV responses to the canonical data contract. Provider I/O remains outside `ADMStrategy`.
 
 The adapter performs network access only when explicitly configured with a key. This list does not authorize persistence, scheduled collection, trading, or production activation.
 
 ## 4. Implementation gate
 
-Pure calculation/selection utilities use the explicit prior-observation-on-or-before rule. D-057 implements Alpha Vantage monthly data for private research. D-058 applies the approved seven-day observation-age gate; target-date generation remains an engineering default. Provider revision/coverage plus governance gates remain open. SGOV comparison is approved by D-055.
+Pure calculation/selection utilities use the explicit prior-observation-on-or-before rule. D-057 implements Alpha Vantage monthly data for private research. D-058 applies the approved seven-day observation-age gate; target-date generation remains an engineering default. D-059 defines per-invocation revision selection, while empirical provider coverage/adjustment parity and governance gates remain open. SGOV comparison is approved by D-055.
 
 Until then:
 

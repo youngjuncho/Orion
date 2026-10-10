@@ -2706,6 +2706,10 @@ as its own input set. If durable as-observed snapshots or point-in-time replay
 are later required, define and approve that storage and revision policy
 separately before implementing it.
 
+Within a response, reject duplicate JSON object keys rather than allowing a
+parser to silently keep one value; reject duplicate canonical observation
+identities as well. A malformed or conflicting response fails the full batch.
+
 The assessment now exposes a SHA-256 digest of its canonical selected
 observations, including source, currency, and supplied metadata. This makes
 input changes detectable when the associated input set is available; the
@@ -2717,7 +2721,7 @@ not guaranteed.
 ### Rationale and scope
 
 This decision keeps the opt-in private-research adapter bounded and
-avoids undocumented cross-run mixing. It does not approve signal assembly,
+avoids undocumented cross-run mixing or arbitrary duplicate resolution. It does not approve signal assembly,
 live use, caching, persistence, provider fallback, or point-in-time
 reproducibility. PCD-10 is closed by this decision; PCD-11 records the
 implemented fingerprint and its limits.

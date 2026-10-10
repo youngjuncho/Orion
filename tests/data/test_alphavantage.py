@@ -82,6 +82,23 @@ def test_provider_fails_closed_when_one_symbol_is_missing_history() -> None:
         provider.load()
 
 
+def test_provider_rejects_duplicate_month_keys_in_one_response() -> None:
+    def transport(url: str, timeout: float) -> bytes:
+        symbol = parse_qs(urlparse(url).query)["symbol"][0]
+        return (
+            '{"Meta Data":{"2. Symbol":"' + symbol + '"},'
+            '"Monthly Adjusted Time Series":{'
+            '"2026-09-30":{"5. adjusted close":"110"},'
+            '"2026-09-30":{"5. adjusted close":"111"}}}'
+        ).encode("utf-8")
+
+    provider = AlphaVantageMonthlyAdjustedProvider(
+        AlphaVantageMonthlyAdjustedSource("test-secret", transport=transport)
+    )
+    with pytest.raises(AlphaVantageProviderError, match="duplicate JSON key"):
+        provider.load()
+
+
 def test_provider_does_not_expose_api_key_in_transport_error() -> None:
     def transport(url: str, timeout: float) -> bytes:
         raise RuntimeError(url)

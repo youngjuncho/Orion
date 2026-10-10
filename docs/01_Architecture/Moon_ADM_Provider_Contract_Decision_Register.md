@@ -76,7 +76,7 @@ execution-date/timezone mapping remain engineering/operations items.
 | PCD-06 | Trading calendar and evaluation endpoint | Monthly bar convention selected; D-058 target construction proposed | Use last completed month-end and corresponding prior-year month-end; define signal/execution date mapping before activation | D-056 prior-on-or-before remains; helper output is not signal authorization |
 | PCD-07 | Selected-observation age | Seven calendar days approved by D-058 | Apply one maximum age to all selected VTI/VEU/SGOV current and trailing observations | Integrated monthly assessment fails closed above seven days |
 | PCD-08 | Missing and partial responses | Generic fail-closed behavior implemented | Require all three symbols and at least 13 valid monthly observations each; reject provider notices, malformed values, or any incomplete symbol response | No silent fill, interpolation, or partial dataset |
-| PCD-09 | Duplicate and conflicting observations | Generic duplicate identity rejected; conflict policy open | Define provider-specific handling for conflicting records, overlapping pages, and repeated retrievals | No arbitrary winner selection |
+| PCD-09 | Duplicate and conflicting observations | Duplicate rejection implemented; cross-run policy approved by D-059 | Reject duplicate JSON keys in one provider response and duplicate canonical identities; never merge observations across invocations | Entire malformed/conflicting batch fails; no arbitrary winner selection |
 | PCD-10 | Revisions and corrections | Approved by D-059 | For each invocation use the complete latest provider response returned by that invocation; never merge revisions across retrievals. Define any future point-in-time snapshot/correction policy separately. | No durable snapshot, cross-run revision selection, or historical replay guarantee |
 | PCD-11 | Provenance and reproducibility | Selected-input fingerprint implemented; durable snapshots open | Preserve adapter provenance and selected observation details; fingerprint the canonical selected observations. A digest detects changed inputs but cannot recover them. | Assessment exposes SHA-256 `selected_input_digest`; source payloads are not persisted |
 | PCD-12 | Timeout, rate limits, retry, cache, outage | Initial adapter behavior defined by D-057; operational limits remain open | Three sequential requests; 15-second timeout each; no retry/cache/fallback; fail full load; review provider quota before scheduled use | No automatic scheduling or outage recovery |
@@ -100,14 +100,15 @@ A status change in this register is not sufficient evidence of approval by itsel
 ## Implementation order (dependency guidance, not approval)
 
 1. Close remaining PCD-04 through PCD-07 evidence before provider observations can qualify an ADM signal.
-2. Close PCD-08 through PCD-12 to define data quality, revision, provenance, and operations.
+2. Close remaining PCD-08, PCD-11, and PCD-12 to define data quality, provenance, and operations.
 3. PCD-13 and PCD-14 are approved by D-055; do not reopen them to unblock provider work.
 4. Close PCD-15 and PCD-16 before end-to-end signal integration or activation review.
 
 D-056 supplies provider-independent engineering defaults. D-057 resolves the
 initial provider and adapter scope for private individual research. D-058
 approves a seven-day selected-observation age limit. D-059 approves a
-per-invocation latest-response policy, without durable revision snapshots.
+per-invocation latest-response policy and fail-closed duplicate handling,
+without durable revision snapshots.
 Publication-time SLA, live instrument coverage, historical replay, and
 end-to-end signal activation remain open.
 

@@ -24,6 +24,19 @@ class AlphaVantageProviderError(RuntimeError):
     """A sanitized provider or response-contract failure."""
 
 
+class _DuplicateJSONKeyError(ValueError):
+    """A JSON object repeats a key whose earlier value would be lost."""
+
+
+def _object_without_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise _DuplicateJSONKeyError(key)
+        result[key] = value
+    return result
+
+
 def _http_get(url: str, timeout_seconds: float) -> bytes:
     request = Request(url, headers={"User-Agent": "Orion-ADM/1.0"})
     with urlopen(request, timeout=timeout_seconds) as response:
@@ -89,7 +102,11 @@ class AlphaVantageMonthlyAdjustedSource:
                 raise AlphaVantageProviderError("Alpha Vantage request failed") from None
 
             try:
-                response = json.loads(payload)
+                response = json.loads(payload, object_pairs_hook=_object_without_duplicate_keys)
+            except _DuplicateJSONKeyError:
+                raise AlphaVantageProviderError(
+                    "Alpha Vantage response contains a duplicate JSON key; no partial batch was accepted"
+                ) from None
             except (TypeError, UnicodeDecodeError, json.JSONDecodeError):
                 raise AlphaVantageProviderError("Alpha Vantage returned invalid JSON") from None
             if not isinstance(response, Mapping):
