@@ -371,7 +371,7 @@ def test_public_runtime_runs_canonical_decision_state_event_lifecycle() -> None:
 
     def event_factory(item):
         observed.append(("event", runtime.states.current))
-        assert runtime.states.current is not None
+        assert runtime.states.current is None
         return Event(
             "event-step18-001",
             "State Transition Committed",
@@ -394,6 +394,7 @@ def test_public_runtime_runs_canonical_decision_state_event_lifecycle() -> None:
     )
 
     assert [item[0] for item in observed] == ["accept", "transition", "snapshot", "event"]
+    assert [item[1] for item in observed] == [None, None, None, None]
     assert result.state_snapshot is not None
     assert result.state_snapshot.framework_states["Moon"] == "new"
     assert result.generated_events[0].related_decision == "decision-step18-001"
@@ -444,6 +445,167 @@ def test_public_runtime_preserves_framework_only_path_without_lifecycle_handlers
     assert result.framework_results[0].decision_candidates == (candidate,)
     assert result.state_snapshot is None
     assert result.generated_events == ()
+
+
+def test_lifecycle_failure_discards_framework_events_and_state_snapshot() -> None:
+    session = RuntimeSession(
+        load_config(CONFIG_DIR),
+        ExecutionMetadata("atomic-runtime-001", "2026-10-08T00:00:00Z", "v1"),
+    )
+    session.registry.register("Moon", object())
+    candidate = DecisionCandidate("atomic-candidate-001", "Moon", "allocation", "Portfolio", "p1")
+    framework_event = Event(
+        "framework-event-001", "Framework Completed", "Lifecycle Event",
+        session.execution.start_time, session.execution.execution_id, "Framework", "Moon",
+    )
+
+    def executor(_):
+        return FrameworkResult(
+            "Moon", "Completed", events=(framework_event,), decision_candidates=(candidate,)
+        )
+
+    def transition(decision):
+        return StateTransition("atomic-transition-001", decision.decision_id, "Portfolio", "p1", None, "ready")
+
+    def snapshot(_):
+        return OrionStateSnapshot(
+            session.execution.start_time, session.execution.execution_id, "v1", {}, {}, "Running"
+        )
+
+    with pytest.raises(RuntimeError, match="event factory failed"):
+        session.execute_lifecycle(
+            {"Moon": executor},
+            accept=lambda item: AcceptedDecision("atomic-decision-001", item, "test"),
+            transition=transition,
+            snapshot=snapshot,
+            event_factory=lambda _: (_ for _ in ()).throw(RuntimeError("event factory failed")),
+        )
+
+    assert session.status == "Error"
+    assert session.states.snapshots == ()
+    assert session.events.events == ()
+
+
+def test_store_append_failure_rolls_back_snapshot_and_event_batch(monkeypatch) -> None:
+    session = RuntimeSession(
+        load_config(CONFIG_DIR),
+        ExecutionMetadata("atomic-runtime-store-failure", "2026-10-08T00:00:00Z", "v1"),
+    )
+    session.registry.register("Moon", object())
+    candidate = DecisionCandidate("atomic-candidate-store-failure", "Moon", "allocation", "Portfolio", "p1")
+    transition_event = Event(
+        "transition-event-store-failure", "State Transition Committed", "Domain Event",
+        session.execution.start_time, session.execution.execution_id, "Portfolio", "p1",
+    )
+    original_extend = session.events.extend
+
+    def failing_extend(events):
+        original_extend(events)
+        raise RuntimeError("event store failed")
+
+    monkeypatch.setattr(session.events, "extend", failing_extend)
+
+    with pytest.raises(RuntimeError, match="event store failed"):
+        session.execute_lifecycle(
+            {"Moon": lambda _: FrameworkResult("Moon", "Completed", decision_candidates=(candidate,))},
+            accept=lambda item: AcceptedDecision("atomic-decision-store-failure", item, "test"),
+            transition=lambda decision: StateTransition(
+                "atomic-transition-store-failure", decision.decision_id, "Portfolio", "p1", None, "ready"
+            ),
+            snapshot=lambda _: OrionStateSnapshot(
+                session.execution.start_time, session.execution.execution_id, "v1", {}, {}, "Running"
+            ),
+            event_factory=lambda _: transition_event,
+        )
+
+    assert session.status == "Error"
+    assert session.states.snapshots == ()
+    assert session.events.events == ()
+
+
+@pytest.mark.parametrize(
+    ("snapshot_execution_id", "snapshot_status", "transition_entity", "error"),
+    (
+        ("other-execution", "Running", ("Portfolio", "p1"), "snapshot execution_id"),
+        ("atomic-runtime-002", "Completed", ("Portfolio", "p1"), "system_status"),
+        ("atomic-runtime-002", "Running", ("Portfolio", "other"), "entity must match"),
+    ),
+)
+def test_commit_validation_failure_leaves_both_stores_unchanged(
+    snapshot_execution_id: str,
+    snapshot_status: str,
+    transition_entity: tuple[str, str],
+    error: str,
+) -> None:
+    session = RuntimeSession(
+        load_config(CONFIG_DIR),
+        ExecutionMetadata("atomic-runtime-002", "2026-10-08T00:00:00Z", "v1"),
+    )
+    session.registry.register("Moon", object())
+    candidate = DecisionCandidate("atomic-candidate-002", "Moon", "allocation", "Portfolio", "p1")
+    candidate_event = Event(
+        "framework-event-002", "Framework Completed", "Lifecycle Event",
+        session.execution.start_time, session.execution.execution_id, "Framework", "Moon",
+    )
+
+    def executor(_):
+        return FrameworkResult(
+            "Moon", "Completed", events=(candidate_event,), decision_candidates=(candidate,)
+        )
+
+    def transition(decision):
+        return StateTransition(
+            "atomic-transition-002", decision.decision_id,
+            transition_entity[0], transition_entity[1], None, "ready",
+        )
+
+    def snapshot(_):
+        return OrionStateSnapshot(
+            session.execution.start_time, snapshot_execution_id, "v1", {}, {}, snapshot_status
+        )
+
+    with pytest.raises(ValueError, match=error):
+        session.execute_lifecycle(
+            {"Moon": executor},
+            accept=lambda item: AcceptedDecision("atomic-decision-002", item, "test"),
+            transition=transition,
+            snapshot=snapshot,
+        )
+
+    assert session.status == "Error"
+    assert session.states.snapshots == ()
+    assert session.events.events == ()
+
+
+def test_public_runtime_rejects_second_run() -> None:
+    registry = FrameworkRegistry()
+    registry.register("Moon", object())
+    runtime = OrionRuntime(
+        load_config(CONFIG_DIR),
+        ExecutionMetadata("single-run-001", "2026-10-08T00:00:00Z", "v1"),
+        registry=registry,
+    )
+    executor = {"Moon": lambda _: FrameworkResult("Moon", "Completed")}
+
+    runtime.run(executor)
+    with pytest.raises(RuntimeError, match="only be run once"):
+        runtime.run(executor)
+
+
+def test_public_runtime_validates_dashboard_input_before_execution() -> None:
+    registry = FrameworkRegistry()
+    registry.register("Moon", object())
+    runtime = OrionRuntime(
+        load_config(CONFIG_DIR),
+        ExecutionMetadata("dashboard-validation-001", "2026-10-08T00:00:00Z", "v1"),
+        registry=registry,
+    )
+    executor = {"Moon": lambda _: FrameworkResult("Moon", "Completed")}
+
+    with pytest.raises(ValueError, match="dashboard_data must be a mapping"):
+        runtime.run(executor, dashboard_data=[("invalid", "shape")])
+
+    assert runtime.run(executor).generated_events == ()
 
 
 def test_public_runtime_rejects_partial_decision_lifecycle_handlers() -> None:

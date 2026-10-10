@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from threading import Lock
 from typing import Callable, Mapping
 
 from data.contracts import MarketDataProvider, MarketDataSet
@@ -40,6 +41,8 @@ class OrionRuntime:
     services: ServiceRegistry = field(default_factory=ServiceRegistry)
     events: EventStore = field(default_factory=EventStore)
     states: StateStore = field(default_factory=StateStore)
+    _run_started: bool = field(default=False, init=False, repr=False)
+    _run_lock: Lock = field(default_factory=Lock, init=False, repr=False)
 
     def create_session(self) -> RuntimeSession:
         """Create the in-memory session used for one public runtime call."""
@@ -70,8 +73,16 @@ class OrionRuntime:
         ``market_data`` remains a valid direct-input path for tests and callers
         that already possess a validated ``MarketDataSet``. A provider is used
         only when direct data is omitted; source collection and normalization
-        remain outside the Runtime boundary.
+        remain outside the Runtime boundary. Each Runtime instance represents
+        one execution and can be run only once.
         """
+        if dashboard_data is not None and not isinstance(dashboard_data, Mapping):
+            raise ValueError("dashboard_data must be a mapping")
+        with self._run_lock:
+            if self._run_started:
+                raise RuntimeError("OrionRuntime instances can only be run once")
+            self._run_started = True
+
         if market_data is not None and market_data_provider is not None:
             raise ValueError("provide either market_data or market_data_provider, not both")
 

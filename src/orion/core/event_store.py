@@ -28,7 +28,13 @@ class EventStore:
 
     def extend(self, events: tuple[Event, ...]) -> None:
         """Append a batch atomically with respect to duplicate identifiers."""
+        self.validate_batch(events)
+        self._events.extend(events)
 
+    def validate_batch(self, events: tuple[Event, ...]) -> None:
+        """Check whether a batch can be appended without changing the store."""
+        if any(not isinstance(event, Event) for event in events):
+            raise TypeError("events must contain only Event values")
         incoming_ids = [event.event_id for event in events]
         if len(incoming_ids) != len(set(incoming_ids)):
             raise ValueError("events must not contain duplicate event_ids")
@@ -38,4 +44,5 @@ class EventStore:
         if duplicates:
             raise ValueError(f"event_id already exists: {', '.join(duplicates)}")
 
-        self._events.extend(events)
+    def _rollback_to(self, event_count: int) -> None:
+        del self._events[event_count:]

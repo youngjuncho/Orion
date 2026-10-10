@@ -27,7 +27,15 @@ class StateStore:
 
     def publish(self, snapshot: OrionStateSnapshot) -> None:
         """Publish one complete snapshot without replacing prior history."""
+        self.validate(snapshot)
+        self._snapshots.append(snapshot)
 
+    def validate(self, snapshot: OrionStateSnapshot) -> None:
+        """Check whether a snapshot can be published without changing the store."""
+        if not isinstance(snapshot, OrionStateSnapshot):
+            raise TypeError("snapshot must be an OrionStateSnapshot")
         if any(existing.execution_id == snapshot.execution_id for existing in self._snapshots):
             raise ValueError(f"execution_id already exists: {snapshot.execution_id}")
-        self._snapshots.append(snapshot)
+
+    def _rollback_to(self, snapshot_count: int) -> None:
+        del self._snapshots[snapshot_count:]

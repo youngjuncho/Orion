@@ -116,7 +116,7 @@ def test_execute_frameworks_requires_exact_registry_match():
     with pytest.raises(ValueError, match="registry"):
         session.execute_frameworks({})
 
-    assert session.status == "Initializing"
+    assert session.status == "Error"
 
 
 def test_runtime_resolves_and_commits_accepted_decision():
@@ -152,6 +152,28 @@ def test_runtime_does_not_commit_rejected_candidate():
     )
     assert accepted == ()
     assert session.states.current is None
+
+
+def test_runtime_session_direct_commit_failure_closes_session():
+    from orion.core.decision import AcceptedDecision, DecisionCandidate, StateTransition
+
+    session = make_session()
+    session.start()
+    candidate = DecisionCandidate("candidate-direct-failure", "Moon", "allocation", "Portfolio", "p1")
+
+    with pytest.raises(ValueError, match="entity must match"):
+        session.resolve_and_commit(
+            (candidate,),
+            lambda item: AcceptedDecision("decision-direct-failure", item, "test"),
+            lambda decision: StateTransition(
+                "transition-direct-failure", decision.decision_id, "Portfolio", "other", None, "ready"
+            ),
+            lambda _: (_ for _ in ()).throw(AssertionError("must not snapshot")),
+        )
+
+    assert session.status == "Error"
+    assert session.states.snapshots == ()
+    assert session.events.events == ()
 
 
 def test_runtime_records_execution_correlated_events() -> None:
@@ -237,8 +259,9 @@ def test_runtime_emits_transition_events_only_after_state_commit() -> None:
         event_factory=make_event,
     )
 
-    assert observed[0] is not None
-    assert observed[0].framework_states["Moon"] == "new"
+    assert observed[0] is None
+    assert session.states.current is not None
+    assert session.states.current.framework_states["Moon"] == "new"
     assert session.events.events[0].related_decision == "d-1"
     assert session.events.events[0].execution_id == session.execution.execution_id
 

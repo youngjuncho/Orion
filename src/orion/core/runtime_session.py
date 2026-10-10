@@ -64,13 +64,19 @@ class RuntimeSession:
         This preserves the historical public framework-execution boundary. The
         full canonical lifecycle is exposed separately by ``execute_lifecycle``.
         """
-        results = self._execute_frameworks(
+        results, framework_events = self._execute_frameworks(
             executors,
             market_data=market_data,
             dashboard_data=dashboard_data,
         )
-        self.complete()
-        return self._build_result(results, dashboard_data=dashboard_data)
+        try:
+            self._commit_effects(None, framework_events)
+            self.complete()
+            return self._build_result(results, dashboard_data=dashboard_data)
+        except Exception:
+            if self.status in {"Initializing", "Running"}:
+                self.fail()
+            raise
 
     def execute_lifecycle(
         self,
@@ -88,10 +94,10 @@ class RuntimeSession:
         Frameworks propose ``DecisionCandidate`` values. The Runtime applies
         the configured acceptance policy (the public Runtime defaults to
         Auto-Approval), then requires explicit transition and snapshot handlers.
-        State commit remains authoritative before transition
-        events are created.
+        State and events are staged and validated before the session commits
+        either store.
         """
-        results = self._execute_frameworks(
+        results, framework_events = self._execute_frameworks(
             executors,
             market_data=market_data,
             dashboard_data=dashboard_data,
@@ -109,10 +115,12 @@ class RuntimeSession:
                 transition,
                 snapshot,
                 event_factory,
+                framework_events=framework_events,
             )
             self.complete()
         except Exception:
-            self.fail()
+            if self.status in {"Initializing", "Running"}:
+                self.fail()
             raise
 
         return self._build_result(results, dashboard_data=dashboard_data)
@@ -123,24 +131,27 @@ class RuntimeSession:
         *,
         market_data: MarketDataSet | None = None,
         dashboard_data: Mapping[str, object] | None = None,
-    ) -> tuple[FrameworkResult, ...]:
+    ) -> tuple[tuple[FrameworkResult, ...], tuple[Event, ...]]:
         """Execute and validate framework adapters without finalizing the session."""
         if self.status != "Initializing":
             raise RuntimeError(f"cannot execute frameworks from status: {self.status}")
 
-        if set(executors) != set(self.registry.names):
-            missing = sorted(set(self.registry.names) - set(executors))
-            unknown = sorted(set(executors) - set(self.registry.names))
-            details = []
-            if missing:
-                details.append(f"missing={missing}")
-            if unknown:
-                details.append(f"unknown={unknown}")
-            raise ValueError("framework executor set does not match registry: " + ", ".join(details))
-
         self.start()
         results: list[FrameworkResult] = []
         try:
+            if set(executors) != set(self.registry.names):
+                missing = sorted(set(self.registry.names) - set(executors))
+                unknown = sorted(set(executors) - set(self.registry.names))
+                details = []
+                if missing:
+                    details.append(f"missing={missing}")
+                if unknown:
+                    details.append(f"unknown={unknown}")
+                raise ValueError(
+                    "framework executor set does not match registry: "
+                    + ", ".join(details)
+                )
+
             for name in self.registry.names:
                 context = self.build_context(
                     market_data=market_data,
@@ -164,12 +175,12 @@ class RuntimeSession:
                 for result in results
                 for event in result.events
             )
-            self.record_events(generated_events)
+            self._validate_event_batch(generated_events)
         except Exception:
             self.fail()
             raise
 
-        return tuple(results)
+        return tuple(results), generated_events
 
     def _build_result(
         self,
@@ -192,13 +203,40 @@ class RuntimeSession:
         transition: Callable[[AcceptedDecision], StateTransition],
         snapshot: Callable[[tuple[StateTransition, ...]], OrionStateSnapshot],
         event_factory: Callable[[StateTransition], Event] | None = None,
+        *,
+        framework_events: Sequence[Event] = (),
+    ) -> tuple[AcceptedDecision, ...]:
+        """Resolve and commit one write set, marking the session Error on failure."""
+        try:
+            return self._resolve_and_commit(
+                candidates,
+                accept,
+                transition,
+                snapshot,
+                event_factory,
+                framework_events=framework_events,
+            )
+        except Exception:
+            if self.status == "Running":
+                self.fail()
+            raise
+
+    def _resolve_and_commit(
+        self,
+        candidates: Sequence[DecisionCandidate],
+        accept: Callable[[DecisionCandidate], AcceptedDecision | None],
+        transition: Callable[[AcceptedDecision], StateTransition],
+        snapshot: Callable[[tuple[StateTransition, ...]], OrionStateSnapshot],
+        event_factory: Callable[[StateTransition], Event] | None = None,
+        *,
+        framework_events: Sequence[Event] = (),
     ) -> tuple[AcceptedDecision, ...]:
         """Resolve candidates explicitly and commit one resulting state snapshot.
 
         Runtime owns the orchestration boundary. Frameworks only propose candidates;
-        acceptance and state transition are supplied explicitly by the caller. No
-        decision is accepted implicitly, and StateStore is the commit boundary.
-        Domain Event creation is performed only after successful StateStore commit.
+        acceptance and state transition are supplied explicitly by the caller.
+        Framework events, snapshot, and transition events are staged and
+        validated before either in-memory store is changed.
         """
         if self.status != "Running":
             raise RuntimeError(f"cannot resolve decisions from status: {self.status}")
@@ -226,30 +264,64 @@ class RuntimeSession:
                 raise TypeError("transition must return StateTransition")
             if state_transition.decision_id != decision.decision_id:
                 raise ValueError("state transition must reference the accepted decision")
+            if (
+                state_transition.entity_type != decision.candidate.entity_type
+                or state_transition.entity_id != decision.candidate.entity_id
+            ):
+                raise ValueError("state transition entity must match the accepted candidate")
             transitions.append(state_transition)
 
+        staged_events = tuple(framework_events)
+        state_snapshot = None
         if transitions:
             state_snapshot = snapshot(tuple(transitions))
             if not isinstance(state_snapshot, OrionStateSnapshot):
                 raise TypeError("snapshot must return OrionStateSnapshot")
-            self.states.publish(state_snapshot)
+            if state_snapshot.execution_id != self.execution.execution_id:
+                raise ValueError("snapshot execution_id must match the current execution")
+            if state_snapshot.system_status != "Running":
+                raise ValueError("snapshot system_status must be Running at commit")
 
             if event_factory is not None:
-                events = tuple(event_factory(item) for item in transitions)
-                self.record_events(events)
+                staged_events += tuple(event_factory(item) for item in transitions)
+
+        self._commit_effects(state_snapshot, staged_events)
 
         return tuple(accepted)
 
+    def _commit_effects(
+        self,
+        snapshot: OrionStateSnapshot | None,
+        events: Sequence[Event],
+    ) -> None:
+        """Validate the complete in-memory write set before publishing it."""
+        event_batch = tuple(events)
+        self._validate_event_batch(event_batch)
+        if snapshot is not None:
+            self.states.validate(snapshot)
+        snapshot_count = len(self.states.snapshots)
+        event_count = len(self.events.events)
+        try:
+            if snapshot is not None:
+                self.states.publish(snapshot)
+            self.events.extend(event_batch)
+        except Exception:
+            self.states._rollback_to(snapshot_count)
+            self.events._rollback_to(event_count)
+            raise
+
     def record_events(self, events: Sequence[Event]) -> tuple[Event, ...]:
-        """Append execution-correlated events after the authoritative commit boundary."""
+        """Validate and append an execution-correlated batch to EventStore."""
         events = tuple(events)
         self._validate_events(events)
         self.events.extend(events)
         return events
 
     def _validate_events(self, events: tuple[Event, ...]) -> None:
-        if any(not isinstance(event, Event) for event in events):
-            raise TypeError("events must contain only Event values")
+        self._validate_event_batch(events)
+
+    def _validate_event_batch(self, events: tuple[Event, ...]) -> None:
+        self.events.validate_batch(events)
         mismatched = [
             event.event_id
             for event in events
