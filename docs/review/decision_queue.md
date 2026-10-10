@@ -55,7 +55,7 @@ Therefore the following historical queue items are closed at the architecture le
 * freshness thresholds, timestamp parsing/order, and missing-data policy
 * source failure/fallback behavior and live-provider approval
 * canonical identity and symbol normalization policy (including provider/source identity)
-* default ADM signal assembly remains gated by freshness, comparison, and activation policy; a context-aware Moon factory can now receive `RuntimeContext.market_data` and configuration
+* default ADM signal assembly remains gated by source freshness, authoritative governance provenance, and activation; D-055 has approved the comparison policy; a context-aware Moon factory can now receive `RuntimeContext.market_data` and configuration
 
 ### Moon Implementation
 
@@ -81,7 +81,7 @@ Framework governance remains separately managed. Core does not reopen category/l
 
 ## Rules
 
-1. Do not invent unresolved investment methodology.
+1. Do not invent unresolved investment methodology; record D-055 as the approved SGOV/strict-greater-than comparison decision.
 2. Do not treat configuration as approval.
 3. Do not reopen a Core architecture decision merely because implementation is incomplete.
 4. Framework-local decisions remain Framework-owned.

@@ -78,7 +78,7 @@ D-055 approves SGOV as the absolute-momentum benchmark and strict greater-than c
 
 Required evidence:
 - A verifiable link from implementation configuration to the authoritative decision record; arbitrary caller-supplied text is not sufficient validation.
-- End-to-end negative tests showing provider failure, missing/stale observations, invalid provenance, or unapproved policy cannot produce an accepted Moon signal.
+- End-to-end negative tests showing provider failure, missing/stale observations, invalid provenance, or unverified production data/governance cannot produce an accepted Moon signal.
 - A separate activation authorization identifying scope, configuration change, rollback plan, and post-change verification.
 
 Exit condition: all prerequisite decisions are approved and verified. This workflow itself never activates ADM or changes `active_strategies`.

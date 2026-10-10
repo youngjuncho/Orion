@@ -36,7 +36,7 @@ A SHA-256 digest detects accidental or unaccompanied content changes; it does no
 
 - No remote API, database, signature key, certificate, or identity provider.
 - No provider selection or financial semantics approval.
-- No approval of unresolved Moon ADM benchmark/comparison/freshness investment policies.
+- No approval of unresolved Moon ADM provider semantics, calendar, freshness, or activation gates. D-055 already approves the SGOV benchmark and strict comparison operator.
 - No Runtime integration or strategy activation.
 - Core Runtime remains frozen and Moon `active_strategies` remains empty.
 

@@ -142,15 +142,11 @@ required argument: SGOV, BIL, or SHY is not silently selected.
 
 This step intentionally stops before comparison. Existing research describes
 absolute momentum as assessing whether the selected asset performed positively
-relative to a risk-free alternative, while the readiness matrix records that the
-benchmark instrument and comparison rule still require approval. The utility
-therefore emits no `absolute_momentum_positive` boolean and does not construct
-`ADMSignalInput`. Providing a benchmark value is not an approval of that
-benchmark, its adjusted-price semantics, or the return-comparison rule.
+relative to a risk-free alternative. D-055 now approves SGOV and strict-greater-than comparison, but the utility still emits no `absolute_momentum_positive` boolean and does not construct `ADMSignalInput`. Provider price semantics, freshness, and source quality remain open.
 
 Both returns fail closed if either instrument lacks an eligible observation or
 contains an invalid price. Provider calendar validity, freshness validation,
-total-return semantics, and policy approval remain separate gates. No Runtime,
+total-return semantics and production data/governance approval remain separate gates. No Runtime,
 strategy activation, external provider, or network behavior changed.
 
 

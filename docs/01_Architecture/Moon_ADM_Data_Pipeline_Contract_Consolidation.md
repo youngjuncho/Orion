@@ -23,7 +23,7 @@ MarketDataSet
   -> [NO ADMSignalInput conversion in this implementation]
 ```
 
-The arrows describe available building blocks and their intended ordering, not an automatic production orchestrator. The caller remains responsible for passing consistent, policy-approved inputs.
+The arrows describe available building blocks and their intended ordering, not an automatic production orchestrator. The caller remains responsible for passing consistent inputs qualified under the applicable source and production data gates.
 
 ## Contract matrix
 
@@ -34,10 +34,10 @@ The arrows describe available building blocks and their intended ordering, not a
 | Return calculation | `calculate_adm_observation_pair_return` | Finite positive prices and deterministic arithmetic | Total-return equivalence of a provider's adjusted field |
 | Relative momentum | `ADMRelativeMomentumResult` | Exactly VTI and VEU; shared target dates, field, and selection policy | Which winner should become the absolute-momentum risk input; strategy signal |
 | Freshness gate | `ADMRelativeMomentumFreshnessResult` / `ADMObservationFreshnessResult` | Explicit maximum calendar-day age; all required observations must pass | Production-approved threshold, exchange-calendar correctness |
-| Absolute inputs | `ADMAbsoluteMomentumInputs` | Explicit risk asset and SGOV benchmark with comparable endpoints and retained observations | Which risk-asset winner to select or whether the observations meet source requirements |
+| Absolute inputs | `ADMAbsoluteMomentumInputs` | Explicit risk asset and SGOV benchmark with comparable endpoints and retained observations | Which risk-asset winner to select or whether observations meet source requirements |
 | Readiness | `ADMDataAssemblyReadiness` | Relative and absolute inputs share dates, field, policy ID, and age threshold; absolute observations pass freshness checks | Source qualification, production approval, or a ready signal |
 | Comparison | `ADMAbsoluteMomentumComparisonResult` | Defaults to D-055 policy; explicit benchmark mismatch returns `UNAVAILABLE` | Authoritative source and production-readiness evidence |
-| Integration guard | `ADMComparisonSignalGuardResult` | Blocks unavailable results, mismatched inputs, unresolved gates, missing approval status/reference | Independent verification of governance records; `ADMSignalInput` creation |
+| Integration guard | `ADMComparisonSignalGuardResult` | Blocks unavailable results, mismatched inputs, unresolved source/data gates, missing production readiness status/reference | Independent verification of governance records; `ADMSignalInput` creation |
 
 ## Cross-stage invariants
 

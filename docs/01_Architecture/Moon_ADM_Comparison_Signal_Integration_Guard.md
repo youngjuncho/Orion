@@ -12,8 +12,8 @@ Define the fail-closed boundary between a typed absolute-momentum comparison res
 
 `src/orion/frameworks/moon/adm_data.py` provides:
 
-- `ADMPolicyApprovalStatus`: `APPROVED`, `NOT_APPROVED`, `UNKNOWN`.
-- `ADMComparisonSignalGuardResult`: eligibility, comparison status, caller-supplied approval provenance, and explicit blocking reasons.
+- `ADMPolicyApprovalStatus`: `APPROVED`, `NOT_APPROVED`, `UNKNOWN` for production data/governance readiness; it does not re-approve the D-055 comparison rule.
+- `ADMComparisonSignalGuardResult`: eligibility, comparison status, caller-supplied production readiness provenance, and explicit blocking reasons.
 - `guard_adm_comparison_for_signal_assembly(...)`: validates comparison/readiness consistency and evaluates the integration gates.
 
 The guard blocks when any of these apply:
@@ -22,19 +22,19 @@ The guard blocks when any of these apply:
 2. The comparison's risk asset, benchmark, or returns do not match the freshness-checked absolute-momentum inputs in the readiness object.
 3. Data quality has not passed.
 4. Any readiness policy gate remains unresolved.
-5. The caller-attested policy approval status is not explicitly `APPROVED`.
-6. An approval reference is missing.
-7. Available comparison policy provenance is missing.
+5. The caller-attested production data/governance status is not explicitly `APPROVED`.
+6. An authoritative production evidence reference is missing.
+7. Comparison policy provenance is missing or differs from the approved D-055 policy when using the ADM default.
 
 `UNAVAILABLE` is never treated as `FALSE`. `TRUE` and `FALSE` comparison outputs are not sufficient on their own to proceed.
 
 ## Governance provenance limitation
 
-The comparison methodology is approved by D-055. The guard's approval status and reference are still supplied by the caller; it records that attestation but does not independently verify a decision log, document, or external governance system. Production integration must bind this value to an authoritative governance record before relying on it.
+The comparison methodology is approved by D-055. The guard's production-readiness status and reference are still supplied by the caller; it records that attestation but does not independently verify the provider, source semantics, decision log, or external governance system. Production integration must bind this evidence to authoritative governance records before relying on it.
 
 ## Readiness closure
 
-`ADMDataAssemblyReadiness.signal_ready` is true only when its `unresolved_policy_gates` collection is empty. The default readiness path retains unresolved gates and therefore remains blocked. Tests may simulate a closed policy set to exercise the positive guard path; that fixture does not approve production policy.
+`ADMDataAssemblyReadiness.signal_ready` is true only when its `unresolved_policy_gates` collection is empty. The default readiness path retains unresolved gates and therefore remains blocked. Tests may simulate closed data/governance gates to exercise the positive guard path; that fixture does not approve a provider or production integration.
 
 ## Scope guardrails
 

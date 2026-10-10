@@ -2,11 +2,11 @@
 
 Version: 1.0  
 Status: Readiness Review — Provider-Neutral Boundary Implemented; Production Provider Integration Not Authorized  
-Last Updated: 2026-10-09
+Last Updated: 2026-10-10
 
 ## Purpose
 
-This review determines whether the current Moon ADM data contracts are sufficient to begin implementing a provider-specific adapter. It separates reusable adapter structure from source-dependent behavior and investment-policy approvals. It does not approve Yahoo Finance or another provider, authorize network access, or activate ADM.
+This review determines whether the current Moon ADM data contracts are sufficient to begin implementing a provider-specific adapter. It separates reusable adapter structure from source-dependent behavior and the D-055-approved comparison methodology. It does not approve Yahoo Finance or another provider, authorize network access, or activate ADM.
 
 ## Decision
 
@@ -19,7 +19,7 @@ The current engineering date-selection default is retained: for each explicit ta
 | Area | Current state | Adapter readiness requirement | Status |
 |---|---|---|---|
 | Canonical envelope | `MarketDataPoint` and `MarketDataSet` exist | Map provider records explicitly to canonical fields and validate every batch | Reusable contract exists |
-| Instrument identity | ADM risk assets are VTI and VEU; defensive benchmark is unresolved | Define provider identifiers and confirm instrument identity for every symbol | Open |
+| Instrument identity | ADM risk assets are VTI and VEU; D-055 comparison benchmark is SGOV | Define provider identifiers and confirm instrument identity for every symbol | Open |
 | Price field | `adjusted_close` is a candidate field under D-028 | Document provider adjustment methodology and validate suitability as total-return proxy; never silently substitute `close` | Open |
 | Timestamp and timezone | Canonical `observed_at` is a string | Specify timestamp format, timezone, date extraction, and whether bars represent session close | Open |
 | Calendar and endpoints | Prior-observation-on-or-before target is the engineering default | Define source calendar and confirm that selected records represent valid observations; document 12-month target construction | Partially defined |
@@ -36,7 +36,7 @@ The current engineering date-selection default is retained: for each explicit ta
 A provider-specific adapter may start only after a named provider is approved for the intended use and its contract records:
 
 1. Provider name, access method, licensing/usage constraints, and approved intended use.
-2. Exact identifiers and identity checks for VTI, VEU, and the separately approved absolute-momentum benchmark.
+2. Exact identifiers and identity checks for VTI, VEU, and SGOV as the D-055 comparison benchmark.
 3. Canonical mapping for `symbol`, `field`, `observed_at`, `value`, `source`, `currency`, and metadata.
 4. The exact meaning of the provider's adjusted-price field, adjustment treatment for distributions/splits, and evidence that it is acceptable for D-028.
 5. Timezone, daily-bar timestamp meaning, provider/exchange calendar, evaluation-date convention, and trailing-12-month endpoint convention.
@@ -61,7 +61,7 @@ A provider-specific adapter may start only after a named provider is approved fo
 
 ## Implementation boundary
 
-The existing source-agnostic calculation helpers can be reused. Do not place provider I/O inside `ADMStrategy` or the Core Runtime. Do not add a provider dependency, scheduled collection, persistent cache, fallback provider, or automatic source precedence until its source contract is approved. D-055 now selects SGOV and strict greater-than comparison; do not infer provider/source approval or signal activation from that methodology decision.
+The existing source-agnostic calculation helpers can be reused. Do not place provider I/O inside `ADMStrategy` or the Core Runtime. Do not add a provider dependency, scheduled collection, persistent cache, fallback provider, or automatic source precedence until its source contract is approved. D-055 approves SGOV and strict greater-than comparison; do not infer provider/source approval or signal activation from that methodology decision.
 
 ## Recommended next step
 

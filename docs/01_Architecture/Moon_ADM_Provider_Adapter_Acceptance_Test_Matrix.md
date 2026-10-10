@@ -2,7 +2,7 @@
 
 Version: 1.0  
 Status: Implemented — provider-neutral boundary acceptance; provider approval remains open  
-Last Updated: 2026-10-09
+Last Updated: 2026-10-10
 
 ## Purpose
 
@@ -40,7 +40,7 @@ Before provider-specific implementation or activation, governance must close and
 5. Missing, delayed, stale, duplicate, conflicting and revised observation behavior.
 6. Provenance and reproducibility requirements.
 7. Timeout, rate-limit, retry, partial-response and provider-outage behavior.
-8. Approved absolute-momentum benchmark/comparator policy and signal-assembly gate.
+8. D-055 comparison behavior plus independently closed source/data gates and signal-assembly review.
 
 ## Explicit non-goals
 

@@ -45,17 +45,16 @@ A status change in this register is not sufficient evidence of approval by itsel
 
 ## Implementation order (dependency guidance, not approval)
 
-1. Close PCD-01 and PCD-02 before provider-specific identity/mapping work.
-2. Close PCD-03 through PCD-07 to define interpretation of the returned observations.
-3. Close PCD-08 through PCD-12 to define quality, revision, provenance, and operational behavior.
-4. PCD-13 and PCD-14 are approved by D-055; keep provider data qualification as a separate gate.
-5. Close PCD-15 and PCD-16 before any end-to-end signal integration or activation proposal.
+1. Close PCD-01 through PCD-07 before provider-specific observations can be qualified.
+2. Close PCD-08 through PCD-12 to define data quality, revision, provenance, and operations.
+3. PCD-13 and PCD-14 are approved by D-055; do not reopen them to unblock provider work.
+4. Close PCD-15 and PCD-16 before end-to-end signal integration or activation review.
 
 This order does not require all decisions to be made in one session and does not imply that any particular provider is preferred.
 
 ## Explicit non-goals
 
-This register does not select Yahoo Finance, another provider, SGOV, BIL, or SHY; approve a provider's adjusted-price series; set a freshness threshold; define a comparison operator; add live API access, retries, caching, fallback sources, persistence, or scheduling; activate ADM; or modify Core Runtime.
+This register does not select Yahoo Finance or another provider, approve a provider's adjusted-price series, select the configured defensive holding, set a freshness threshold, add live API access, retries, caching, fallback sources, persistence, or scheduling, assemble an ADM signal, activate ADM, or modify Core Runtime. D-055 already approves SGOV as comparison benchmark and strict greater-than operator.
 
 ## Related documents
 

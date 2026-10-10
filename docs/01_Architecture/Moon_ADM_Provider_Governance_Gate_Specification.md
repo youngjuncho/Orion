@@ -7,7 +7,7 @@ Baseline: Step 44 — Provider Contract Readiness Audit
 
 ## 1. Purpose
 
-Define explicit, cumulative gates for moving from the provider-neutral adapter to any provider-specific use, selected-observation calculation, Moon signal integration, and eventual strategy activation. This document specifies required evidence and behavior; it does not implement a gate evaluator or constitute approval.
+Define explicit, cumulative gates for moving from the provider-neutral adapter to any provider-specific use, selected-observation calculation, Moon signal integration, and eventual strategy activation. This document specifies required evidence and behavior; it does not implement a gate evaluator or approve provider/data use. D-055 separately approves SGOV and strict greater-than comparison with equality false.
 
 The current implementation must continue to treat caller-supplied approval references as attestations, not authoritative validation. A gate is not open merely because a document says `Approved`, a reference string is non-empty, or generic tests pass.
 
@@ -48,7 +48,7 @@ A future resolver must verify that the record exists, is authoritative, is in an
 - **G3:** PCD-08–PCD-12 must be approved to the scope being deployed. An explicit, evidence-backed `Not applicable` decision is required for any intentionally omitted operational behavior; it cannot be inferred from absence.
 - **G4:** PCD-13 and PCD-14 are approved by D-055. Their implementation does not approve provider semantics, data quality, or strategy activation.
 - **G5:** PCD-15 requires an implemented resolver and tests for unknown IDs, wrong versions, scope mismatch, revoked/superseded records, missing dependencies, and valid approvals.
-- **G6:** PCD-16 requires actual orchestration-path tests showing that provider exceptions, malformed/partial data, missing or stale observations, invalid provenance, and unavailable/unapproved policy cannot yield a valid accepted Moon signal.
+- **G6:** PCD-16 requires actual orchestration-path tests showing that provider exceptions, malformed/partial data, missing or stale observations, invalid provenance, and unavailable comparison, source/data failure, or unverified production data/governance cannot yield a valid accepted Moon signal.
 - **G7:** Requires a separate activation record naming the exact strategy, configuration diff, effective time, rollback steps, verification checks, and owner. G6 is necessary but not sufficient.
 
 ## 5. Failure and invalidation semantics
@@ -89,7 +89,7 @@ Passing tests establishes only the tested contract and fixture behavior. It does
 
 ## 8. Explicit non-goals
 
-This specification does not choose a provider, approve any adjusted-price series, select a configured defensive holding, set freshness thresholds, add networking/retry/cache/fallback/persistence/scheduling, assemble `ADMSignalInput`, activate ADM, or modify Core Runtime. Moon's `active_strategies: []` must remain unchanged unless a separate, authorized activation decision is made and verified.
+This specification does not choose a provider, approve any adjusted-price series, select a configured defensive holding, approve source semantics, set freshness thresholds, add networking/retry/cache/fallback/persistence/scheduling, assemble `ADMSignalInput`, activate ADM, or modify Core Runtime. Moon's `active_strategies: []` must remain unchanged unless a separate, authorized activation decision is made and verified.
 
 ## Related documents
 

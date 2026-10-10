@@ -24,11 +24,11 @@ When no policy is supplied, D-055 compares the selected risk return strictly gre
 
 Under the approved D-055 strict operator, equal returns produce `FALSE` (Risk Off). The inclusive operator remains available for explicit analysis but is not the approved ADM policy.
 
-`UNAVAILABLE` must never be interpreted as `FALSE` or converted to `ADMSignalInput.absolute_momentum_positive`. Even a `TRUE`/`FALSE` result under a caller-supplied policy is only the output of that explicit comparison contract. It does not itself certify the policy's approval, benchmark validity, price-field total-return semantics, observation freshness, or production readiness.
+`UNAVAILABLE` must never be interpreted as `FALSE` or converted to `ADMSignalInput.absolute_momentum_positive`. A `TRUE`/`FALSE` result under the default D-055 policy reflects an approved comparison methodology; it does not certify benchmark data quality, price-field total-return semantics, observation freshness, or production readiness. A caller-supplied alternative policy remains analytical configuration and is not approved for ADM use.
 
 ## Signal integration guard
 
-`Moon_ADM_Comparison_Signal_Integration_Guard.md` defines the fail-closed boundary between comparison results and future signal assembly. An available comparison cannot proceed unless its inputs match the freshness-checked readiness object, all policy gates are closed, approval status is explicitly supplied as approved, and an approval reference is present. The guard does not create `ADMSignalInput`; approval provenance is caller-supplied and must be bound to an authoritative governance record in production.
+`Moon_ADM_Comparison_Signal_Integration_Guard.md` defines the fail-closed boundary between comparison results and future signal assembly. An available comparison cannot proceed unless its inputs match the freshness-checked readiness object, all source and production data gates are closed, production data/governance status is explicitly supplied as approved, and an authoritative evidence reference is present. The guard does not create `ADMSignalInput`; production readiness must be bound to an authoritative governance record.
 
 ## Still open for governance
 

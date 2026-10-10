@@ -1,15 +1,15 @@
 # Moon ADM Provider Contract Readiness Audit
 
-Version: 1.0  
-Status: Audit complete — provider readiness not approved  
-Audit date: 2026-10-09  
-Baseline: Step 43 — Provider Decision Evidence and Closure Workflow
+Version: 1.0
+Status: Audit complete - provider readiness not approved; D-055 methodology approved
+Audit date: 2026-10-10
+Baseline: Step 43 - Provider Decision Evidence and Closure Workflow
 
 ## 1. Executive result
 
-The documentation set is directionally consistent about the boundary between generic adapter behavior, provider-specific approval, investment-methodology approval, and strategy activation. The current fixture suite verifies a limited set of provider-neutral behaviors. It does **not** establish that a concrete provider is suitable, that a production signal path is fail-closed, or that Moon ADM is ready for activation.
+The documentation set distinguishes generic adapter behavior, provider-specific approval, the D-055-approved comparison methodology, and strategy activation. Fixture tests verify limited provider-neutral behavior but do not establish provider suitability, end-to-end production failure handling, or ADM activation readiness.
 
-**Readiness verdict: NOT READY for live provider connection, end-to-end signal integration, or ADM activation.** The provider-neutral adapter may remain as a generic normalization boundary. No provider or investment policy is approved by this audit.
+**Readiness verdict: NOT READY for live provider connection, new end-to-end signal integration, or ADM activation.** The provider-neutral adapter may remain as a generic normalization boundary. This audit approves no provider, source semantics, or strategy activation. D-055 separately approves the SGOV/strict-greater-than comparison methodology.
 
 ## 2. Scope and evidence reviewed
 
@@ -24,7 +24,7 @@ Reviewed:
 - `tests/data/test_provider_adapter_acceptance.py`
 - existing Moon ADM data tests and `config/moon.yaml`
 
-Baseline verification: `pytest -q` — 243 passed; `python -m compileall -q src tests` — passed. These results verify repository tests and syntax only; they are not provider certification.
+Original audit verification was recorded historically. It is not a current test-count claim or provider certification.
 
 ## 3. Findings
 
@@ -35,9 +35,9 @@ Baseline verification: `pytest -q` — 243 passed; `python -m compileall -q src 
 | AUD-03 | Blocker | `adjusted_close` is a canonical field label, not proof of distribution/split adjustment or total-return suitability (PCD-04). | Provider methodology evidence and explicit suitability approval for the intended D-028 use. | Open; no field-semantic approval. |
 | AUD-04 | Blocker | Timestamp meaning, exchange calendar, evaluation endpoint, and production freshness policy remain unresolved (PCD-05/07; PCD-06 partially defined). | Approved temporal contract and fixtures for month ends, holidays, late publication, stale data, and boundary dates. | Open; current timestamp pass-through is intentional. |
 | AUD-05 | High | Revision/conflict and provenance requirements are not fully operationalized. Current duplicate identity rejection does not define historical correction selection or reproducible snapshots (PCD-09–11). | Explicit revision policy, required provenance schema, repeat-fetch/revision fixtures, and a decision on snapshot needs. | Open; no revision winner chosen. |
-| AUD-06 | High | The provider-failure acceptance test uses a local guarded caller. It proves exception propagation and that this test caller does not invoke its consumer; it does not prove an existing production Runtime-to-Moon signal path is fail-closed. | End-to-end integration tests against the actual approved orchestration path, including failure, stale/missing data, invalid provenance, and unapproved policy cases. | Open; no production integration claimed. |
+| AUD-06 | High | The provider-failure acceptance test uses a local guarded caller; it does not prove an approved production Runtime-to-Moon signal path is fail-closed. | End-to-end integration tests against the actual orchestration path, covering provider failure, stale/missing data, and invalid provenance. | Open; no production integration claimed. |
 | AUD-07 | Blocker | Provider/source adjusted-price semantics, freshness, and calendar rules remain open; D-055 approves SGOV and strict greater-than with equality false. | Close provider/data gates and preserve boundary tests. | Open; signal assembly remains gated. |
-| AUD-08 | High | The workflow describes governance binding as required, but no authoritative decision-record validation mechanism is implemented by the generic adapter. | Design and tests proving configuration references resolve to an authoritative, versioned decision record; arbitrary strings must not close gates. | Open; references remain attestations. |
+| AUD-08 | High | No authoritative decision-record validation mechanism is implemented by the generic adapter. | Resolve configuration references against an authoritative, versioned record; arbitrary strings must not close gates. | Open; references remain attestations. |
 | AUD-09 | High | Provider-specific timeout, rate-limit, retry, cache, partial-response, and outage behavior is unspecified and intentionally absent (PCD-12). | Approved operational contract and deterministic failure tests before those behaviors are implemented. | Open; no network/retry/cache. |
 | AUD-10 | Blocker | Generic adapter acceptance does not authorize signal assembly or activation. `config/moon.yaml` currently keeps `active_strategies: []`. | Explicit end-to-end review and separate activation authorization with scope, rollback plan, and post-change verification. | Closed as a safety boundary; activation remains unauthorized. |
 
@@ -72,13 +72,13 @@ No generic test pass may automatically move a PCD item to `Approved`. A status l
 1. Keep live provider access and Moon ADM activation blocked.
 2. Resolve provider/use and instrument identity only when the appropriate owner is ready to make those decisions.
 3. Collect provider evidence for price semantics and temporal behavior before writing a concrete adapter.
-4. Decide the investment benchmark/comparison policy in its own governance context; do not infer it from provider availability.
+4. D-055 closes the benchmark/comparison decision; provider measurement and production data gates remain separate.
 5. Implement authoritative decision-record binding and actual end-to-end failure-path tests only after the relevant contracts are approved.
 6. Conduct a separate activation review; do not treat this audit as activation approval.
 
 ## 7. Explicit non-goals
 
-This audit does not select a provider, approve any provider's adjusted-price series, select a configured defensive holding, set freshness thresholds, add network/retry/cache/fallback behavior, implement persistence, assemble `ADMSignalInput`, activate ADM, or change Core Runtime. `config/moon.yaml` remains unchanged with `active_strategies: []`.
+This audit does not select a provider, approve any provider's adjusted-price series, select a configured defensive holding, set freshness thresholds, add network/retry/cache/fallback behavior, implement persistence, assemble `ADMSignalInput`, activate ADM, or change Core Runtime. D-055 independently approves SGOV as the comparison benchmark and strict greater-than rule. `config/moon.yaml` remains unchanged with `active_strategies: []`.
 
 ## Step 45 follow-up
 

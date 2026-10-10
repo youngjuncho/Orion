@@ -1,14 +1,12 @@
 # Moon ADM Data Contract
 
 Version: 1.0  
-Status: Contract Baseline — Source Integration Deferred  
-Last Updated: 2026-10-09
+Status: Contract Baseline - D-055 Comparison Approved; Source Integration Deferred
+Last Updated: 2026-10-10
 
 ## Purpose
 
-This document records the minimum data requirements implied by the existing
-ADM implementation specification and D-028. It does not approve a provider,
-change ADM methodology, or authorize production collection.
+This document records the minimum data requirements implied by the existing ADM implementation specification and D-028. D-055 approves SGOV as the absolute-momentum comparison benchmark and strict greater-than comparison, with equality false. This document does not approve a provider or authorize production collection.
 
 ## Existing strategy contract
 
@@ -48,7 +46,7 @@ layer needs:
 3. enough source metadata to reproduce which observations were selected.
 
 The strategy's research specification describes monthly evaluation on the
-last trading day. Step 28 implements the approved engineering default: for
+last trading day. Step 28 implements the engineering default: for
 each explicit target date, select the latest available observation whose
 `observed_at` date is on or before that target. This avoids selecting a future
 bar when a target falls on a weekend or holiday, and records both target dates
@@ -63,12 +61,7 @@ gated on those decisions and adjusted-price semantic approval.
 
 ## Defensive benchmark dependency
 
-`ADM_Orion.md` lists SGOV as the primary defensive-asset candidate and BIL / SHY
-as backups, with final approval pending. Therefore this document does not
-select a defensive asset or silently equate the configured defensive holding
-with the absolute-momentum comparison benchmark. That relationship must be
-resolved by the existing ADM methodology/governance process before end-to-end
-signal calculation is implemented.
+D-055 approves SGOV as the absolute-momentum comparison benchmark. The configured defensive holding relationship remains separate and is not established by D-055.
 
 ## Source and collection boundary
 
@@ -86,7 +79,7 @@ Before an adapter can be considered production-ready, it must:
 - document instrument identity and adjusted-price semantics;
 - document evaluation date, trailing-period selection, timezone, and calendar;
 - define missing, duplicate, stale, revised, and conflicting observations;
-- define the approved defensive benchmark relationship;
+- honor D-055's SGOV comparison benchmark; document any separate configured defensive holding relationship;
 - provide deterministic fixtures covering normal and invalid input cases;
 - produce `ADMSignalInput` only after required inputs pass validation.
 

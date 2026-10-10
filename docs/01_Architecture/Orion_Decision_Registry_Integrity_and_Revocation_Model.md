@@ -27,7 +27,7 @@ The lineage validator checks both directions: a predecessor's `superseded_by` mu
 
 - No remote registry, signature infrastructure, authentication, network access, persistence, or automatic mutation.
 - No automatic cascade changes to status. Impacted decisions are surfaced for explicit review.
-- No provider selection, price-field semantics, freshness threshold, investment-methodology approval, or Moon activation.
+- No provider selection, price-field semantics, freshness threshold, or Moon activation. D-055 separately approves the SGOV comparison benchmark and strict greater-than operator.
 - Core Runtime remains frozen; `active_strategies: []` remains unchanged.
 
 ## Acceptance tests

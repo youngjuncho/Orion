@@ -2,9 +2,9 @@
 
 Version: 1.0
 
-Status: Draft
+Status: Draft - D-055 comparison policy approved; source and activation gates remain open
 
-Last Updated: 2026-07-27
+Last Updated: 2026-10-10
 
 Depends On:
 
@@ -114,9 +114,9 @@ Backup Candidates
 * BIL
 * SHY
 
-Status:
+Comparison benchmark status:
 
-Pending Final Approval
+Approved by D-055: SGOV is the absolute-momentum comparison benchmark. A configured defensive holding is a separate allocation decision.
 
 ---
 
@@ -173,7 +173,7 @@ Trailing 12-Month Total Return
 
 Formula
 
-AdjustedPrice[t] / AdjustedPrice[t-12M] − 1
+AdjustedPrice[t] / AdjustedPrice[t-12M] - 1
 
 Adjusted Price is supplied by the normalized data layer and is treated as a
 total-return proxy. ADM does not reconstruct or separately add distributions.
@@ -182,7 +182,7 @@ to the market-data contract.
 
 Status
 
-Pending Validation
+Methodology approved by D-028 and D-055; provider price-series validation remains open
 
 ---
 
@@ -373,7 +373,7 @@ Not Approved
 
 OI-001
 
-Final defensive asset selection
+Configured defensive holding selection
 
 Candidates
 
@@ -383,7 +383,7 @@ Candidates
 
 Status
 
-Open
+Open; separate from the D-055-approved SGOV comparison benchmark
 
 ---
 
