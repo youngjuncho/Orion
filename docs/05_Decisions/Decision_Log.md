@@ -2435,6 +2435,10 @@ ADM signal assets are also the execution assets for this mapping contract:
 * VEU -> VEU
 * SGOV -> SGOV
 
+The existing BIL -> SGOV mapping remains in place for strategies that emit
+BIL as their signal asset. Thus both BIL and ADM's direct SGOV signal resolve to
+the SGOV execution asset.
+
 This preserves ADM's specified instruments. No VEU -> VXUS substitution is
 approved. This decision resolves the signal-to-execution mapping only; it does
 not activate ADM, authorize a live trade, or approve any broker integration.
