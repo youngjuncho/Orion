@@ -6,6 +6,8 @@ Status: Draft
 
 Last Updated: 2026-07-27
 
+> **Current implementation boundary:** This workflow remains a design draft. The Moon Runtime adapter consumes precomputed `StrategyResult` values and returns a `DecisionCandidate` containing a common `PortfolioTarget`; it does not currently consume `RuntimeContext.market_data`. Current-state valuation and `RebalancePlan` operations exist in the common domain but are not wired into this Moon Runtime path. Runtime owns acceptance, state commit, event storage, and presentation handoff.
+
 Depends On:
 
 * Orion_Runtime.md
@@ -71,10 +73,10 @@ Build Portfolio Target
 Validate Portfolio Target
     │
     ▼
-Publish Results
+Return Proposal to Orion Runtime
     │
     ▼
-Store Execution History
+Execution History (Deferred)
 ```
 
 ---
@@ -170,7 +172,7 @@ Aggregate all StrategyResult objects.
 Responsibilities:
 
 * Verify completion
-* Exclude failed strategies
+* Apply an explicitly approved strategy-failure policy; this draft does not authorize silently excluding failed strategies
 * Prepare for consensus allocation
 
 Outputs:
@@ -278,14 +280,14 @@ Validation includes:
 Execution stops if validation fails.
 
 The current portfolio state is represented independently by
-`PortfolioSnapshot`.
-
-A future rebalance workflow may derive:
+`PortfolioSnapshot` / `PortfolioState`. A deterministic common-domain operation
+already builds `RebalancePlan` from current allocations or a supplied valued
+state:
 
 ```text
 PortfolioTarget + PortfolioSnapshot
             ↓
-       RebalancePlan
+       RebalancePlan (implemented domain operation; not wired into Moon Runtime)
 ```
 
 `RebalancePlan` describes required portfolio changes and does not execute
@@ -298,51 +300,27 @@ current Moon MVP scope.
 
 # Stage 10
 
-## Publish Results
+## Return Proposal to Orion Runtime
 
-Purpose:
+The Moon adapter returns a canonical `FrameworkResult` containing a
+`DecisionCandidate` whose payload includes the proposed common `PortfolioTarget`.
+The Runtime applies its decision-acceptance policy. Moon does not publish to
+Dashboard, CLI, or EventStore directly.
 
-Expose execution results to downstream consumers.
+## Execution History (Deferred)
 
-Consumers:
-
-* Moon Dashboard
-* Orion Dashboard
-* CLI
-* Reporting Services
-
-Published Objects:
-
-* StrategyResult
-* ConsensusAllocation
-* PortfolioTarget
-* ExecutionReport
-
----
-
-# Stage 11
-
-## Store Execution History
-
-Purpose:
-
-Persist execution results for auditing and historical analysis.
-
-Stored Information:
-
-* Execution Timestamp
-* Strategy Results
-* Consensus Allocation
-* Portfolio Target
-* Runtime Duration
-* Errors
-* Warnings
+The current MVP does not persist Moon strategy results or portfolio targets.
+Runtime `StateStore` and `EventStore` are in-memory boundaries for their
+canonical contracts; they are not a Moon execution-history repository.
 
 ---
 
 # Error Handling
 
-Pipeline execution distinguishes between recoverable and critical errors.
+This draft does not approve partial-strategy acceptance or recovery policy.
+The current public Runtime stops on a Framework failure and does not return a
+partial successful `OrionResult`. Any strategy-level skip/continue behavior
+must be specified and tested within Moon before implementation.
 
 Recoverable Errors:
 

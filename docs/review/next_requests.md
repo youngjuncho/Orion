@@ -12,7 +12,7 @@ No new Core architecture decision is currently requested. Before relying on the 
 
 ### 1. Resolve Draft D-051 — ADM Signal-to-Execution Mapping
 
-`ADM_Orion.md` specifies VTI and VEU as risk assets and SGOV as the defensive candidate. `Moon_Execution_Mapping.md` / `ExecutionMapper` do not map VTI or VEU; SGOV appears only as the destination for BIL. The current Moon configuration has `active_strategies: []`, so this is a release gate before ADM activation rather than an active run failure.
+`ADM_Orion.md` specifies VTI and VEU as risk assets and SGOV as the defensive candidate. `Moon_Execution_Mapping.md` / `ExecutionMapper` do not accept VTI, VEU, or SGOV as signal keys; SGOV appears only as the destination for BIL. The current Moon configuration has `active_strategies: []`, so this is a release gate before ADM activation rather than an active run failure.
 
 Choose whether ADM should:
 
@@ -28,6 +28,10 @@ The existing contract specifies commit-before-transition-event ordering but not 
 
 Do not describe the in-memory lifecycle as all-or-nothing until that behavior is explicitly chosen and validated.
 
+### 3. Resolve Draft D-053 — Portfolio Cash Valuation / Target Semantics
+
+`PortfolioState` carries account cash, but the valuation function accepts a separate `cash_value` and the target model has no cash sleeve. Decide whether cash enters the total-value denominator, how it relates to a fully invested target, and which layer converts multi-currency balances into the valuation currency. Do not make raw cross-currency sums or silently omit cash.
+
 ## Next Implementation Work (after the decisions)
 
 ### Core Runtime
@@ -40,7 +44,7 @@ Canonical observation contracts, source-agnostic normalization, structural valid
 
 ### Moon
 
-The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. Resolve D-051 before enabling ADM, then implement Account aggregation/current-state projection and the Moon Runtime rebalance handoff.
+The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. Resolve D-051 before enabling ADM and D-053 before integrating cash into valuation. Then implement Account aggregation/current-state projection and the Moon Runtime rebalance handoff.
 
 ### Framework-Specific Work
 

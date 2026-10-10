@@ -1,98 +1,85 @@
 # Orion Implementation Status Report
 
-Version: 2.1
+Version: 2.2
 
 Status: Current Baseline
 
-Last Updated: 2026-10-08
+Last Updated: 2026-10-10
 
 ## Executive Status
 
-**Core Architecture: CLOSED**  
-**Core Runtime Implementation: MVP COMPLETE**  
-**Framework Implementation: PARTIAL**  
-**Data Pipeline Implementation: INCOMPLETE**
-
-The project is not architecturally blocked. Remaining gaps are implementation, framework-specific specification, validation, or future infrastructure.
+* Core architecture closure is declared by the 2026-10-07 baseline; per-ID evidence and numbering remain under traceability audit.
+* Core Runtime orchestration and canonical data handoff exist as in-memory MVP boundaries. Runtime failure residual-effect semantics remain under D-052.
+* Framework implementation is partial. ADM is inactive; its signal-to-execution mapping is open under D-051. Portfolio cash valuation/target semantics are open under D-053.
+* Data contracts, source-agnostic normalization, structural validation, provider-neutral adaptation, and policy-explicit ADM utilities exist. Production collection and an end-to-end Framework consumer path are not implemented.
 
 ## Current Status
 
 | Area | Status | Notes |
 |---|---|---|
-| Configuration loader | 🟢 Implemented | typed validation and required-file checks |
-| Core domain models | 🟢/🟡 | contracts established; some integration remains |
-| RuntimeSession | 🟢 Implemented | execution lifecycle boundary |
-| RuntimeContext | 🟢 Implemented | assembly boundary |
-| ServiceRegistry | 🟢 Implemented | in-memory registry |
-| StateStore | 🟢 Implemented | in-memory authoritative-state boundary |
-| EventStore | 🟢 Implemented | in-memory append-only boundary |
-| Full Orion Runtime orchestration | 🟢 MVP Complete | Public `OrionRuntime.run()` supports the canonical Decision → State Transition → State Commit → Domain Event lifecycle; durable persistence remains deferred |
-| Persistent State/Event storage | ⚪ Future | not an MVP architecture blocker |
-| Framework contracts | 🟢 Established | Core contract closed |
-| Moon | 🟡 Partial | target established; snapshot/rebalance/E2E pending |
-| Aurora | 🔴 Incomplete | methodology/scoring not final |
-| Supernova | 🟡/🔴 | governance progressing; engine incomplete |
-| Phoenix | 🟡/🔴 | governance/spec progressing; engine incomplete |
-| Data contracts | 🟢 | normalized observation/batch contracts |
-| Data collectors/normalization/freshness | 🔴 | implementation pending |
-| CLI routing | 🟢 | command routing exists |
-| Framework CLI execution | 🟡 | report commands use Public OrionRuntime; legacy framework-specific commands remain |
-| Dashboard boundary | 🟢 | presentation-only |
-| Dashboard Runtime integration | 🟢/🟡 | dashboard consumes OrionResult; final production presentation wiring remains |
-| Public API contract | 🟢 | Runtime/API error boundary established |
-| Public API implementation | 🔴/Future | endpoint/serialization implementation pending |
+| Configuration loader | Implemented | typed validation and required-file checks |
+| Core domain models | Partial | shared contracts exist; account aggregation and end-to-end portfolio state projection remain |
+| RuntimeSession / RuntimeContext | Implemented with known failure gap | executor failures stop the run; post-loop event-recording failure can leave session status `Running` (D-052) |
+| StateStore / EventStore | Implemented | in-memory stores; transition-event failure may follow state commit (D-052) |
+| Public Orion Runtime | MVP implemented | framework orchestration and optional Decision -> State Transition -> State Commit -> Event lifecycle |
+| Durable State/Event storage | Future | outside current MVP |
+| Moon | Partial | common target, valuation, rebalance, and explicit sizing-input operations exist; ADM mapping and Runtime rebalance integration remain |
+| Aurora | Incomplete | methodology and scoring are not finalized |
+| Supernova / Phoenix | Partial | governance and report scaffolding exist; placeholder output is not an authoritative registry |
+| Data contracts | Implemented | `MarketDataPoint` / `MarketDataSet` structural contracts |
+| Data normalization | Implemented utility | deterministic source-agnostic normalization; not production collection or source-specific validation |
+| Provider-neutral adapter | Implemented utility | wraps supplied batches; no live provider, retries, cache, or fallback policy |
+| Runtime data handoff | Implemented boundary | data reaches `RuntimeContext`; current report and Moon adapters do not consume it to produce strategy results |
+| CLI routing | Implemented | unsupported/scaffold commands still need explicit unavailable behavior and failure exit codes |
+| Dashboard | Partial | read-only boundary exists; Runtime presentation integration remains partial |
+| Public API | Partial | error boundary is specified; standardized client-facing mapping and endpoints remain |
 
 ## Moon Status
 
-The previous statement that Moon had no portfolio target logic is obsolete.
-
-Current established flow:
+The proposal flow for supplied StrategyResults is implemented:
 
 ```text
-StrategyResult
-    ↓
-ConsensusAllocation
-    ↓
-Execution Mapping
-    ↓
-PortfolioTarget
+StrategyResult -> ConsensusAllocation -> Execution Mapping -> PortfolioTarget
 ```
 
-Still pending:
+Common-domain operations include PortfolioState/Snapshot records,
+caller-supplied valuation, current-allocation projection, deterministic
+weight-based `RebalancePlan` construction, and `ExecutionOrder` materialization
+from explicit sizing inputs. Account aggregation, authoritative current-state
+projection, and Runtime rebalance integration remain pending. Cash inclusion,
+target/residual treatment, valuation currency, and FX responsibility remain
+unresolved under D-053.
 
-```text
-PortfolioSnapshot
-    +
-PortfolioTarget
-    ↓
-RebalancePlan
-    ↓
-ExecutionOrder
-```
-
-Actual external execution is outside the current Moon MVP unless explicitly brought into scope.
+ADM activation remains blocked by D-051 because the current execution mapper
+does not accept VTI, VEU, or SGOV as signal keys. `active_strategies` is empty.
 
 ## Data Status
 
-Contract:
-
 ```text
-External Source → Raw → Normalized → Validated → Canonical MarketDataSet
+Raw source batch -> normalization utility -> MarketDataSet -> RuntimeContext
 ```
 
-The current `src/data` package provides normalized contracts. Source collection, normalization implementation, freshness checks, and production handoff remain incomplete.
+These are available boundaries, not an integrated production pipeline. Runtime
+can accept a canonical dataset, but current adapters do not consume it through
+ADM to produce a `PortfolioTarget`. Source collection, source-specific
+validation/freshness policy, and fallback behavior remain open.
 
 ## Test Baseline
 
-The latest repository verification of the current integrated baseline is **176 tests passing** on 2026-10-08. Historical earlier baselines remain historical evidence and must not be treated as the current count.
-
-A green test suite validates implemented contracts; it does not make incomplete investment methodology approved.
+Test counts in dated integration notes below are historical snapshots. This
+report makes no claim about the current test-suite count; obtain it from a
+canonical test run when verification is requested.
 
 ## Architecture vs Implementation
 
-Do not interpret an incomplete implementation item above as an architecture blocker. The architecture baseline is `CORE-001` through `CORE-020`.
+Do not interpret incomplete implementation as a new architecture requirement.
+The reported `CORE-001` through `CORE-020` baseline is under per-ID provenance
+and numbering audit.
 
+## Historical Integration Records
 
+The dated entries below preserve the status and test counts at the time they
+were written. They do not override the current status table above.
 ## 2026-10-07 Runtime Integration Step 2
 
 Runtime now implements the Decision Candidate → Accepted Decision → State Transition → StateStore commit boundary. Acceptance and transition policies remain explicit callables; no Framework directly mutates StateStore. Multiple accepted transitions from one execution are committed as one authoritative `OrionStateSnapshot`. Domain Event creation and EventStore persistence remain the next Runtime workstream.

@@ -2,7 +2,7 @@
 
 Version: 1.1
 
-Status: MVP Implemented — Moon ADM Data Utilities, Integration Guards, and Provider-Neutral Adapter Added
+Status: Partial — canonical data contracts, normalization utilities, provider-neutral adapter, and ADM data utilities exist; production collection and Framework consumption are not integrated
 
 Last Updated: 2026-10-09
 
@@ -19,7 +19,10 @@ This document defines how data flows through Orion OS.
 
 ---
 
-# Pipeline Architecture
+# Target Pipeline Architecture
+
+The diagram describes the intended end-to-end flow. Collection, production
+storage, and Framework consumption are not all implemented as one pipeline.
 
 ```text
 External Sources
@@ -100,24 +103,33 @@ for production collection. The current `src/data` package provides canonical obs
 
 ---
 
-# Normalization Layer
+# Implemented Normalization Utilities
 
 MVP implementation: `src/data/pipeline.py`
 
 Responsibilities:
 
 * Map source observations into `MarketDataPoint`
-* Trim and canonicalize required textual fields
+* Trim required textual fields when using `normalize_observation`
 * Normalize optional currency values
 * Build one validated `MarketDataSet` per input batch
 
-The MVP does not infer field semantics, exchange calendars, FX conversions, or source-specific timestamps. Those rules require closed source contracts. The shared envelope, candidate price vocabulary, framework matrix, and production-collector closure checklist are specified in `Orion_Framework_Data_Contracts.md`.
+Normalization trims required text but does not canonicalize symbol case. Direct
+`MarketDataPoint` construction does not apply the normalization function. The
+MVP does not infer field semantics, exchange calendars, FX conversions, or
+source-specific timestamps. Those rules require closed source contracts. The
+shared envelope, candidate price vocabulary, framework matrix, and
+production-collector closure checklist are specified in
+`Orion_Framework_Data_Contracts.md`.
 
 ---
 
 # Validation Layer
 
-MVP implementation: `MarketDataPoint` / `MarketDataSet` contracts plus `validate_dataset`.
+MVP structural checks are implemented by `MarketDataPoint` and `MarketDataSet`.
+`validate_dataset()` currently checks only that its argument is a
+`MarketDataSet` and returns that same object; it does not add semantic,
+freshness, timestamp-order, or source-specific validation.
 
 Responsibilities:
 
@@ -125,13 +137,31 @@ Responsibilities:
 * Supported value-type checks
 * Finite numeric checks
 * Duplicate observation checks
-* Canonical dataset type checks
+* Canonical dataset type checks in `validate_dataset`
+
+`MarketDataPoint.identity` is currently `(symbol, field, observed_at)` and does
+not include `source`. The duplicate identity policy, symbol normalization, and
+timestamp parsing/order policy remain open contract work.
 
 The generic ADM utilities can validate observation age against an explicit caller-supplied threshold. This does not close production freshness policy or prove provider-calendar/data quality; the production threshold and source contract remain open.
 
 ---
 
+## Runtime Handoff Boundary
+
+`OrionRuntime.run()` accepts either a `MarketDataSet` or a
+`MarketDataProvider`, then places the canonical dataset in `RuntimeContext`.
+This is a handoff boundary, not an end-to-end data pipeline. The current
+`MoonPortfolioAdapter` obtains precomputed `StrategyResult` values from its
+factory and does not consume `RuntimeContext.market_data`; the report adapter
+also ignores the context. No current adapter turns the supplied market data
+into an ADM result and then a `PortfolioTarget`.
+
 # Storage Layer
+
+The directory sketch below is a future storage target, not an implemented
+Runtime storage pipeline. Runtime data handoff currently ends at the canonical
+`MarketDataSet` supplied directly or by `MarketDataProvider`.
 
 Initial Implementation:
 

@@ -2459,7 +2459,8 @@ side-effects when a later stage fails. In the current implementation,
 framework-produced events are appended before decision resolution; a snapshot
 can be published before an event factory or EventStore operation fails; and
 Runtime instances retain their StateStore/EventStore and execution metadata
-across calls.
+across calls. In addition, failure while recording Framework events after the
+executor loop can currently leave the session status as `Running`.
 
 ### Decision Required
 
@@ -2479,3 +2480,53 @@ single-use semantics.
 
 After owner resolution, reconcile the Runtime, Event Model, and Handoff
 contracts, then implement and test the selected failure semantics.
+
+---
+
+## D-053 — Portfolio Cash Valuation and Target Semantics
+
+Date:
+
+2026-10-10
+
+Status:
+
+Draft
+
+Category:
+
+Portfolio Domain / Moon
+
+### Issue Under Review
+
+Cash is modeled as an Account-level `CashBalance`, separate from Position.
+However, `value_portfolio_state()` currently ignores `PortfolioState.cash` and
+accepts a separate `cash_value` input. `PortfolioTarget` allocations must sum
+to 1 and have no explicit cash sleeve. Consequently, the contract does not say
+whether cash is included in the valuation denominator, represented in target
+weights, or treated as residual execution funding.
+
+Balances may also use different currencies. Summing them without an approved
+valuation-currency and FX-conversion boundary would not produce a meaningful
+portfolio value.
+
+### Decision Required
+
+The owner must define:
+
+* whether portfolio cash is included in total valuation and current asset
+  weights;
+* whether cash is an explicit target sleeve or remains outside the target as
+  residual funding;
+* which component supplies authoritative cash amounts and how duplicate
+  account balances are aggregated;
+* the valuation currency and the approved FX conversion boundary for
+  multi-currency cash.
+
+This draft does not select residual-cash treatment, a cash target weight, or an
+FX source/conversion policy.
+
+### Required Follow-up
+
+After owner resolution, reconcile the Common Portfolio Domain contract and
+Moon rebalance contract, then update valuation and rebalance integration tests.

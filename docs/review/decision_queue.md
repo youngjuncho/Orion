@@ -32,6 +32,7 @@ Therefore the following historical queue items are closed at the architecture le
 |---|---|---|
 | D-051 | ADM signal-to-execution mapping | `ADM_Orion.md` selects VTI, VEU, or SGOV; the documented mapper has none of those as signal keys (SGOV is only the mapped destination for BIL). Decide whether ADM uses the signal instruments directly, receives explicit execution equivalents, or remains blocked until mappings are approved. Do not infer equivalents from ticker similarity. `config/moon.yaml` currently has `active_strategies: []`. |
 | D-052 | Runtime failure and commit semantics | The contract requires state commit before transition-event creation, but does not define rollback/compensation when event creation fails, whether framework events survive a later lifecycle failure, or whether a Runtime instance may be reused. Specify allowed residual state/events and session/store reuse behavior before claiming all-or-nothing semantics. |
+| D-053 | Portfolio cash valuation and target semantics | `PortfolioState.cash` is ignored by current valuation unless the caller separately supplies `cash_value`; `PortfolioTarget` has no cash sleeve and requires asset weights to sum to 1. Define cash inclusion, target/residual treatment, authoritative balance aggregation, valuation currency, and FX boundary before changing valuation behavior. |
 
 Both entries are Draft and require owner resolution. They do not approve a mapping or select a transaction policy.
 
@@ -48,11 +49,11 @@ Both entries are Draft and require owner resolution. They do not approve a mappi
 
 ### Data Implementation / Specification
 
-* source-specific fields
-* freshness thresholds
-* missing-data policy
-* source failure/fallback behavior
-* collectors and normalization implementation
+* production collectors and provider-specific field semantics
+* freshness thresholds, timestamp parsing/order, and missing-data policy
+* source failure/fallback behavior and live-provider approval
+* canonical identity and symbol normalization policy (including provider/source identity)
+* integration from `RuntimeContext.market_data` into the active Framework strategy path
 
 ### Moon Implementation
 

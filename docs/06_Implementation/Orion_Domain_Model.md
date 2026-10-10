@@ -1,5 +1,7 @@
 # Orion Domain Model
 
+> **Document status:** The original body below was marked Draft in July 2026 and is retained as historical context. The reconciliation addendum, `CORE-019`, and the current Common Portfolio Domain contract take precedence where ownership, field names, or lifecycle descriptions conflict. Read implementation field mappings from the current domain contracts before creating models.
+
 Version: 1.0
 
 Status: Draft

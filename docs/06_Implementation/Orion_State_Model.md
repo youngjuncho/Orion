@@ -13,6 +13,8 @@ Current rules:
 
 ---
 
+> **Document status:** The original body below was marked Draft in July 2026 and is retained as historical context. The reconciliation rules above and current Core contracts take precedence where older state-construction language conflicts; a Draft label is not implementation approval.
+
 # Orion State Model
 
 Version: 1.0

@@ -6,6 +6,8 @@ Status: Draft
 
 Last Updated: 2026-07-27
 
+> **Current implementation boundary:** This pipeline is a design draft, not an implemented production workflow. Aurora methodology and scoring remain unresolved. Do not treat scaffold/default scores as calculated results. Any Framework output returns through the Runtime adapter; direct Dashboard/EventStore publication and durable history storage are not authorized by this draft.
+
 Depends On:
 
 * Orion_Runtime.md
@@ -71,10 +73,10 @@ Evaluate State Momentum
 Validate Results
     │
     ▼
-Publish Results
+Return Framework Result to Orion Runtime
     │
     ▼
-Store Execution History
+Execution History (Deferred)
 ```
 
 ---
@@ -239,70 +241,29 @@ Execution stops if validation fails.
 
 # Stage 9
 
-## Publish Results
+## Return Results to Orion Runtime
 
-Purpose:
-
-Expose Aurora outputs to downstream consumers.
-
-Consumers:
-
-* Aurora Dashboard
-* Orion Dashboard
-* Moon
-* Reporting Services
-
-Published Objects:
-
-* Indicator Collection
-* Component Scores
-* Aurora Score
-* Market Regime
-* State Momentum
-* Execution Report
+Framework output is adapted to the canonical `FrameworkResult` contract.
+Runtime owns result aggregation and the presentation handoff. This draft does
+not authorize direct publication to Dashboard or another Framework.
 
 ---
 
 # Stage 10
 
-## Store Execution History
+## Execution History (Deferred)
 
-Purpose:
-
-Persist execution results for auditing and historical analysis.
-
-Stored Information:
-
-* Execution Timestamp
-* Indicator Values
-* Component Scores
-* Aurora Score
-* Market Regime
-* State Momentum
-* Runtime Duration
-* Errors
-* Warnings
+This pipeline does not implement durable Aurora history storage. Runtime
+StateStore and EventStore retain only their canonical in-memory contracts.
 
 ---
 
 # Error Handling
 
-The pipeline distinguishes between recoverable and critical errors.
-
-Recoverable Errors:
-
-* Missing optional indicators
-* Temporary data source failures
-* Partial indicator calculations
-
-Critical Errors:
-
-* Missing required indicators
-* Configuration failures
-* Score calculation failures
-* Result validation failures
-
-Critical errors terminate the execution pipeline.
+This draft does not establish a partial-result or retry policy. The public
+Runtime stops on Framework failure and does not return a partial successful
+`OrionResult`. Missing-data and source-failure behavior require an approved
+Data contract.
 
 ---
 

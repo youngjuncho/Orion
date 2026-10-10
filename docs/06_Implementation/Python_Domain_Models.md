@@ -21,6 +21,8 @@ The existing minimal Moon `Portfolio` class is an implementation scaffold, not p
 
 # Python Domain Models
 
+> **Document status:** The original body below was marked Draft in July 2026 and is retained as historical context. The reconciliation addendum and current Python/domain contracts take precedence where names, fields, or ownership differ. Treat tables below as historical unless they match the current source model.
+
 Version: 1.0
 
 Status: Draft

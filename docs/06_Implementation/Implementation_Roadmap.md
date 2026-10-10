@@ -4,7 +4,7 @@ Version: 2.1
 
 Status: Active
 
-Last Updated: 2026-10-08
+Last Updated: 2026-10-10
 
 ## Purpose
 
@@ -12,15 +12,15 @@ Defines the current software implementation sequence after the Core Architecture
 
 ## Architecture Status
 
-Core architecture is **closed** by `CORE-001` through `CORE-020`. Remaining work in Core is implementation and validation, not another architecture redesign.
+The 2026-10-07 baseline declares Core architecture **closed** by `CORE-001` through `CORE-020`. Per-ID evidence and numbering remain under traceability audit. The roadmap does not infer decision provenance from the baseline topic order.
 
 ## Workstream A — Core Runtime
 
-Status: MVP Complete — canonical Runtime lifecycle implemented; durable persistence remains deferred
+Status: MVP implemented — canonical Runtime lifecycle exists; failure residual-effect semantics are under D-052; durable persistence remains deferred
 
 1. Public Orion Runtime entry point — Implemented: `OrionRuntime.run()` is the public application boundary and delegates to `RuntimeSession`
 2. Full runtime lifecycle orchestration — Implemented for the MVP: public `OrionRuntime.run()` supports the canonical Decision → State Transition → State Commit → Event lifecycle; durable production persistence remains deferred
-3. Framework execution isolation — Implemented: explicit executor boundary and failure transition are implemented and validated
+3. Framework execution isolation — executor failures stop the run and do not return partial success; post-loop event-recording failure can still leave the session `Running` and is tracked by D-052
 4. FrameworkResult collection/validation — Implemented for the initial orchestration boundary
 5. Decision resolution boundary — implemented in RuntimeSession
 6. State Transition + StateStore commit — implemented in RuntimeSession
@@ -29,13 +29,13 @@ Status: MVP Complete — canonical Runtime lifecycle implemented; durable persis
 
 ## Workstream B — Data Pipeline
 
-Status: Contract Closed / Implementation Pending
+Status: Partial — contracts, normalization utilities, provider-neutral adapter, and Runtime handoff exist; production collection and Framework consumption remain pending
 
-1. Source adapters
-2. Raw-to-normalized transformation
-3. Validation and freshness checks
-4. Canonical MarketDataSet production
-5. Runtime data handoff integration
+1. Canonical observation and MarketDataSet contracts — implemented
+2. Source-agnostic normalization and structural checks — implemented
+3. Provider-neutral raw-batch adapter — implemented utility; no live provider
+4. Direct/provider MarketDataSet Runtime handoff — implemented
+5. Source collection, source-specific semantics, freshness/fallback policy, and Framework consumption — pending
 
 ## Workstream C — Moon Vertical Slice
 
@@ -56,6 +56,8 @@ Next:
 * RebalancePlan — implemented as deterministic target/current-weight delta operation
 * Runtime integration — pending explicit PortfolioState/current-weight handoff
 * ExecutionOrder — canonical materialization boundary implemented with explicit sizing inputs; quantity policy remains external
+* ADM signal-to-execution mapping — pending D-051; ADM remains inactive
+* Cash valuation and target semantics — pending D-053 before wiring `PortfolioState.cash` into rebalance valuation
 * CLI end-to-end execution
 
 ## Workstream D — Frameworks
@@ -90,6 +92,10 @@ Not current Core blockers:
 * Do not move investment logic into CLI, Dashboard, or Data layer.
 * Do not create generic abstractions without a concrete responsibility.
 * Do not reopen Core architecture for normal implementation gaps.
+
+## Historical Implementation Updates
+
+Entries below record the status and test count at the time of each dated update. They are not the current status or current test-suite count; use the Current Workstreams above and the current Implementation Status Report.
 
 ### Runtime Integration Update — Step 6
 

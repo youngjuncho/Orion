@@ -11,9 +11,11 @@ Initialize → Configuration → Data → State Restore → Context
 → Persistence → Presentation → Completion
 ```
 
-`RuntimeSession` is one execution lifecycle boundary; `RuntimeContext` is the execution-scoped input bundle. `build_context()` is assembly only. Framework-local failure preserves prior Framework state and permits independent Frameworks to continue where possible.
+`RuntimeSession` is one execution lifecycle boundary; `RuntimeContext` is the execution-scoped input bundle. `build_context()` is assembly only. A Framework executor failure stops the current execution; the public Runtime does not return a partial successful `OrionResult`. A later failure while recording Framework events can currently leave the session in `Running`, and a transition-event failure can occur after snapshot commit. These residual failure paths are tracked under Draft D-052.
 
 ---
+
+> **Document status:** The original body below was marked Draft in July 2026 and is retained as context. Use this reconciliation addendum, later dated audit notes, and the current Runtime contracts where wording conflicts; do not treat every historical workflow step as implemented.
 
 # Orion Runtime
 

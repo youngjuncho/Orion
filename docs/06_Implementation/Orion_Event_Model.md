@@ -38,7 +38,6 @@ EventStore is append-only historical storage; Event Sourcing is not adopted.
 
 ---
 
-
 ## Runtime Event Correlation
 
 `RuntimeSession.record_events()` is the MVP EventStore boundary. It accepts only
@@ -57,6 +56,8 @@ Accepted Decision → State Transition → successful State Commit → Domain Ev
 The current implementation does not add durable persistence or Event Sourcing.
 
 # Orion Event Model
+
+> **Document status:** The original body below was marked Draft in July 2026 and is retained as historical context. The reconciliation addendum and current Core Event contract take precedence where older event ordering, publication, or storage language conflicts. A Framework does not publish directly to EventStore.
 
 Version: 1.0
 

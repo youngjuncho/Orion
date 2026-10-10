@@ -6,6 +6,8 @@ Status: Draft
 
 Last Updated: 2026-07-27
 
+> **Current implementation boundary:** This is a design draft. D-049 records a five-company governance baseline, but the authoritative registry snapshot contract explicitly has no Runtime integration or strategy-activation mechanism. A report must not present hard-coded scaffold data as the current approved registry. Framework results and proposed events return through Runtime contracts; Supernova does not publish directly to Dashboard, EventStore, or durable history.
+
 Depends On:
 
 * Supernova_Engine.md
@@ -143,7 +145,7 @@ Tasks:
 * Update candidates and watchlists after governance review
 * Schedule reviews
 * Produce review records
-* Publish events
+* Return proposed event records in the Framework result for Runtime handling
 
 Output:
 
@@ -153,22 +155,16 @@ Updated Watchlists and Review Records
 
 ## Stage 7
 
-Publish Results
-
-Outputs include:
-
-* Dashboard cards
-* Reports
-* Orion services
-* Historical records
+Return a canonical Framework result through the Orion Runtime adapter. Runtime
+owns presentation handoff and event storage. This draft does not authorize
+direct publishing or durable history storage.
 
 ---
 
 # Runtime Integration
 
-The pipeline is executed by:
-
-Orion_Runtime
+The public Orion Runtime invokes a Framework adapter. Full Supernova governance
+registry integration remains unimplemented.
 
 Execution may be:
 
@@ -179,11 +175,9 @@ Execution may be:
 
 # Error Handling
 
-Pipeline failures should:
-
-* Preserve previous results
-* Log all errors
-* Generate pipeline events
+This draft does not define partial-result or retry behavior. The public Runtime
+stops on Framework failure and does not return a partial successful
+`OrionResult`.
 
 ---
 
