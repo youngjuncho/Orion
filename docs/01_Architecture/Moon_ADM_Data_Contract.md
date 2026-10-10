@@ -21,9 +21,11 @@ The input contains:
 `ADMStrategy` compares the supplied relative momentum values and applies the
 supplied absolute-momentum result. `assess_adm_monthly_dataset()` selects the
 monthly observations, calculates relative returns, compares the winner to
-SGOV, and applies D-058 freshness validation. It returns an auditable data
-assessment only; source-revision validation and governance approval remain
-required before constructing `ADMSignalInput`.
+SGOV, applies D-058 freshness validation, and fingerprints the canonical
+selected observations with SHA-256. The digest detects changed selected
+inputs; it does not contain or recover the observations. It returns an
+auditable data assessment only; source-revision validation and governance
+approval remain required before constructing `ADMSignalInput`.
 
 ## Price field and calculation
 
@@ -81,7 +83,12 @@ individual research. The adapter is opt-in through
 VEU, and SGOV, and fails the full batch on provider or validation errors.
 Monthly data are last-trading-day labels; they are date-only and are preserved
 without timezone conversion. The adapter makes no retries, cache, persistence,
-signal assembly, or activation.
+signal assembly, or activation. The proposed D-059 policy is to use each
+invocation's complete latest provider response without merging revisions from
+earlier retrievals. This proposal is not approved. Because neither raw
+responses nor canonical datasets are persisted, the same historical
+calculation cannot be reconstructed from its digest alone; point-in-time
+replay is not guaranteed.
 
 ## Acceptance criteria for a future adapter
 

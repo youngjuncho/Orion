@@ -16,6 +16,20 @@ def make_dataset(*points: MarketDataPoint) -> MarketDataSet:
     return MarketDataSet(tuple(points), as_of="2026-10-09")
 
 
+def monthly_dataset(*, vti_current: float = 115.0) -> MarketDataSet:
+    return MarketDataSet(
+        (
+            MarketDataPoint("VTI", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("VTI", "adjusted_close", "2026-09-30", vti_current, "fixture"),
+            MarketDataPoint("VEU", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("VEU", "adjusted_close", "2026-09-30", 110.0, "fixture"),
+            MarketDataPoint("SGOV", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("SGOV", "adjusted_close", "2026-09-30", 104.0, "fixture"),
+        ),
+        as_of="2026-10-10",
+    )
+
+
 def test_monthly_target_dates_use_the_latest_completed_month() -> None:
     targets = derive_adm_monthly_target_dates("2026-10-10")
 
@@ -38,19 +52,7 @@ def test_monthly_target_dates_exclude_current_month_on_first_day() -> None:
 
 
 def test_monthly_assessment_uses_seven_day_gate_and_d055_comparison() -> None:
-    dataset = MarketDataSet(
-        (
-            MarketDataPoint("VTI", "adjusted_close", "2025-09-30", 100.0, "fixture"),
-            MarketDataPoint("VTI", "adjusted_close", "2026-09-30", 115.0, "fixture"),
-            MarketDataPoint("VEU", "adjusted_close", "2025-09-30", 100.0, "fixture"),
-            MarketDataPoint("VEU", "adjusted_close", "2026-09-30", 110.0, "fixture"),
-            MarketDataPoint("SGOV", "adjusted_close", "2025-09-30", 100.0, "fixture"),
-            MarketDataPoint("SGOV", "adjusted_close", "2026-09-30", 104.0, "fixture"),
-        ),
-        as_of="2026-10-10",
-    )
-
-    assessment = assess_adm_monthly_dataset(dataset)
+    assessment = assess_adm_monthly_dataset(monthly_dataset())
 
     assert ADM_MONTHLY_MAX_OBSERVATION_AGE_DAYS == 7
     assert assessment.targets.current_target_date == "2026-09-30"
@@ -58,6 +60,15 @@ def test_monthly_assessment_uses_seven_day_gate_and_d055_comparison() -> None:
     assert assessment.comparison.status is ADMAbsoluteMomentumComparisonStatus.TRUE
     assert assessment.readiness.max_age_days == 7
     assert assessment.signal_assembly_ready is False
+
+
+def test_monthly_assessment_digest_is_stable_and_binds_selected_values() -> None:
+    first = assess_adm_monthly_dataset(monthly_dataset())
+    same = assess_adm_monthly_dataset(monthly_dataset())
+    revised = assess_adm_monthly_dataset(monthly_dataset(vti_current=116.0))
+
+    assert first.selected_input_digest == same.selected_input_digest
+    assert first.selected_input_digest != revised.selected_input_digest
 
 
 def test_monthly_assessment_rejects_stale_endpoint_for_any_risk_asset() -> None:

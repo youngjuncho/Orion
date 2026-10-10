@@ -32,7 +32,7 @@ These items are not closed sufficiently to authorize end-to-end production calcu
 | Twelve-month endpoint selection | D-056 prior-observation-on-or-before; D-058 implements the last-completed-month-end helper as an engineering default | Target generation is not signal-timing approval; selected observations must be no more than seven calendar days from each target |
 | Monthly signal date | Research spec says last trading day; execution spec says next trading day | Confirm how the signal date is represented and how the next trading day is identified across calendars |
 | Missing/stale observations | Provider batch fails closed; D-058 approves seven calendar days for all selected endpoints | Integrated monthly assessment applies the seven-day limit; low-level validation still takes an explicit caller value |
-| Historical revisions | Not specified | Decide whether recalculation uses latest revised history or preserves an as-observed snapshot, and what reproducibility means for MVP |
+| Historical revisions | D-059 recommendation proposed, approval open | Recommendation: use the complete latest response per invocation and never merge across retrievals; durable snapshots and historical replay remain unimplemented |
 | Provider choice | D-057 selects Alpha Vantage monthly adjusted data for private individual research | Verify live symbol coverage and use only within the approved private individual scope |
 
 ## 2. Provider-specific contract decisions

@@ -2689,3 +2689,35 @@ explicit caller value.
 
 This decision does not specify the next-trading-day execution date, session
 timezone, publication-time SLA, provider revision handling, or ADM activation.
+
+---
+
+## D-059 — ADM Provider Revision Handling (Recommendation)
+
+Status: **Proposed — owner approval required**
+Date: 2026-10-10
+
+### Recommendation
+
+For each ADM data assessment, use the complete latest history returned by that
+provider invocation. Do not merge observations from separate retrievals or
+silently prefer one conflicting revision across runs. Treat each invocation
+as its own input set. If durable as-observed snapshots or point-in-time replay
+are later required, define and approve that storage and revision policy
+separately before implementing it.
+
+The assessment now exposes a SHA-256 digest of its canonical selected
+observations, including source, currency, and supplied metadata. This makes
+input changes detectable when the associated input set is available; the
+digest is not a stored copy and cannot reconstruct an input set. The current
+adapter does not persist raw provider responses or canonical datasets, so
+historical replay and identical recomputation after provider corrections are
+not guaranteed.
+
+### Rationale and scope
+
+This recommendation keeps the opt-in private-research adapter bounded and
+avoids undocumented cross-run mixing. It does not approve signal assembly,
+live use, caching, persistence, provider fallback, or point-in-time
+reproducibility. PCD-10 remains open until the owner approves or changes this
+recommendation; PCD-11 records the implemented fingerprint and its limits.

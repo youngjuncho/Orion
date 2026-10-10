@@ -77,8 +77,8 @@ execution-date/timezone mapping remain engineering/operations items.
 | PCD-07 | Selected-observation age | Seven calendar days approved by D-058 | Apply one maximum age to all selected VTI/VEU/SGOV current and trailing observations | Integrated monthly assessment fails closed above seven days |
 | PCD-08 | Missing and partial responses | Generic fail-closed behavior implemented | Require all three symbols and at least 13 valid monthly observations each; reject provider notices, malformed values, or any incomplete symbol response | No silent fill, interpolation, or partial dataset |
 | PCD-09 | Duplicate and conflicting observations | Generic duplicate identity rejected; conflict policy open | Define provider-specific handling for conflicting records, overlapping pages, and repeated retrievals | No arbitrary winner selection |
-| PCD-10 | Revisions and corrections | Open | Decide whether calculation uses latest revised history or retrieval-time snapshots; define revision identity and correction precedence | No revision selection or durable snapshot behavior implemented |
-| PCD-11 | Provenance and reproducibility | Adapter provenance implemented; reproducible snapshots open | Specify provider/source ID, requested and returned instrument IDs, retrieval time, adapter version, field semantics, selected observation identities/dates, and revision/snapshot identifiers where available | Preserve supplied metadata; durable input snapshot/revision identity is not implemented |
+| PCD-10 | Revisions and corrections | Recommendation proposed; owner approval open (D-059) | For each invocation use the complete latest provider response returned by that invocation; never merge revisions across retrievals. Define any future point-in-time snapshot/correction policy separately. | No durable snapshot, cross-run revision selection, or historical replay guarantee |
+| PCD-11 | Provenance and reproducibility | Selected-input fingerprint implemented; durable snapshots open | Preserve adapter provenance and selected observation details; fingerprint the canonical selected observations. A digest detects changed inputs but cannot recover them. | Assessment exposes SHA-256 `selected_input_digest`; source payloads are not persisted |
 | PCD-12 | Timeout, rate limits, retry, cache, outage | Initial adapter behavior defined by D-057; operational limits remain open | Three sequential requests; 15-second timeout each; no retry/cache/fallback; fail full load; review provider quota before scheduled use | No automatic scheduling or outage recovery |
 | PCD-13 | Absolute-momentum benchmark | SGOV approved by D-055 | Apply SGOV for the approved comparison; source measurement and configured defensive-holding relationship remain separate |
 | PCD-14 | Comparison operator and equality | Approved by D-055 | Selected risk return must be strictly greater than SGOV; equality is false |
@@ -106,9 +106,10 @@ A status change in this register is not sufficient evidence of approval by itsel
 
 D-056 supplies provider-independent engineering defaults. D-057 resolves the
 initial provider and adapter scope for private individual research. D-058
-approves a seven-day selected-observation age limit. Exact target generation,
-publication-time SLA, live instrument coverage, revision reproducibility, and
-end-to-end signal activation remain open.
+approves a seven-day selected-observation age limit. D-059 is a proposed
+per-invocation latest-response policy, not an approved revision decision.
+Publication-time SLA, live instrument coverage, durable revision
+reproducibility, and end-to-end signal activation remain open.
 
 This order does not require all remaining decisions to be made in one session. D-057 has selected Alpha Vantage within its limited private-use scope.
 

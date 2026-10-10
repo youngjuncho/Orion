@@ -7,8 +7,10 @@ explicit governance concerns.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import hashlib
+import json
 from calendar import monthrange
+from dataclasses import dataclass
 from datetime import date, timedelta
 from enum import Enum
 from math import isfinite
@@ -919,6 +921,7 @@ class ADMMonthlyDataAssessment:
     absolute_momentum_inputs: ADMAbsoluteMomentumInputs
     comparison: ADMAbsoluteMomentumComparisonResult
     readiness: ADMDataAssemblyReadiness
+    selected_input_digest: str
 
     def __post_init__(self) -> None:
         if not isinstance(self.targets, ADMMonthlyTargetDates):
@@ -957,6 +960,12 @@ class ADMMonthlyDataAssessment:
             raise ValueError("readiness has an invalid type")
         if not self.readiness.data_quality_passed:
             raise ValueError("monthly assessment requires a passing data-quality result")
+        if (
+            not isinstance(self.selected_input_digest, str)
+            or len(self.selected_input_digest) != 64
+            or any(char not in "0123456789abcdef" for char in self.selected_input_digest)
+        ):
+            raise ValueError("selected_input_digest must be a lowercase SHA-256 digest")
 
     @property
     def signal_assembly_ready(self) -> bool:
@@ -1022,6 +1031,35 @@ def assess_adm_monthly_dataset(
         absolute_inputs,
         max_age_days=max_age_days,
     )
+    selected_points = {
+        point.identity: point
+        for pair in (
+            *relative_freshness.relative_momentum_result.observation_pairs.values(),
+            *absolute_inputs.observation_pairs.values(),
+        )
+        for point in (pair.current, pair.trailing)
+    }
+    digest_payload = [
+        {
+            "symbol": point.symbol,
+            "field": point.field,
+            "observed_at": point.observed_at,
+            "value": point.value,
+            "source": point.source,
+            "currency": point.currency,
+            "metadata": dict(point.metadata),
+        }
+        for _, point in sorted(selected_points.items())
+    ]
+    selected_input_digest = hashlib.sha256(
+        json.dumps(
+            digest_payload,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+            allow_nan=False,
+        ).encode("utf-8")
+    ).hexdigest()
     return ADMMonthlyDataAssessment(
         targets=targets,
         relative_momentum_freshness=relative_freshness,
@@ -1029,6 +1067,7 @@ def assess_adm_monthly_dataset(
         absolute_momentum_inputs=absolute_inputs,
         comparison=comparison,
         readiness=readiness,
+        selected_input_digest=selected_input_digest,
     )
 
 
