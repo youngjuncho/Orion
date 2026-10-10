@@ -11,7 +11,7 @@ Initialize → Configuration → Data → State Restore → Context
 → Persistence → Presentation → Completion
 ```
 
-`RuntimeSession` is one execution lifecycle boundary; `RuntimeContext` is the execution-scoped input bundle. `build_context()` is assembly only. A Framework executor failure stops the current execution; the public Runtime does not return a partial successful `OrionResult`. A later failure while recording Framework events can currently leave the session in `Running`, and a transition-event failure can occur after snapshot commit. These residual failure paths are tracked under Draft D-052.
+`RuntimeSession` is one execution lifecycle boundary; `RuntimeContext` is the execution-scoped input bundle. `build_context()` is assembly only. A Framework executor failure stops the current execution; the public Runtime does not return a partial successful `OrionResult`. Framework-event recording is now inside the failure boundary and closes the session as `Error` if it fails. A transition-event failure can still occur after snapshot commit; remaining residual-side-effect and Runtime-reuse questions are tracked under Draft D-052.
 
 ---
 

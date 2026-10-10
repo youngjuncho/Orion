@@ -20,7 +20,7 @@ Status: MVP implemented — canonical Runtime lifecycle exists; failure residual
 
 1. Public Orion Runtime entry point — Implemented: `OrionRuntime.run()` is the public application boundary and delegates to `RuntimeSession`
 2. Full runtime lifecycle orchestration — Implemented for the MVP: public `OrionRuntime.run()` supports the canonical Decision → State Transition → State Commit → Event lifecycle; durable production persistence remains deferred
-3. Framework execution isolation — executor failures stop the run and do not return partial success; post-loop event-recording failure can still leave the session `Running` and is tracked by D-052
+3. Framework execution isolation — executor and event-recording failures stop the run and close the session as `Error`; post-commit transition-event failures and remaining side effects are tracked by D-052
 4. FrameworkResult collection/validation — Implemented for the initial orchestration boundary
 5. Decision resolution boundary — implemented in RuntimeSession
 6. State Transition + StateStore commit — implemented in RuntimeSession

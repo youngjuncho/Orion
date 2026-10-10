@@ -2459,8 +2459,10 @@ side-effects when a later stage fails. In the current implementation,
 framework-produced events are appended before decision resolution; a snapshot
 can be published before an event factory or EventStore operation fails; and
 Runtime instances retain their StateStore/EventStore and execution metadata
-across calls. In addition, failure while recording Framework events after the
-executor loop can currently leave the session status as `Running`.
+across calls. A code change now places post-loop Framework-event recording
+inside the session failure boundary so that this failure closes the session as
+`Error`; verification remains pending. Post-commit event failure and
+Runtime-reuse semantics remain unresolved.
 
 ### Decision Required
 

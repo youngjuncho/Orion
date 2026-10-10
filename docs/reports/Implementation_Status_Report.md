@@ -19,7 +19,7 @@ Last Updated: 2026-10-10
 |---|---|---|
 | Configuration loader | Implemented | typed validation and required-file checks |
 | Core domain models | Partial | shared contracts exist; account aggregation and end-to-end portfolio state projection remain |
-| RuntimeSession / RuntimeContext | Implemented with known failure gap | executor failures stop the run; post-loop event-recording failure can leave session status `Running` (D-052) |
+| RuntimeSession / RuntimeContext | Implemented with known failure gaps | executor and event-recording failures close the session as `Error`; transition-event failure can follow state commit; D-052 tracks remaining residual effects |
 | StateStore / EventStore | Implemented | in-memory stores; transition-event failure may follow state commit (D-052) |
 | Public Orion Runtime | MVP implemented | framework orchestration and optional Decision -> State Transition -> State Commit -> Event lifecycle |
 | Durable State/Event storage | Future | outside current MVP |
