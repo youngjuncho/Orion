@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
+from typing import Mapping
 from ..ids import AssetId, PortfolioId, TargetId, TransferId
 from .allocation import Allocation
 from .models import PortfolioTarget
@@ -97,11 +98,15 @@ def build_rebalance_plan_from_state(
     prices: dict[AssetId, Decimal | int | float],
     *,
     as_of: str,
-    cash_value: Decimal | int | float = Decimal("0"),
+    valuation_currency: str,
+    cash_fx_rates: Mapping[str, Decimal | int | float] | None = None,
 ) -> RebalancePlan:
     """Build a weight-based rebalance plan from portfolio state and supplied prices."""
     if state.portfolio_id != target.portfolio_id:
         raise ValueError("portfolio state and target must reference the same portfolio")
-    valuation = value_portfolio_state(state, prices, as_of=as_of, cash_value=cash_value)
+    valuation = value_portfolio_state(
+        state, prices, as_of=as_of, valuation_currency=valuation_currency,
+        cash_fx_rates=cash_fx_rates,
+    )
     current = current_allocations_from_valuation(valuation)
     return build_rebalance_plan(target, current, as_of=as_of)
