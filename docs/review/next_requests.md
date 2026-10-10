@@ -30,7 +30,7 @@ The all-or-nothing guarantee applies to Orion-owned in-memory stores; it does no
 
 ### 3. Resolve Draft D-053 — Portfolio Cash Valuation / Target Semantics
 
-`PortfolioState` carries account cash, but the valuation function accepts a separate `cash_value` and the target model has no cash sleeve. Decide whether cash enters the total-value denominator, how it relates to a fully invested target, and which layer converts multi-currency balances into the valuation currency. Do not make raw cross-currency sums or silently omit cash.
+Proposed MVP: use configured `system.currency` (currently KRW), take cash from `PortfolioState.cash`, convert with caller-supplied rates, include it in the total-value denominator, and keep cash as residual funding outside the fully invested `PortfolioTarget`. Reject duplicate `(account_id, currency)` balances and remove the separate `cash_value` argument. Confirm or revise this policy before changing the valuation API; no FX lookup or cross-currency sum is implicit.
 
 ## Next Implementation Work (after the decisions)
 

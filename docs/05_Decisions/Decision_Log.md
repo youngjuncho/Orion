@@ -2542,8 +2542,24 @@ The owner must define:
 * the valuation currency and the approved FX conversion boundary for
   multi-currency cash.
 
-This draft does not select residual-cash treatment, a cash target weight, or an
-FX source/conversion policy.
+### Proposed MVP Policy (Owner Confirmation Required)
+
+1. Use `system.currency` as the valuation currency (currently KRW).
+2. Treat `PortfolioState.cash` as the authoritative cash input. Aggregate at
+   most one `CashBalance` per `(account_id, currency)`; reject duplicate keys
+   rather than risk double-counting. Convert non-valuation currencies using
+   caller-supplied, positive finite rates expressed as valuation-currency units
+   per one unit of source currency. The portfolio layer performs no FX lookup.
+3. Include converted cash in `PortfolioValuation.total_value` and therefore in
+   the denominator used for current non-cash asset weights. `PortfolioTarget`
+   remains fully invested with no cash allocation; cash stays as residual
+   funding whose effect is reflected in the lower current asset weights.
+4. Remove the separate `cash_value` argument so callers cannot silently omit
+   the state cash balances. Missing FX for a non-valuation currency is an error.
+
+The owner must approve or revise this proposal before changing the valuation
+API. FX rate source, timestamp/freshness policy, and account aggregation rules
+beyond duplicate-key rejection remain caller/data-governance concerns.
 
 ### Required Follow-up
 
