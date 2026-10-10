@@ -60,7 +60,11 @@ def build_rebalance_plan(
     quantities require portfolio valuation and/or price data and therefore
     remain outside this contract.
     """
-    current = {allocation.asset_id: allocation.weight for allocation in current_allocations}
+    current: dict[AssetId, Decimal] = {}
+    for allocation in current_allocations:
+        if allocation.asset_id in current:
+            raise ValueError(f"duplicate current allocation for asset: {allocation.asset_id}")
+        current[allocation.asset_id] = allocation.weight
     target_weights = {allocation.asset_id: allocation.weight for allocation in target.allocations}
     asset_ids = sorted(set(current) | set(target_weights), key=str)
     changes: list[RebalanceChange] = []
