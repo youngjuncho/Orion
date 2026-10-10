@@ -1,12 +1,12 @@
 # Moon ADM Data Readiness and Closure Matrix
 
 Version: 1.0
-Status: Engineering Baseline - D-055 Comparison Approved; D-057 Source Adapter Implemented; D-058 Freshness Approved
+Status: Engineering Baseline - D-055 Comparison Approved; D-057 Source Adapter Implemented; D-058 Freshness Approved; D-059 Revision Policy Approved
 Last Updated: 2026-10-10
 
 ## Purpose
 
-This matrix separates approved ADM methodology, the D-057 source-adapter scope, and remaining data/activation gates. D-055 closes the absolute-momentum benchmark/operator decision. D-057 selects Alpha Vantage's monthly adjusted endpoint for private individual research; D-058 approves a seven-day maximum age for selected observations. The target-date helper remains an engineering default. None of these decisions activates ADM.
+This matrix separates approved ADM methodology, the D-057 source-adapter scope, and remaining data/activation gates. D-055 closes the absolute-momentum benchmark/operator decision. D-057 selects Alpha Vantage's monthly adjusted endpoint for private individual research; D-058 approves a seven-day maximum age for selected observations; D-059 approves per-invocation revision handling and fail-closed duplicate rejection. The target-date helper remains an engineering default. None of these decisions activates ADM.
 
 ## Existing approved methodology
 
@@ -14,7 +14,7 @@ The following points are grounded in existing decisions or the current ADM imple
 
 | Item | Current baseline | Boundary |
 |---|---|---|
-| Return measurement | D-028 approves adjusted-price-based total-return measurement; D-055 applies it to risk asset and SGOV; D-057 selects Alpha Vantage monthly adjusted close mapping | Provider adjustment history/revisions and empirical parity remain to be validated |
+| Return measurement | D-028 approves adjusted-price-based total-return measurement; D-055 applies it to risk asset and SGOV; D-057 selects Alpha Vantage monthly adjusted close mapping | D-059 selects each invocation's latest response; empirical adjusted-history parity remains to be validated |
 | Momentum horizon | `ADM_Orion.md` specifies trailing 12-month return; D-055 requires the same horizon for the risk asset and SGOV | The engineering helper aligns monthly endpoints; execution-date mapping remains open |
 | Risk universe | VTI and VEU | Do not add assets without a separate methodology decision |
 | Selection behavior | ADMStrategy compares precomputed relative momentum and absolute-momentum inputs | It does not calculate them from market observations |
@@ -27,7 +27,7 @@ These items are not closed sufficiently to authorize end-to-end production calcu
 
 | Item | Current document state | Required closure |
 |---|---|---|
-| Absolute-momentum benchmark/operator | D-055 approves SGOV and strict selected-risk-return greater-than-benchmark; equality is false | Provider revision/parity, target/execution calendar, configured defensive holding, and activation remain separate gates; D-058 age limit is approved |
+| Absolute-momentum benchmark/operator | D-055 approves SGOV and strict selected-risk-return greater-than-benchmark; equality is false | Adjusted-history parity, target/execution calendar, configured defensive holding, and activation remain separate gates; D-058 age limit is approved |
 | Adjusted-price semantics | D-057 maps Alpha Vantage's `5. adjusted close`; provider documents split and cash-dividend adjustments | Do not add the separate monthly dividend field; exact adjustment/reinvestment method, history parity, and point-in-time semantics are unverified |
 | Twelve-month endpoint selection | D-056 prior-observation-on-or-before; D-058 implements the last-completed-month-end helper as an engineering default | Target generation is not signal-timing approval; selected observations must be no more than seven calendar days from each target |
 | Monthly signal date | Research spec says last trading day; execution spec says next trading day | Confirm how the signal date is represented and how the next trading day is identified across calendars |
@@ -42,7 +42,7 @@ These are not global investment-methodology rules. They must be stated in the ad
 - Exact instrument identifiers and mapping for VTI, VEU, and SGOV as the D-055 comparison benchmark; any configured defensive holding is a separate mapping.
 - Provider field-to-canonical-field mapping, including the precise meaning of its adjusted-price field.
 - Timestamp format, timezone, trading calendar, and the interpretation of daily bars.
-- How the provider represents absent bars, duplicate bars, delayed data, corrected data, and conflicting responses.
+- How the provider represents absent bars, delayed data, and corrected history; duplicates fail closed under D-059 and the adapter contract.
 - Retrieval provenance and the metadata required to reproduce which two observations were selected for each return calculation.
 - Provider access limits, failure behavior, and any retry/cache policy, if later authorized.
 

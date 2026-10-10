@@ -17,13 +17,16 @@ the latest eligible observation on or before each target and must never use a
 future observation. VTI, VEU, and the SGOV comparison input use the same field,
 targets, and selection rule. Missing, invalid, caller-defined stale, or
 conflicting required observations fail closed without fills, interpolation,
-or partial success. The calculation boundary retains selected-observation
+or partial success. D-059 now defines per-invocation revision selection and
+duplicate rejection. The calculation boundary retains selected-observation
 identity and source metadata where supplied.
 
-These defaults do not choose target dates, a calendar or timezone, numeric
+These defaults did not choose target dates, a calendar or timezone, numeric
 freshness limits, provider conflict or revision precedence, a source, or
-adjusted-price semantics. No provider, live collection, signal assembly, or
-ADM activation is approved. See D-056 in the Decision Log.
+adjusted-price semantics. Later decisions D-057 through D-059 resolve only
+the provider scope, approved freshness limit, and per-invocation revision
+handling; they do not approve signal assembly or ADM activation. See D-056 in
+the Decision Log.
 
 ## Provider candidate evidence (not an approval)
 

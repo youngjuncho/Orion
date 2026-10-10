@@ -1,12 +1,12 @@
 # Moon ADM Data Contract
 
 Version: 1.0  
-Status: Contract Baseline - D-055 Comparison Approved; D-057 Provider Adapter Implemented; D-058 Freshness Approved
+Status: Contract Baseline - D-055 Comparison Approved; D-057 Provider Adapter Implemented; D-058 Freshness Approved; D-059 Revision Policy Approved
 Last Updated: 2026-10-10
 
 ## Purpose
 
-This document records the ADM data boundary implied by the implementation specification and decisions D-028, D-055, D-056, D-057, and D-058. Alpha Vantage's monthly adjusted endpoint is implemented for private individual research under D-057. D-058 approves a seven-day maximum age for selected observations; its target-date convention remains an engineering default. Provider access does not authorize ADM signal assembly or activation.
+This document records the ADM data boundary implied by the implementation specification and decisions D-028 and D-055 through D-059. Alpha Vantage's monthly adjusted endpoint is implemented for private individual research under D-057. D-058 approves a seven-day maximum age for selected observations; its target-date convention remains an engineering default. D-059 defines per-invocation revision handling. Provider access does not authorize ADM signal assembly or activation.
 
 ## Existing strategy contract
 
@@ -24,8 +24,8 @@ monthly observations, calculates relative returns, compares the winner to
 SGOV, applies D-058 freshness validation, and fingerprints the canonical
 selected observations with SHA-256. The digest detects changed selected
 inputs; it does not contain or recover the observations. It returns an
-auditable data assessment only; source-revision validation and governance
-approval remain required before constructing `ADMSignalInput`.
+auditable data assessment only; provider coverage/history-parity validation
+and governance approval remain required before constructing `ADMSignalInput`.
 
 ## Price field and calculation
 
@@ -73,9 +73,9 @@ threshold. Under D-056, the same field,
 targets, and selection rule apply to VTI, VEU, and the SGOV comparison input.
 Required missing, invalid, stale under an explicit caller policy, or
 conflicting observations fail closed; no fill, interpolation, or partial
-success is allowed. Provider publication-time SLA, conflict/revision semantics,
-and empirical validation of the provider's adjusted-price history remain
-separate source-contract gates. Production signal
+success is allowed. D-059 defines cross-invocation revision handling and
+duplicate rejection. Provider publication-time SLA and empirical validation
+of adjusted-price history remain separate source-contract gates. Production signal
 assembly remains gated on those decisions and governance approval.
 
 ## Defensive benchmark dependency
@@ -106,7 +106,8 @@ Before ADM signal assembly can be considered ready, it must:
 - document instrument identity and adjusted-price semantics;
 - review the D-058 engineering target-date convention and document the
   execution-date/timezone mapping; apply the approved D-058 freshness limit;
-- define missing, duplicate, stale, revised, and conflicting observations;
+- preserve the fail-closed handling for missing, duplicate, stale, revised,
+  and conflicting observations in deterministic provider fixtures;
 - honor D-055's SGOV comparison benchmark; document any separate configured defensive holding relationship;
 - provide deterministic fixtures covering normal and invalid input cases;
 - produce `ADMSignalInput` only after required inputs pass validation.
