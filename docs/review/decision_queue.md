@@ -34,8 +34,9 @@ Therefore the following historical queue items are closed at the architecture le
 | D-052 | Runtime failure and commit semantics | **Approved 2026-10-10 and implemented:** stage/validate state and events, commit both stores together, mark failed sessions `Error`, enforce one public run per Runtime, and validate snapshot/transition correlation. |
 | D-053 | Portfolio cash valuation and target semantics | **Approved 2026-10-10 and implemented:** use `system.currency` as valuation currency; value `PortfolioState.cash` with caller-supplied positive finite FX rates; include cash in the total-value denominator while keeping it outside the fully invested target; reject duplicate account/currency balances and remove the separate `cash_value` input. |
 | D-054 | Default acceptance of rebalance plan proposals | **Approved 2026-10-10:** retain D-050 candidate-type-agnostic Auto-Approval. Moon target and rebalance plan proposals are accepted independently by default; callers may provide a handler to reject or conditionally accept either. Acceptance does not execute orders. |
+| D-055 | ADM absolute-momentum signal policy | **Draft:** decide whether SGOV is the absolute-momentum benchmark or is separate from it; define the exact selected-risk-return comparison and equality behavior; confirm matched trailing-12-month adjusted-price measurement. D-051 mapping is not benchmark approval. ADM remains inactive until this and separate data gates are closed. |
 
-`D-051` through `D-054` are approved. See the Decision Log and relevant contracts for evidence.
+`D-051` through `D-054` are approved. D-055 is open. See the Decision Log and relevant contracts for evidence.
 
 ### Core Decision Traceability
 

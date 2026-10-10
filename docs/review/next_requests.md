@@ -36,6 +36,10 @@ Approved 2026-10-10. The valuation and rebalance APIs take the configured curren
 
 Approved 2026-10-10: retain D-050's candidate-type-agnostic Auto-Approval. A Moon `RebalancePlanProposal` is accepted by default independently from its linked target proposal when no custom acceptance handler is supplied. This does not submit or execute orders. A custom handler can still reject or conditionally accept either candidate.
 
+### 5. Resolve D-055 — ADM Absolute-Momentum Signal Policy
+
+D-051 approves SGOV as an execution mapping, not as the absolute-momentum benchmark. Decide whether SGOV is the benchmark or remains only a defensive holding, define the exact selected-risk-return comparison and equality behavior, and confirm the matched trailing-12-month adjusted-price convention. Provider semantics, calendar interpretation, and freshness thresholds remain separate gates. Keep ADM inactive and signal assembly blocked until these decisions are closed.
+
 ## Next Implementation Work (after the decisions)
 
 ### Core Runtime

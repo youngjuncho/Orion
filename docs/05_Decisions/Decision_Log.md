@@ -2567,3 +2567,33 @@ The owner confirmed retaining D-050 as-is: Auto-Approve target and plan
 proposals independently. Callers can still supply an acceptance handler to
 reject or conditionally accept either candidate. Auto-Approval records
 acceptance only; it does not submit or execute orders.
+
+---
+
+## D-055 — ADM Absolute-Momentum Signal Policy
+
+Status: **Draft — owner decision required**
+Date: 2026-10-10
+
+The current ADM research describes absolute momentum relative to a cash or
+defensive return, while `ADM_Orion.md` lists SGOV as the primary defensive
+candidate and BIL/SHY as backups pending final approval. D-051 resolves the
+signal-to-execution mapping for SGOV; it does not approve SGOV as the absolute-
+momentum comparison benchmark. D-028 approves adjusted-price-based total-return
+measurement, but the research marks the measurement standard pending
+validation.
+
+Before producing `absolute_momentum_positive` or assembling `ADMSignalInput`,
+the methodology owner must decide:
+
+1. Whether the comparison benchmark is SGOV, another approved instrument, or
+   separate from the selected defensive holding.
+2. Whether a selected risk asset passes when its trailing return is strictly
+   greater than the benchmark return, greater than or equal to it, or under
+   another explicit expression. Define the equality outcome.
+3. Whether the approved comparison applies the same trailing-12-month
+   adjusted-price return convention to the selected risk asset and benchmark.
+
+Provider choice, adjusted-price source semantics, calendar interpretation, and
+freshness limits remain separate data-contract gates. Until this decision and
+those data gates are closed, keep ADM inactive and do not assemble a signal.
