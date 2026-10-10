@@ -97,10 +97,12 @@ Still pending or deliberately outside the current boundary:
 
 * A production data pipeline: source-specific adapters, collection,
   freshness policy, semantic validation, and fallback behavior.
-* A portfolio state projection from one or more Accounts and a Runtime handoff
-  of authoritative portfolio state/current weights into Moon rebalance planning.
-* End-to-end Moon rebalance integration. The present portfolio operations are
-  callable domain functions, not an execution lifecycle wired into Runtime.
+* An upstream authoritative account selection/source and live Account data
+  handoff. `build_portfolio_state()` projects explicitly selected account,
+  position, and cash records, and the Moon adapter accepts state/price factories
+  to produce a separate rebalance proposal.
+* Execution sizing and broker lifecycle. Runtime proposes and can accept a
+  weight-based plan but does not turn it into orders or execute trades.
 * Order sizing policy, broker submission, fills, settlement, ledger updates,
   and resulting position/cash mutation.
 * Framework methodology/governance that remains unresolved in Aurora,

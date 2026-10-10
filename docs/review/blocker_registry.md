@@ -35,7 +35,7 @@ Source adapters, collectors, source-specific semantic validation, freshness thre
 
 ### Moon
 
-Portfolio architecture is resolved. `PortfolioSnapshot`, valuation, `RebalancePlan`, and explicit-input `ExecutionOrder` materialization exist. Account aggregation, authoritative current-state handoff, end-to-end Runtime integration, sizing policy, and broker execution/fills/settlement remain.
+Portfolio architecture is resolved. `PortfolioSnapshot`, deterministic caller-selected Account/Position/Cash projection, D-053 valuation, `RebalancePlan`, Moon proposal handoff, and explicit-input `ExecutionOrder` materialization exist. Upstream account selection/source authority, sizing policy, and broker execution/fills/settlement remain.
 
 ### Aurora / Supernova / Phoenix
 

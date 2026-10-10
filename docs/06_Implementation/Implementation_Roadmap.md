@@ -54,10 +54,10 @@ Next:
 
 * PortfolioSnapshot — existing common contract validated
 * RebalancePlan — implemented as deterministic target/current-weight delta operation
-* Runtime integration — pending explicit PortfolioState/current-weight handoff
+* Runtime integration — implemented through explicit current-state and valuation-price factories; Account-to-PortfolioState projection is available for caller-selected account sets
 * ExecutionOrder — canonical materialization boundary implemented with explicit sizing inputs; quantity policy remains external
 * ADM signal-to-execution mapping — approved by D-051 (VTI/VEU/SGOV identity mappings); ADM activation remains separate and inactive
-* Cash valuation and target semantics — pending D-053 before wiring `PortfolioState.cash` into rebalance valuation
+* Cash valuation and target semantics — D-053 approved and implemented; `PortfolioState.cash` is wired into valuation
 * CLI end-to-end execution
 
 ## Workstream D — Frameworks

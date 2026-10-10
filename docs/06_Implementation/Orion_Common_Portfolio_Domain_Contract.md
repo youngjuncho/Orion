@@ -86,6 +86,15 @@ It may include:
 
 Portfolio Value and Current Allocation are derived values, not independent sources of truth.
 
+`build_portfolio_state()` projects a caller-selected sequence of Accounts,
+Positions, and CashBalances into a stable `PortfolioState`. Every supplied
+Account must belong to the requested Portfolio, and each holding or cash row
+must reference one of those Accounts. Duplicate Account/Position IDs and
+duplicate `(account_id, currency)` cash balances are rejected. Inputs are
+ordered deterministically in the result. The caller chooses the account set;
+Account `status` filtering and upstream source authority are not inferred by
+the projection function.
+
 `PortfolioState.cash` is the authoritative cash input for valuation. The caller
 passes configured `system.currency` as `valuation_currency`; asset prices must
 already be denominated in that currency. Cash in another currency requires an
