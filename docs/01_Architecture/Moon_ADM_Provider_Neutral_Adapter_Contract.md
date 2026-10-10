@@ -41,7 +41,7 @@ This contract does not approve Yahoo Finance or any other source, validate `adju
 
 ## Next gate
 
-Before any provider-specific adapter is implemented, approve the provider and document instrument identity, field semantics, timestamps/calendar, correction/revision policy, freshness, missing/stale/duplicate response handling, provenance, and network failure behavior. Keep Core Runtime and Moon strategy activation unchanged.
+Before any provider-specific adapter is implemented, approve the provider and document instrument identity, field semantics, timestamps/calendar, correction/revision policy, freshness, missing/stale/duplicate response handling, provenance, and network failure behavior. The acceptance matrix is maintained in `Moon_ADM_Provider_Adapter_Acceptance_Test_Matrix.md`. Keep Core Runtime and Moon strategy activation unchanged.
 
 ## Related documents
 

@@ -59,6 +59,22 @@ Aurora remains outside the Portfolio Domain.
 The canonical application execution boundary is **Orion Runtime**.
 Frameworks return framework results and do not directly mutate StateStore/EventStore.
 
+## Moon ADM Provider Governance
+
+Governance revocation integration test notes: `docs/01_Architecture/Orion_Governance_Revocation_Integration_Tests.md`.
+
+The provider-neutral data boundary is implemented, but concrete provider use and Moon ADM signal activation remain gated. Current governance artifacts:
+
+- `docs/01_Architecture/Moon_ADM_Provider_Contract_Decision_Register.md` ? unresolved decision inventory
+- `docs/01_Architecture/Moon_ADM_Provider_Decision_Evidence_and_Closure_Workflow.md` ? evidence and closure requirements
+- `docs/01_Architecture/Moon_ADM_Provider_Adapter_Acceptance_Test_Matrix.md` ? generic acceptance evidence and provider-specific exit criteria
+- `docs/01_Architecture/Moon_ADM_Provider_Contract_Readiness_Audit.md` ? readiness findings and evidence limitations
+- `docs/01_Architecture/Moon_ADM_Provider_Governance_Gate_Specification.md` ? cumulative gates and fail-closed approval requirements
+- `docs/01_Architecture/Moon_ADM_Authoritative_Decision_Record_Schema_and_Validator.md` ? local record schema, digest validation, scope/dependency checks, and explicit authority limitations
+- `docs/01_Architecture/Orion_Authoritative_Registry_Snapshot_Contract.md` ? snapshot metadata, scope, digest, timestamp/freshness checks, and trust limitations
+
+Passing generic adapter tests does not approve a provider, investment methodology, or strategy activation.
+
 ## Development Roadmap
 
 Phase 1
@@ -96,3 +112,8 @@ routing, framework scaffolds, and a partial Moon ADM path. Research and
 implementation rules that are still marked Draft are not activated by the
 operational configuration.
 
+
+
+## Governance and decision records
+
+- Decision Registry Integrity & Revocation Model: `docs/01_Architecture/Orion_Decision_Registry_Integrity_and_Revocation_Model.md`

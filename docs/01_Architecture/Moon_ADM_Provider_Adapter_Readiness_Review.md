@@ -65,11 +65,12 @@ The existing source-agnostic calculation helpers can be reused. Do not place pro
 
 ## Recommended next step
 
-The provider-neutral adapter boundary and fake-provider failure tests are now implemented in `src/data/adapters.py` and `tests/data/test_contracts.py`. Keep live provider integration blocked. The next review should decide whether the named provider and its source contract can be approved; do not add network access before those decisions are closed.
+The provider-neutral adapter boundary and fake-provider failure tests are now implemented in `src/data/adapters.py` and `tests/data/test_contracts.py`. Keep live provider integration blocked. Step 42 consolidates open items in [`Moon_ADM_Provider_Contract_Decision_Register.md`](Moon_ADM_Provider_Contract_Decision_Register.md). Use it to track authoritative decisions and evidence; do not treat the register itself as approval or add network access before the relevant gates are closed.
 
 ## Related documents
 
 - `Moon_ADM_Provider_Neutral_Adapter_Contract.md`
+- `Moon_ADM_Provider_Contract_Decision_Register.md`
 - `Moon_ADM_Data_Contract.md`
 - `Moon_ADM_Data_Readiness_and_Closure.md`
 - `Moon_ADM_Data_Implementation_Boundary.md`
@@ -77,3 +78,8 @@ The provider-neutral adapter boundary and fake-provider failure tests are now im
 - `Orion_Framework_Data_Contracts.md`
 - `Orion_Data_Pipeline.md`
 - `docs/03_Research/Moon/ADM/ADM_Orion.md`
+
+
+## Acceptance evidence
+
+The provider-neutral boundary acceptance scenarios and remaining provider-specific gates are tracked in [`Moon_ADM_Provider_Adapter_Acceptance_Test_Matrix.md`](Moon_ADM_Provider_Adapter_Acceptance_Test_Matrix.md). Passing fixture tests does not approve a provider or close outstanding policy decisions.

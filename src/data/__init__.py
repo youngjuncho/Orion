@@ -14,3 +14,26 @@ __all__ = [
     "normalize_observation",
     "validate_dataset",
 ]
+from .governance import (
+    DecisionRecordError,
+    canonical_digest,
+    canonical_snapshot_digest,
+    invalidate_dependents,
+    resolve_approved_decisions,
+    resolve_registry_approved_decisions,
+    validate_authoritative_registry_snapshot,
+    validate_decision_record,
+    validate_registry_lineage,
+)
+
+__all__ += [
+    "DecisionRecordError",
+    "canonical_digest",
+    "canonical_snapshot_digest",
+    "invalidate_dependents",
+    "resolve_approved_decisions",
+    "resolve_registry_approved_decisions",
+    "validate_authoritative_registry_snapshot",
+    "validate_decision_record",
+    "validate_registry_lineage",
+]
