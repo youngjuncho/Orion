@@ -2398,26 +2398,23 @@ Date:
 
 Status:
 
-Draft
+Approved
 
 Category:
 
 Moon Strategy / Execution Mapping
 
-### Issue Under Review
+### Issue Resolved
 
-`ADM_Orion.md` specifies VTI and VEU as risk assets and SGOV as the defensive
-asset candidate. `Moon_Execution_Mapping.md` and the current `ExecutionMapper`
-do not map VTI, VEU, or SGOV as signal inputs. SGOV is present only as the
-mapped destination for BIL.
-Consequently, an ADM consensus allocation containing VTI or VEU cannot be
-converted to the common `PortfolioTarget` through the documented mapping.
+Before this decision, `ADM_Orion.md` specified VTI and VEU as risk assets and
+SGOV as the defensive asset candidate, but neither the documented mapping nor
+`ExecutionMapper` accepted these as signal inputs. Consequently, ADM output
+could not be converted to the common `PortfolioTarget` through that mapping.
 
-The current `config/moon.yaml` sets `active_strategies: []`; this draft records
-a gate before ADM activation and does not claim that an active production run
-currently fails.
+The current `config/moon.yaml` sets `active_strategies: []`; the mapping gap was
+a gate before ADM activation, not a failure in an active production run.
 
-### Preliminary Research (2026-10-10)
+### Research (2026-10-10)
 
 Vanguard's published expense ratios are 0.03% for VTI, 0.04% for VEU, and
 0.05% for VXUS (figures shown as of 2026-02-27 for VEU and VXUS; VTI's product
@@ -2430,31 +2427,27 @@ exposure.
 
 Sources: [Vanguard VTI product listing](https://investor.vanguard.com/investment-products/list/all?assetclass=equity&filters=open&managementstyle=index&strategy=total_market_etfs), [Vanguard VEU product page](https://advisors.vanguard.com/investments/products/veu/vanguard-ftse-all-world-ex-us-etf), and [Vanguard VXUS product page](https://advisors.vanguard.com/investments/products/vxus/vanguard-total-international-stock-etf).
 
-Preliminary recommendation for owner review: keep ADM's specified VTI, VEU,
-and SGOV as its execution instruments using explicit identity mappings. This
-preserves the ADM specification and avoids selecting an unapproved
-substitute. It does not activate ADM or approve a production mapping.
+### Decision
 
-### Decision Required
+ADM signal assets are also the execution assets for this mapping contract:
 
-The owner must confirm or change the preliminary recommendation before ADM
-target construction is enabled:
+* VTI -> VTI
+* VEU -> VEU
+* SGOV -> SGOV
 
-1. Approve identity mappings: VTI -> VTI, VEU -> VEU, and SGOV -> SGOV.
-2. Specify and approve one or more explicit execution equivalents. For example,
-   VEU -> VXUS would change index exposure and currently has a higher published
-   expense ratio; the other mappings would still need explicit choices.
-3. Keep ADM target construction blocked until mappings are approved.
+This preserves ADM's specified instruments. No VEU -> VXUS substitution is
+approved. This decision resolves the signal-to-execution mapping only; it does
+not activate ADM, authorize a live trade, or approve any broker integration.
+The existing `active_strategies: []` configuration remains unchanged.
 
-No mapping is approved by this draft. Existing ETF mappings must not be
-extended by ticker similarity or inferred economic equivalence. The research
-note is not a fund recommendation or an approval to trade.
+### Implementation and Verification
 
-### Required Follow-up
-
-After owner resolution, update this record to Approved, update the Moon mapping
-contract and configuration as applicable, and validate ADM output through
-`PortfolioTarget` construction with an integration test.
+The mapping contract and `ExecutionMapper` now explicitly identity-map VTI,
+VEU, and SGOV. Runtime integration coverage exercises ADM selecting each of
+these assets through `PortfolioTarget` construction. The focused Moon model
+and runtime integration suites passed (24 tests, Python 3.12.13) on
+2026-10-10. ADM remains inactive in configuration; this decision does not
+enable strategy activation or live execution.
 
 ---
 

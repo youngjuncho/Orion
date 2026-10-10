@@ -112,6 +112,6 @@ Configuration cannot create approval. A strategy or framework becomes executable
 
 ## Next Implementation Direction
 
-Resolve D-051 and D-052, complete the Core decision-evidence traceability audit, then continue with production data policies, authoritative portfolio-state projection, Moon rebalance Runtime integration, and remaining CLI/Dashboard/API work.
+D-051 is approved and implemented; resolve D-052 and complete the Core decision-evidence traceability audit, then continue with production data policies, authoritative portfolio-state projection, Moon rebalance Runtime integration, and remaining CLI/Dashboard/API work.
 
 This roadmap does not redefine investment methodology or framework governance.

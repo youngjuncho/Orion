@@ -10,9 +10,9 @@ No new Core architecture decision is currently requested. Before relying on the 
 
 ## Next Documentation / Decision Work
 
-### 1. Resolve Draft D-051 — ADM Signal-to-Execution Mapping
+### 1. D-051 — ADM Signal-to-Execution Mapping (Implemented)
 
-`ADM_Orion.md` specifies VTI and VEU as risk assets and SGOV as the defensive candidate. `Moon_Execution_Mapping.md` / `ExecutionMapper` do not accept VTI, VEU, or SGOV as signal keys; SGOV appears only as the destination for BIL. The current Moon configuration has `active_strategies: []`, so this is a release gate before ADM activation rather than an active run failure.
+`ADM_Orion.md` specifies VTI and VEU as risk assets and SGOV as the defensive candidate. D-051 resolves the prior mapping gap with identity mappings. The current Moon configuration has `active_strategies: []`, so ADM remains inactive.
 
 Choose whether ADM should:
 
@@ -20,7 +20,7 @@ Choose whether ADM should:
 * use explicitly approved signal-to-execution equivalents; or
 * remain unavailable for target construction until mappings are approved.
 
-Preliminary research recorded in D-051 finds VEU's published expense ratio is 0.04% and VXUS is 0.05%; VXUS tracks a broader all-cap ex-US index, so it is not a lower-fee like-for-like substitute. The current recommendation for owner review is to identity-map VTI, VEU, and SGOV, preserving ADM's specified instruments. Confirm that recommendation, name any alternatives explicitly, or keep ADM blocked. After resolution, update the decision record, mapping contract, and an ADM-output-to-PortfolioTarget integration test together.
+D-051 is approved and implemented: VTI->VTI, VEU->VEU, and SGOV->SGOV. Focused model and Runtime integration coverage passes. VEU->VXUS is not approved. Keep strategy activation separate because `active_strategies` remains empty.
 
 ### 2. Resolve Draft D-052 — Runtime Failure / Commit Semantics
 
@@ -44,7 +44,7 @@ Canonical observation contracts, source-agnostic normalization, structural valid
 
 ### Moon
 
-The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. Resolve D-051 before enabling ADM and D-053 before integrating cash into valuation. Then implement Account aggregation/current-state projection and the Moon Runtime rebalance handoff.
+The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. Keep ADM inactive until its data/runtime handoff is implemented; resolve D-053 before integrating cash into valuation. Then implement Account aggregation/current-state projection and the Moon Runtime rebalance handoff.
 
 ### Framework-Specific Work
 

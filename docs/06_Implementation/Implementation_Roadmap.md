@@ -56,7 +56,7 @@ Next:
 * RebalancePlan — implemented as deterministic target/current-weight delta operation
 * Runtime integration — pending explicit PortfolioState/current-weight handoff
 * ExecutionOrder — canonical materialization boundary implemented with explicit sizing inputs; quantity policy remains external
-* ADM signal-to-execution mapping — pending D-051; ADM remains inactive
+* ADM signal-to-execution mapping — approved by D-051 (VTI/VEU/SGOV identity mappings); ADM activation remains separate and inactive
 * Cash valuation and target semantics — pending D-053 before wiring `PortfolioState.cash` into rebalance valuation
 * CLI end-to-end execution
 

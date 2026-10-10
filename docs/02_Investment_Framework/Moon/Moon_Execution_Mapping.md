@@ -4,11 +4,11 @@ Version: 0.1
 
 Status: Active
 
-Last Updated: 2026-06-20
+Last Updated: 2026-10-10
 
 Related Decision:
 
-D-012
+D-012, D-051
 
 ---
 
@@ -58,6 +58,9 @@ Used for:
 
 | Signal Asset | Execution Asset |
 |-------------|------------------|
+| VTI | VTI |
+| VEU | VEU |
+| SGOV | SGOV |
 | SPY | SPYM |
 | QQQ | QQQM |
 | IWM | VTWO |

@@ -60,7 +60,7 @@ fallback behavior remain pending.
 |---|---|---|
 | `orion.core` | Shared domain and Runtime contracts, registries, in-memory state/event stores, API result contracts | MVP implementation; failure semantics review is open |
 | `orion.frameworks.aurora` | Aurora models, engine, and report entry point | Scaffold; methodology not finalized |
-| `orion.frameworks.moon` | Strategy, consensus, execution mapping, common PortfolioTarget proposal | Partial; ADM mapping gap tracked by D-051 |
+| `orion.frameworks.moon` | Strategy, consensus, execution mapping, common PortfolioTarget proposal | Partial; ADM identity mappings approved by D-051; activation remains separate |
 | `orion.frameworks.orbit` | Static allocation and common PortfolioTarget proposal | Initial implementation |
 | `orion.frameworks.supernova` | Supernova models, engine, and report entry point | Scaffold; framework governance remains authoritative |
 | `orion.frameworks.phoenix` | Phoenix models, engine, and report entry point | Scaffold; framework governance remains authoritative |
