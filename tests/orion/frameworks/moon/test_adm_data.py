@@ -849,7 +849,7 @@ def test_comparison_signal_guard_blocks_unknown_approval_and_open_data_gates() -
     assert result.comparison_status is ADMAbsoluteMomentumComparisonStatus.TRUE
     assert result.policy_approval_status is ADMPolicyApprovalStatus.UNKNOWN
     assert result.eligible_for_signal_assembly is False
-    assert "comparison_policy_not_approved" in result.blocked_reasons
+    assert "production_data_governance_not_approved" in result.blocked_reasons
     assert "unresolved_policy_gates" in result.blocked_reasons
 
 
@@ -867,7 +867,7 @@ def test_comparison_signal_guard_requires_explicit_approval_reference() -> None:
     )
     assert result.eligible_for_signal_assembly is False
     assert "unresolved_policy_gates" in result.blocked_reasons
-    assert "policy_approval_reference_missing" in result.blocked_reasons
+    assert "production_governance_reference_missing" in result.blocked_reasons
 
 
 def test_comparison_signal_guard_blocks_comparison_return_mismatch() -> None:
@@ -945,5 +945,5 @@ def test_adm_composed_data_pipeline_keeps_readiness_distinct_from_signal_approva
         policy_approval_status=ADMPolicyApprovalStatus.UNKNOWN,
     )
     assert guarded.eligible_for_signal_assembly is False
-    assert "comparison_policy_not_approved" in guarded.blocked_reasons
+    assert "production_data_governance_not_approved" in guarded.blocked_reasons
     assert "unresolved_policy_gates" in guarded.blocked_reasons

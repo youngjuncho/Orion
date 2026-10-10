@@ -273,7 +273,7 @@ class ADMRelativeMomentumResult:
 
     This result contains only the two independently calculated asset returns.
     It intentionally does not calculate absolute momentum or construct
-    ``ADMSignalInput``, whose benchmark and policy dependencies remain open.
+    ``ADMSignalInput``; the D-055 comparison policy is approved, while its data-source and integration dependencies remain open.
     """
 
     current_target_date: str
@@ -888,7 +888,7 @@ class ADMComparisonSignalGuardResult:
         if self.policy_approval_reference is not None and (
             not isinstance(self.policy_approval_reference, str) or not self.policy_approval_reference.strip()
         ):
-            raise ValueError("policy_approval_reference must be a non-empty string when supplied")
+            raise ValueError("policy_approval_reference must be a non-empty production governance reference when supplied")
         if any(not isinstance(reason, str) or not reason.strip() for reason in self.blocked_reasons):
             raise ValueError("blocked_reasons entries must be non-empty strings")
         object.__setattr__(self, "blocked_reasons", tuple(self.blocked_reasons))
@@ -907,7 +907,9 @@ def guard_adm_comparison_for_signal_assembly(
 
     The comparison must be available, match the freshness-checked absolute
     return inputs, and have an explicit approval status/reference. Unresolved
-    data/methodology gates block eligibility. No signal object is constructed.
+    source/data gates block eligibility. The D-055 comparison rule is approved;
+    the supplied status/reference attest to production data readiness, not to
+    comparison-methodology approval. No signal object is constructed.
     """
 
     if not isinstance(comparison, ADMAbsoluteMomentumComparisonResult):
@@ -919,7 +921,7 @@ def guard_adm_comparison_for_signal_assembly(
     if policy_approval_reference is not None and (
         not isinstance(policy_approval_reference, str) or not policy_approval_reference.strip()
     ):
-        raise ValueError("policy_approval_reference must be a non-empty string when supplied")
+        raise ValueError("policy_approval_reference must be a non-empty production governance reference when supplied")
 
     absolute = readiness.absolute_momentum_inputs
     reasons: list[str] = []
@@ -937,9 +939,9 @@ def guard_adm_comparison_for_signal_assembly(
     if not readiness.signal_ready:
         reasons.append("unresolved_policy_gates")
     if policy_approval_status is not ADMPolicyApprovalStatus.APPROVED:
-        reasons.append("comparison_policy_not_approved")
+        reasons.append("production_data_governance_not_approved")
     if not policy_approval_reference:
-        reasons.append("policy_approval_reference_missing")
+        reasons.append("production_governance_reference_missing")
     if comparison.status is not ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE:
         if not comparison.policy_id:
             reasons.append("comparison_policy_provenance_missing")
