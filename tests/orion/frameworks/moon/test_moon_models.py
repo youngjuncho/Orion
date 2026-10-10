@@ -137,6 +137,11 @@ def test_execution_mapper_preserves_adm_signal_assets(asset: str) -> None:
     assert allocation == (Allocation(asset, Decimal("1.0")),)
 
 
+def test_execution_mapper_maps_bil_to_sgov() -> None:
+    allocation = ExecutionMapper().map_allocations((ConsensusAllocation("BIL", 1.0),))
+    assert allocation == (Allocation("SGOV", Decimal("1.0")),)
+
+
 def test_moon_engine_builds_common_executable_allocation() -> None:
     results = (StrategyResult("Test", ("SPY",), (1.0,), "2026-07-31"),)
     allocation = MoonEngine().build_allocation(results)
