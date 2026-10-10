@@ -512,9 +512,9 @@ def validate_adm_relative_momentum_freshness(
 class ADMAbsoluteMomentumInputs:
     """Auditable return inputs for a future, policy-approved absolute test.
 
-    This object deliberately does not define how the risk asset and benchmark
-    returns are compared. The benchmark and comparison rule remain governance
-    decisions; merely supplying a benchmark here does not approve it.
+    This object retains returns for an explicitly named risk asset and benchmark.
+    D-055 supplies the SGOV/strict-greater-than comparison policy; this data
+    container does not validate source semantics or select the risk asset.
     """
 
     risk_asset_symbol: str
@@ -753,8 +753,8 @@ class ADMDataAssemblyReadiness:
     A successful instance means that relative-momentum freshness and the
     explicitly supplied absolute-momentum return inputs passed the requested
     age checks and share the same measurement endpoints. It is not an
-    investment signal: benchmark approval, comparison expression, equality
-    behavior, and adjusted-price semantics remain governance gates.
+    investment signal: D-055 approves the benchmark and comparison expression;
+    source semantics and production data-quality gates remain open.
     """
 
     relative_momentum_freshness: ADMRelativeMomentumFreshnessResult
