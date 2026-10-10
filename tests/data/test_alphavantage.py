@@ -25,7 +25,10 @@ def provider_response(symbol: str) -> bytes:
         {
             "Meta Data": {"2. Symbol": symbol},
             "Monthly Adjusted Time Series": {
-                observed_at: {"5. adjusted close": str(100 + i)}
+                observed_at: {
+                    "5. adjusted close": str(100 + i),
+                    "7. dividend amount": "0.50",
+                }
                 for i, observed_at in enumerate(dates)
             },
         }
@@ -57,6 +60,7 @@ def test_monthly_adjusted_provider_returns_canonical_all_symbol_batch() -> None:
     assert {point.symbol for point in dataset.observations} == {"VTI", "VEU", "SGOV"}
     assert {point.field for point in dataset.observations} == {"adjusted_close"}
     assert {point.source for point in dataset.observations} == {"alpha_vantage"}
+    assert dataset.observations[0].value == 100.0
     assert all(point.currency == "USD" for point in dataset.observations)
     assert all(
         point.metadata["provider_function"] == "TIME_SERIES_MONTHLY_ADJUSTED"

@@ -37,7 +37,14 @@ using an adjusted-price series as the data layer's total-return proxy:
 The canonical candidate field is `adjusted_close`. The field name alone is
 not proof of compatibility: a selected source adapter must document its
 adjustment methodology and confirm that it is suitable for the D-028 use.
-Raw `close` must not be substituted silently.
+Raw `close` must not be substituted silently. The Alpha Vantage adapter reads
+only `5. adjusted close`; it does not add the response's separate monthly
+dividend field to that value, which would double count distributions under the
+approved adjusted-price proxy. Alpha Vantage documents split and cash-dividend
+adjustments, but the reviewed public materials do not specify the precise
+adjustment-factor/reinvestment convention or revision schedule. Those details
+and empirical history parity remain validation gates; the mapping does not
+claim a provider-certified point-in-time total-return series.
 
 ## Minimum conceptual observations
 

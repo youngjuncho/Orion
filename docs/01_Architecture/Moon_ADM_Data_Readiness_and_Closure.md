@@ -28,7 +28,7 @@ These items are not closed sufficiently to authorize end-to-end production calcu
 | Item | Current document state | Required closure |
 |---|---|---|
 | Absolute-momentum benchmark/operator | D-055 approves SGOV and strict selected-risk-return greater-than-benchmark; equality is false | Provider revision/parity, target/execution calendar, configured defensive holding, and activation remain separate gates; D-058 age limit is approved |
-| Adjusted-price semantics | D-057 maps Alpha Vantage's `5. adjusted close`; provider documents split and cash-dividend adjustments | Validate instrument coverage, revision behavior, and historical parity before production signal assembly |
+| Adjusted-price semantics | D-057 maps Alpha Vantage's `5. adjusted close`; provider documents split and cash-dividend adjustments | Do not add the separate monthly dividend field; exact adjustment/reinvestment method, history parity, and point-in-time semantics are unverified |
 | Twelve-month endpoint selection | D-056 prior-observation-on-or-before; D-058 implements the last-completed-month-end helper as an engineering default | Target generation is not signal-timing approval; selected observations must be no more than seven calendar days from each target |
 | Monthly signal date | Research spec says last trading day; execution spec says next trading day | Confirm how the signal date is represented and how the next trading day is identified across calendars |
 | Missing/stale observations | Provider batch fails closed; D-058 approves seven calendar days for all selected endpoints | Integrated monthly assessment applies the seven-day limit; low-level validation still takes an explicit caller value |
