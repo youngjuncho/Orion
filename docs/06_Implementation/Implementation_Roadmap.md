@@ -132,6 +132,8 @@ Entries below record the status and test count at the time of each dated update.
 
 - Added `MoonPortfolioAdapter` to expose the existing `StrategyResult → ConsensusAllocation → PortfolioTarget` lifecycle through the canonical Runtime `FrameworkResult → DecisionCandidate` boundary.
 - Added a Moon vertical-slice integration test covering Runtime → Moon Engine → PortfolioTarget proposal.
+- Added a context-aware Moon strategy-results factory so an explicit strategy adapter can consume `RuntimeContext.market_data` and configuration; existing precomputed-result factories remain supported.
+- Runtime data is now delivered to the active Moon adapter path, but ADM signal assembly and activation remain gated by unresolved data freshness, comparison policy, and strategy-approval requirements.
 - Fixed a deterministic Decimal normalization issue in Moon execution-asset mapping so valid consensus weights satisfy the Common `PortfolioTarget` exact-total contract.
 - RebalancePlan and ExecutionOrder remain outside this slice because current-state weights and executable quantities are not supplied by the existing Moon Runtime input contract.
 - Verification baseline: 155 tests passing.

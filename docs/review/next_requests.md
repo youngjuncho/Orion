@@ -40,11 +40,11 @@ Public framework orchestration and the optional in-memory decision/state/event l
 
 ### Data Pipeline
 
-Canonical observation contracts, source-agnostic normalization, structural validation, and direct/provider `MarketDataSet` Runtime handoff are implemented. Remaining work is production collection, source-specific semantic validation, freshness thresholds, and source failure/fallback behavior.
+Canonical observation contracts, source-agnostic normalization, structural validation, direct/provider `MarketDataSet` Runtime handoff, and context-aware delivery to Moon strategy factories are implemented. Remaining work is production collection, source-specific semantic validation, freshness thresholds, source failure/fallback behavior, and approved ADM signal assembly policy.
 
 ### Moon
 
-The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. D-053 cash valuation is implemented. Keep ADM inactive until its data/runtime handoff is implemented; Account aggregation/current-state projection and the Moon Runtime rebalance handoff remain.
+The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. D-053 cash valuation is implemented. Keep ADM inactive until its signal/data policy and activation are approved. Account aggregation/current-state projection and the Moon Runtime rebalance handoff remain.
 
 ### Framework-Specific Work
 

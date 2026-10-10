@@ -53,7 +53,7 @@ Therefore the following historical queue items are closed at the architecture le
 * freshness thresholds, timestamp parsing/order, and missing-data policy
 * source failure/fallback behavior and live-provider approval
 * canonical identity and symbol normalization policy (including provider/source identity)
-* integration from `RuntimeContext.market_data` into the active Framework strategy path
+* default ADM signal assembly remains gated by freshness, comparison, and activation policy; a context-aware Moon factory can now receive `RuntimeContext.market_data` and configuration
 
 ### Moon Implementation
 
