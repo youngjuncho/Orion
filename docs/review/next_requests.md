@@ -32,6 +32,10 @@ The all-or-nothing guarantee applies to Orion-owned in-memory stores; it does no
 
 Approved 2026-10-10. The valuation and rebalance APIs take the configured currency as `valuation_currency`, consume cash only from `PortfolioState.cash`, convert via explicit positive finite caller-supplied rates, and include the result in the current-weight denominator. Cash remains residual funding outside the fully invested target. Duplicate `(account_id, currency)` balances and missing foreign-currency rates are rejected. The portfolio layer performs no FX lookup.
 
+### 4. Resolve D-054 — Default Acceptance of Rebalance Plan Proposals
+
+D-050 makes Auto-Approval candidate-type agnostic. A Moon `RebalancePlanProposal` is therefore accepted by default when the Runtime lifecycle is used without a custom acceptance handler. This does not submit or execute orders, but it can commit an accepted plan through the caller's transition policy. Choose whether to keep this behavior, require explicit plan acceptance, or configure acceptance per candidate type. Current D-050 behavior remains until resolved.
+
 ## Next Implementation Work (after the decisions)
 
 ### Core Runtime
@@ -44,7 +48,7 @@ Canonical observation contracts, source-agnostic normalization, structural valid
 
 ### Moon
 
-The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. D-053 cash valuation is implemented. The Moon adapter emits a separate RebalancePlanProposal linked to the target when the caller supplies current PortfolioState and valuation-price factories; Runtime policies can accept/reject them independently, and account aggregation remains caller-owned. Keep ADM inactive until its signal/data policy and activation are approved. Execution sizing and broker lifecycle remain out of scope.
+The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. D-053 cash valuation is implemented. The Moon adapter emits a separate RebalancePlanProposal linked to the target when the caller supplies current PortfolioState and valuation-price factories. Custom acceptance handlers can decide independently; D-050's default Auto-Approval accepts both candidate types. Account aggregation remains caller-owned. Keep ADM inactive until its signal/data policy and activation are approved. Execution sizing and broker lifecycle remain out of scope.
 
 ### Framework-Specific Work
 

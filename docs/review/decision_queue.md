@@ -33,8 +33,9 @@ Therefore the following historical queue items are closed at the architecture le
 | D-051 | ADM signal-to-execution mapping | **Approved 2026-10-10:** ADM identity mappings VTI->VTI, VEU->VEU, and SGOV->SGOV. This resolves mapping only; `config/moon.yaml` still has `active_strategies: []`, so ADM activation remains separate. |
 | D-052 | Runtime failure and commit semantics | **Approved 2026-10-10 and implemented:** stage/validate state and events, commit both stores together, mark failed sessions `Error`, enforce one public run per Runtime, and validate snapshot/transition correlation. |
 | D-053 | Portfolio cash valuation and target semantics | **Approved 2026-10-10 and implemented:** use `system.currency` as valuation currency; value `PortfolioState.cash` with caller-supplied positive finite FX rates; include cash in the total-value denominator while keeping it outside the fully invested target; reject duplicate account/currency balances and remove the separate `cash_value` input. |
+| D-054 | Default acceptance of rebalance plan proposals | **Draft:** D-050 currently auto-approves every candidate type, including `RebalancePlanProposal`. Decide whether to retain this, require explicit plan acceptance, or configure acceptance by candidate type. Existing behavior remains until resolved. |
 
-`D-051`, `D-052`, and `D-053` are approved. See the Decision Log and portfolio contract for evidence.
+`D-051`, `D-052`, and `D-053` are approved. D-054 is open. See the Decision Log and relevant contracts for evidence.
 
 ### Core Decision Traceability
 

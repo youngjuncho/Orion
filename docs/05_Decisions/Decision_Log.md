@@ -2345,6 +2345,11 @@ An explicit acceptance handler remains supported and takes precedence when a
 caller requires rejection or conditional acceptance. `AcceptedDecision` remains
 the authoritative acceptance representation.
 
+The default is candidate-type agnostic. It also accepts a Moon
+`RebalancePlanProposal` unless the caller supplies an acceptance handler that
+rejects or conditionally accepts it. This acceptance does not submit or execute
+orders.
+
 ### Rationale
 
 The acceptance boundary is already part of the Core Runtime architecture. The
@@ -2544,3 +2549,27 @@ The valuation and rebalance APIs consume `PortfolioState.cash`, convert with
 explicit caller-supplied FX rates, and reject missing/invalid rates and
 duplicate account/currency balances. Focused tests cover state cash valuation
 and rebalance weights.
+
+---
+
+## D-054 — Default Acceptance of Rebalance Plan Proposals
+
+Status: **Draft — owner decision required**
+Date: 2026-10-10
+
+Moon now emits a `RebalancePlanProposal` as a separate Runtime candidate. D-050
+defines candidate-type-agnostic Auto-Approval as the default, so the plan is
+automatically accepted in lifecycle runs without an explicit acceptance
+handler. Acceptance is not order execution, but it records a plan as accepted
+Runtime state when the caller's transition handler commits it.
+
+Resolve one of these policies before changing Runtime behavior:
+
+1. Retain D-050 as-is: Auto-Approve target and plan proposals independently.
+2. Require explicit acceptance for `RebalancePlanProposal`; default Auto-Approval
+   continues for other candidate types.
+3. Make default acceptance configurable by candidate type.
+
+Until resolved, the existing D-050 behavior remains in effect. Callers can
+provide an acceptance handler to reject or conditionally accept either
+candidate.

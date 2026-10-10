@@ -308,8 +308,10 @@ explicit Runtime decision boundary.
 
 When explicit `PortfolioState` and valuation-price factories are supplied, the
 adapter emits a separate `RebalancePlanProposal` candidate linked to the
-`PortfolioTargetProposal`. Runtime policies can accept or reject them
-independently. The caller owns account aggregation and maps the current data
+`PortfolioTargetProposal`. Custom acceptance handlers can accept or reject
+them independently. Under D-050's default Auto-Approval, both candidate types
+are accepted unless a caller supplies a policy handler. Acceptance does not
+execute orders. The caller owns account aggregation and maps the current data
 context to prices; valuation uses configured `system.currency` and D-053 cash
 rules. Without both factories, the adapter emits only the target proposal.
 
