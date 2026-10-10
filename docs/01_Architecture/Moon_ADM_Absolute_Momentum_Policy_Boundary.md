@@ -6,7 +6,7 @@ Last Updated: 2026-10-10
 
 ## Purpose
 
-This note separates what the existing ADM research says about absolute momentum from the exact comparison rule needed to produce `absolute_momentum_positive`. It is not an investment-methodology approval and does not activate ADM.
+This note separates the D-055-approved absolute-momentum comparison rule from the remaining data and activation gates. It records methodology approval; it does not validate a provider or activate ADM.
 
 ## Existing research statements
 
@@ -14,7 +14,7 @@ The current ADM research describes absolute momentum as assessing whether the se
 
 The implementation specification listed SGOV as the primary defensive-asset candidate and BIL / SHY as backups. D-055 now approves SGOV as the comparison benchmark; this does not approve a provider's adjusted-price series or production data semantics.
 
-## Decisions still open
+## Data and governance gates still open
 
 1. **Adjusted-price source:** confirm that the chosen provider's adjusted-price field meets D-028/D-055 total-return requirements.
 2. **Date/calendar policy:** define production calendar interpretation, endpoint selection, and observation freshness thresholds.

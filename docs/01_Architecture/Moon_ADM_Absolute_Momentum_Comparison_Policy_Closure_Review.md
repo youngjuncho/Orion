@@ -10,7 +10,7 @@ This review reconciles the existing ADM research wording with the implementation
 
 ## Findings from the existing research
 
-`docs/03_Research/Moon/ADM/ADM_Research.md` describes absolute momentum as assessing whether the selected asset has performed positively relative to a risk-free alternative. Its original GEM decision process explicitly says to compare the winning risk asset's momentum with the cash return. `ADM_Orion.md` carries forward a trailing 12-month adjusted-price total-return formula and lists SGOV as the primary defensive-asset candidate, with BIL and SHY as backups; the defensive instrument is marked pending final approval.
+`docs/03_Research/Moon/ADM/ADM_Research.md` describes absolute momentum as assessing whether the selected asset has performed positively relative to a risk-free alternative. Its original GEM decision process explicitly says to compare the winning risk asset's momentum with the cash return. `ADM_Orion.md` carries forward a trailing 12-month adjusted-price total-return formula and lists SGOV as the primary defensive-asset candidate, with BIL and SHY as backups. D-055 approves SGOV specifically as the comparison benchmark; the configured defensive holding relationship remains separate.
 
 The research direction is **benchmark-relative comparison against a cash/defensive return**, rather than comparison against zero. D-055 approves SGOV as the benchmark and strict greater-than comparison, with equality false. The return-measurement standard remains pending source validation.
 

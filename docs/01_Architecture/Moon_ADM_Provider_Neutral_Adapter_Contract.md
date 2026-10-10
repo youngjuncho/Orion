@@ -2,7 +2,7 @@
 
 Version: 1.0  
 Status: Implemented — Fixture-tested; no live provider integration authorized  
-Last Updated: 2026-10-09
+Last Updated: 2026-10-10
 
 ## Purpose
 
@@ -37,7 +37,7 @@ The fake-source tests cover a valid two-instrument batch, normalization and meta
 
 ## Explicit non-goals
 
-This contract does not approve Yahoo Finance or any other source, validate `adjusted_close` as a total-return proxy, set freshness thresholds, select a defensive benchmark, calculate the ADM absolute-momentum comparison, construct `ADMSignalInput`, or activate a Moon strategy.
+This contract does not approve Yahoo Finance or any other source, validate `adjusted_close` as a total-return proxy, set freshness thresholds, select a configured defensive holding, calculate the ADM absolute-momentum comparison, construct `ADMSignalInput`, or activate a Moon strategy.
 
 ## Next gate
 
