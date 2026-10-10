@@ -1,4 +1,4 @@
-# Orion Implementation Review — Core Closure Baseline
+# Orion Implementation Review - Core Traceability Audit
 
 Version: 2.0
 
@@ -6,9 +6,12 @@ Review Date: 2026-10-10
 
 ## Executive Decision
 
-**Core Architecture Review: CLOSED**
+**Core Architecture closure claim: UNDER TRACEABILITY AUDIT**
 
-The canonical cross-framework architecture is established by `CORE-001` through `CORE-020`. The remaining gaps are implementation, validation, Framework-specific specification, or future infrastructure.
+The 2026-10-07 baseline reports `CORE-001` through `CORE-020` as closed, but
+does not map each identifier to an individual decision/evidence record. Treat
+that numbered set as a reported baseline until its provenance and numbering
+are reconciled. This review does not invent missing decisions.
 
 ## Canonical Runtime
 
@@ -54,9 +57,9 @@ StrategyResult → ConsensusAllocation → PortfolioTarget → RebalancePlan →
 
 `PortfolioSnapshot` is independent current portfolio state and is an input to `RebalancePlan`.
 
-## Architecture / Implementation Separation
+## Architecture Topics Reported as Closed
 
-Architecture closed:
+The baseline lists the following topics as closed. Their per-ID decision evidence is still being reconciled:
 
 * terminology and Framework hierarchy
 * Runtime lifecycle

@@ -2387,3 +2387,95 @@ No new Decision type or Framework responsibility is introduced. State transition
 StateStore commit, Domain Event creation, EventStore publication, failure isolation,
 and the D-030 in-memory MVP boundary remain unchanged. Durable persistence, replay,
 and external execution remain outside scope.
+
+---
+
+## D-051 — ADM Signal-to-Execution Mapping
+
+Date:
+
+2026-10-10
+
+Status:
+
+Draft
+
+Category:
+
+Moon Strategy / Execution Mapping
+
+### Issue Under Review
+
+`ADM_Orion.md` specifies VTI and VEU as risk assets and SGOV as the defensive
+asset candidate. `Moon_Execution_Mapping.md` and the current `ExecutionMapper`
+do not map VTI, VEU, or SGOV as signal inputs. SGOV is present only as the
+mapped destination for BIL.
+Consequently, an ADM consensus allocation containing VTI or VEU cannot be
+converted to the common `PortfolioTarget` through the documented mapping.
+
+The current `config/moon.yaml` sets `active_strategies: []`; this draft records
+a gate before ADM activation and does not claim that an active production run
+currently fails.
+
+### Decision Required
+
+The owner must choose and approve one policy before ADM target construction is
+enabled:
+
+1. Use ADM signal instruments as execution instruments.
+2. Define and approve explicit signal-to-execution equivalents for ADM.
+3. Keep ADM target construction blocked until an approved mapping is recorded.
+
+No mapping is approved by this draft. Existing ETF mappings must not be
+extended by ticker similarity or inferred economic equivalence.
+
+### Required Follow-up
+
+After owner resolution, update this record to Approved, update the Moon mapping
+contract and configuration as applicable, and validate ADM output through
+`PortfolioTarget` construction with an integration test.
+
+---
+
+## D-052 — Runtime Failure and Commit Semantics
+
+Date:
+
+2026-10-10
+
+Status:
+
+Draft
+
+Category:
+
+Runtime Governance
+
+### Issue Under Review
+
+The Runtime contract specifies that a state snapshot is committed before
+transition events are created. It does not define rollback or residual
+side-effects when a later stage fails. In the current implementation,
+framework-produced events are appended before decision resolution; a snapshot
+can be published before an event factory or EventStore operation fails; and
+Runtime instances retain their StateStore/EventStore and execution metadata
+across calls.
+
+### Decision Required
+
+The owner must define:
+
+* whether failure must leave no state/event effects, or may retain already
+  committed state and/or framework lifecycle events;
+* how an event-creation or append failure after state commit is represented;
+* whether a public `OrionRuntime` is single-use or supports repeated runs, and
+  how execution identity and stores behave if it is reused;
+* which snapshot execution/entity relationships are validated at commit.
+
+This draft does not select all-or-nothing behavior, rollback, compensation, or
+single-use semantics.
+
+### Required Follow-up
+
+After owner resolution, reconcile the Runtime, Event Model, and Handoff
+contracts, then implement and test the selected failure semantics.

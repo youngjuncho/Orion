@@ -1,29 +1,39 @@
 # 2026-10-07 Core Reconciliation Addendum
 
-> **Current authority:** The canonical application execution boundary is **Orion Runtime**. The historical “Portfolio Engine” wording below is superseded by `CORE-001` and `CORE-019`: Moon, Orbit, Supernova, and Phoenix are Portfolio / Investment Frameworks; their Engines are framework-internal.
+> Current authority: the canonical application execution boundary is Orion Runtime. Historical references to "Portfolio Engine" are superseded by the current Framework hierarchy.
 
 Current package baseline:
 
 ```text
 src/
-├── data/
-└── orion/
-    ├── cli/
-    ├── core/
-    ├── dashboard/
-    ├── frameworks/
-    │   ├── aurora/
-    │   ├── moon/
-    │   ├── phoenix/
-    │   └── supernova/
-    └── services/
++-- data/
++-- orion/
+    +-- cli/
+    +-- core/
+    |   +-- account/
+    |   +-- asset/
+    |   +-- portfolio/
+    |   +-- ids.py
+    +-- dashboard/
+    +-- frameworks/
+    |   +-- aurora/
+    |   +-- moon/
+    |   +-- orbit/
+    |   +-- phoenix/
+    |   +-- supernova/
+    +-- services/
 ```
 
-Current Core rule: Frameworks consume canonical `MarketDataSet` through `RuntimeContext`, return `FrameworkResult`, and do not directly mutate StateStore/EventStore or Dashboard state.
+Frameworks consume canonical `MarketDataSet` through `RuntimeContext`, return `FrameworkResult`, and do not directly mutate StateStore/EventStore or Dashboard state.
+
+The runtime adapter module currently uses lazy imports from Core into the Moon and Orbit packages. The runtime invocation flow and Python import direction are therefore distinct; the current adapter wiring remains a package-coupling point for future review.
 
 ---
-
 # Orion Technical Architecture
+
+Status: Current authority is the reconciliation addendum and linked contracts; older sections remain historical where they conflict.
+
+Last Updated: 2026-10-10
 
 ## Purpose
 
@@ -125,9 +135,13 @@ calculation/analysis modules.
 orion/
   docs/
   src/
+    data/
     orion/
       cli/
       core/
+        account/
+        asset/
+        portfolio/
       dashboard/
       frameworks/
         aurora/
@@ -136,14 +150,10 @@ orion/
         phoenix/
         supernova/
       services/
-    data/
   tests/
   config/
   requirements.txt
 ```
-
----
-
 # Core Components
 
 ## Core

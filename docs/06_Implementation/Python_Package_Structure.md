@@ -1,10 +1,10 @@
 # Python Package Structure
 
-Version: 2.0
+Version: 2.1
 
-Status: Approved V1 Baseline
+Status: Current source snapshot
 
-Last Updated: 2026-10-07
+Last Updated: 2026-10-10
 
 Depends On:
 
@@ -12,91 +12,82 @@ Depends On:
 * Orion_Runtime.md
 * Orion_Service_Model.md
 
----
+## Purpose
 
-# Purpose
+This document records the Python package layout currently present in Orion.
+It separates implemented boundaries from future package evolution.
 
-This document describes the Python package layout currently implemented by
-Orion. It separates the actual V1 scaffolding from packages reserved for
-future evolution.
-
----
-
-# Current Package Layout
+## Current Package Layout
 
 ```text
 src/
+  data/
+    adapters.py
+    contracts.py
+    governance.py
+    pipeline.py
   orion/
-    __init__.py
     cli/
     core/
+      account/
+      asset/
+      portfolio/
+      ids.py
     dashboard/
     frameworks/
       aurora/
       moon/
+      orbit/
       phoenix/
       supernova/
     services/
-  data/
-    __init__.py
-    contracts.py
 ```
 
-The current implementation uses `src/orion/core` for shared contracts and
-runtime-oriented in-memory infrastructure. Framework-specific investment
-logic belongs under `src/orion/frameworks/<framework>`. The `src/data`
-package contains normalized data contracts only and must not contain
-investment logic.
+The `src/orion/core` package contains shared identifiers, Account and Asset
+models, Common Portfolio Domain models and operations, Runtime contracts, and
+in-memory state/event stores. Framework-specific investment logic belongs in
+`src/orion/frameworks/<framework>`.
 
-The current data contracts are `MarketDataPoint` for one typed observation
-and `MarketDataSet` for a duplicate-free batch with an `as_of` value. They
-validate scalar value and metadata types and preserve immutable snapshots.
-They do not define source adapters, freshness, missing-observation policy, or
-market-data persistence.
+The `src/data` package provides canonical observation and `MarketDataSet`
+contracts, source-agnostic normalization and structural validation, plus a
+provider-neutral adapter boundary. It does not contain investment logic.
+Production collection, source-specific semantic rules, freshness policy, and
+fallback behavior remain pending.
 
----
-
-# Current Responsibilities
+## Current Responsibilities
 
 | Package | Responsibility | Current status |
 |---|---|---|
-| `orion.core` | Configuration, domain contracts, runtime context, state/event stores, registries, API result contracts | Implemented scaffolding |
-| `orion.frameworks.aurora` | Aurora models, engine and report entry point | Scaffold; scoring not finalized |
-| `orion.frameworks.moon` | Moon models, ADM selection, consensus and execution mapping | Partial implementation |
-| `orion.frameworks.supernova` | Supernova models, engine and report entry point | Scaffold; scoring not finalized |
-| `orion.frameworks.phoenix` | Phoenix models, engine and report entry point | Scaffold; leadership rules not finalized |
-| `orion.dashboard` | Read-only presentation models and renderer | Implemented presentation boundary |
-| `orion.cli` | Command routing and report commands | Implemented routing |
-| `orion.services` | In-memory service registry | Implemented registry only |
-| `data` | Normalized observations and batches | Contracts only |
+| `orion.core` | Shared domain and Runtime contracts, registries, in-memory state/event stores, API result contracts | MVP implementation; failure semantics review is open |
+| `orion.frameworks.aurora` | Aurora models, engine, and report entry point | Scaffold; methodology not finalized |
+| `orion.frameworks.moon` | Strategy, consensus, execution mapping, common PortfolioTarget proposal | Partial; ADM mapping gap tracked by D-051 |
+| `orion.frameworks.orbit` | Static allocation and common PortfolioTarget proposal | Initial implementation |
+| `orion.frameworks.supernova` | Supernova models, engine, and report entry point | Scaffold; framework governance remains authoritative |
+| `orion.frameworks.phoenix` | Phoenix models, engine, and report entry point | Scaffold; framework governance remains authoritative |
+| `orion.dashboard` | Read-only presentation models and renderer | Presentation boundary implemented; Runtime integration partial |
+| `orion.cli` | Command routing and report commands | Routing implemented; Runtime-backed reporting partial |
+| `orion.services` | In-memory service registry | Registry implementation |
+| `data` | Canonical observations, normalization, structural validation, provider-neutral adapter | Partial; no production source collection |
 
----
+## Runtime Flow and Import Direction
 
-# Dependency Direction
+The conceptual execution flow is:
 
 ```text
-CLI / Dashboard
-       |
-       v
-Orion Runtime / API Contracts
-       |
-       v
-Framework Engines
-       |
-       v
-Core Domain Contracts and Data Contracts
+CLI / Dashboard -> Orion Runtime -> Framework adapters -> Framework Engines
+                                      |                         |
+                                      +---- Core contracts -----+
+                                      +---- Data contracts -----+
 ```
 
-Framework packages must not depend directly on one another. Dashboard code
-consumes framework or runtime results and does not calculate signals, scores,
-states, allocations, or regimes.
+This is a runtime flow, not a strict Python import graph. In the current code,
+`orion.core.framework_adapters` lazily imports Moon and Orbit engines for
+portfolio adapters. Keep this coupling visible when evaluating package
+boundaries; do not infer a clean one-way import graph from the conceptual flow.
 
----
+## Future Package Evolution
 
-# Future Package Evolution
-
-The following packages are design targets, not requirements of the current
-scaffolding:
+The following are design targets, not requirements of the current source tree:
 
 ```text
 src/orion/
@@ -107,16 +98,11 @@ src/orion/
   utils/
 ```
 
-They may be introduced when the Runtime, persistence, source adapters, and
-domain boundaries are specified well enough to justify the migration. The
-current source tree must not be treated as incomplete merely because these
-future packages do not yet exist.
+Introduce them only when concrete responsibilities justify the migration.
 
----
+## Testing Layout
 
-# Testing Layout
-
-Tests mirror the implemented package layout:
+Tests mirror the implemented packages:
 
 ```text
 tests/
@@ -128,14 +114,13 @@ tests/
     frameworks/
       aurora/
       moon/
+      orbit/
       phoenix/
       supernova/
     services/
 ```
 
----
-
-# Related Documents
+## Related Documents
 
 * Orion_Domain_Model.md
 * Orion_Runtime.md

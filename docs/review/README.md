@@ -2,9 +2,11 @@
 
 ## Current Status
 
-The **Core Architecture Review is closed as of 2026-10-07**.
+The 2026-10-07 review declared the Core Architecture closed. The decision
+baseline's per-ID evidence crosswalk is now under audit; the topic list alone
+does not establish which source record supports each `CORE-xxx` identifier.
 
-The canonical baseline is:
+The reported canonical baseline is:
 
 ```text
 CORE-001 … CORE-020

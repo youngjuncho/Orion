@@ -2,60 +2,49 @@
 
 Version: 2.0
 
-Date: 2026-10-07
+Date: 2026-10-10
 
 ## Core Architecture
 
-No further Core architecture decision is currently requested. `CORE-001` through `CORE-020` are closed.
+No new Core architecture decision is currently requested. Before relying on the `CORE-001` through `CORE-020` closure claim as an auditable decision set, reconcile the missing topic-to-ID/evidence crosswalk and the D-029 gap. Do not manufacture historical decisions to fill missing records.
 
-## Next Implementation Work
+## Next Documentation / Decision Work
 
-### 1. Core Runtime
+### 1. Resolve Draft D-051 — ADM Signal-to-Execution Mapping
 
-Implement the already-defined lifecycle:
+`ADM_Orion.md` specifies VTI and VEU as risk assets and SGOV as the defensive candidate. `Moon_Execution_Mapping.md` / `ExecutionMapper` do not map VTI or VEU; SGOV appears only as the destination for BIL. The current Moon configuration has `active_strategies: []`, so this is a release gate before ADM activation rather than an active run failure.
 
-```text
-Configuration
-→ Data
-→ State Restore
-→ RuntimeContext
-→ Framework Execution
-→ Result Validation
-→ Decision Resolution
-→ State Transition
-→ State Commit
-→ Event Creation
-→ RuntimeResult
-```
+Choose whether ADM should:
 
-Do not redesign the contract while implementing it.
+* execute the signal instruments directly;
+* use explicitly approved signal-to-execution equivalents; or
+* remain unavailable for target construction until mappings are approved.
 
-### 2. Data Pipeline
+No mapping should be inferred from the existing broader ETF table. After resolution, update the decision record, mapping contract, and an ADM-output-to-PortfolioTarget integration test together.
 
-Implement:
+### 2. Resolve Draft D-052 — Runtime Failure / Commit Semantics
 
-* source adapter boundary
-* normalization
-* validation
-* freshness checks
-* canonical `MarketDataSet`
+The existing contract specifies commit-before-transition-event ordering but not rollback or residual side effects on failures. Define the failure outcome for framework events, StateStore publication, event-factory/EventStore failures, and reuse of an `OrionRuntime` with its existing stores and execution identity. Then reconcile `Orion_Runtime.md`, `Orion_Event_Model.md`, and `Codex_Handoff_Specification.md` before implementation.
 
-### 3. Moon
+Do not describe the in-memory lifecycle as all-or-nothing until that behavior is explicitly chosen and validated.
 
-Continue from the approved portfolio model:
+## Next Implementation Work (after the decisions)
 
-```text
-PortfolioTarget + PortfolioSnapshot
-        ↓
-RebalancePlan
-```
+### Core Runtime
 
-Then integrate the result with the Runtime.
+Public framework orchestration and the optional in-memory decision/state/event lifecycle are implemented. After D-052 is resolved, reconcile the implementation and Runtime/Event/Handoff contracts for failure status, residual side effects, commit validation, and Runtime reuse. Durable persistence and replay remain future scope.
 
-### 4. Framework-Specific Work
+### Data Pipeline
+
+Canonical observation contracts, source-agnostic normalization, structural validation, and direct/provider `MarketDataSet` Runtime handoff are implemented. Remaining work is production collection, source-specific semantic validation, freshness thresholds, and source failure/fallback behavior.
+
+### Moon
+
+The common domain provides PortfolioState/Snapshot records, caller-supplied valuation, deterministic weight-based RebalancePlan construction, and ExecutionOrder materialization from explicit sizing inputs. Resolve D-051 before enabling ADM, then implement Account aggregation/current-state projection and the Moon Runtime rebalance handoff.
+
+### Framework-Specific Work
 
 When each Framework is ready, use its own governance/specification documents. Do not move those decisions into Core.
-
 ## Closed Historical Questions
 
 The following no longer require Core-level user decisions:

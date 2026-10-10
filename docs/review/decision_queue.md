@@ -10,7 +10,9 @@ Working queue only. Permanent decisions belong in `docs/05_Decisions/Decision_Lo
 
 ## Current Status
 
-Core Architecture decisions are **resolved** by `CORE-001` through `CORE-020`.
+The baseline reports Core Architecture as resolved by `CORE-001` through
+`CORE-020`. Per-ID evidence and numbering are under traceability audit; see
+the open item below.
 
 Therefore the following historical queue items are closed at the architecture level:
 
@@ -23,6 +25,26 @@ Therefore the following historical queue items are closed at the architecture le
 | API error contract | Resolved by CORE-018; standardized client-facing error mapping remains |
 
 ## Remaining Open Items
+
+### Decision Drafts Awaiting Owner Resolution
+
+| Draft ID | Topic | Current evidence / unresolved choice |
+|---|---|---|
+| D-051 | ADM signal-to-execution mapping | `ADM_Orion.md` selects VTI, VEU, or SGOV; the documented mapper has none of those as signal keys (SGOV is only the mapped destination for BIL). Decide whether ADM uses the signal instruments directly, receives explicit execution equivalents, or remains blocked until mappings are approved. Do not infer equivalents from ticker similarity. `config/moon.yaml` currently has `active_strategies: []`. |
+| D-052 | Runtime failure and commit semantics | The contract requires state commit before transition-event creation, but does not define rollback/compensation when event creation fails, whether framework events survive a later lifecycle failure, or whether a Runtime instance may be reused. Specify allowed residual state/events and session/store reuse behavior before claiming all-or-nothing semantics. |
+
+Both entries are Draft and require owner resolution. They do not approve a mapping or select a transaction policy.
+
+### Core Decision Traceability
+
+* The Core baseline lists twenty topics in sequence but does not provide an explicit `CORE-001`…`CORE-020` topic-to-evidence crosswalk. The Decision Log has no individual CORE records. Reconcile the provenance and numbering, including the D-029 gap, before treating the numbered closure claim as fully auditable. Do not invent historical decisions to fill the gaps.
+
+### Documentation Consistency
+
+* Audit stale or missing metadata and mark retained historical reports as superseded or historical at the document itself.
+* Reconcile old test-count statements with dated verification records; do not present a historical count as the current suite size.
+* Add canonical glossary definitions for Recommendation, DecisionCandidate, AcceptedDecision, and StateTransition, and distinguish human review decisions from Runtime acceptance.
+* Review the long Decision Log's unnumbered D.1/D.2 section and the D-029 gap; preserve the existing record until its provenance is established.
 
 ### Data Implementation / Specification
 

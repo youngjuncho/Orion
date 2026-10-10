@@ -1,98 +1,96 @@
 # Orion Repository Structure
 
-Version: 2.0
+Version: 2.1
 
-Status: Approved V1 Baseline
+Status: Current source snapshot
 
-Last Updated: 2026-10-07
+Last Updated: 2026-10-10
 
 ## Purpose
 
-Defines the repository and source structure that is actually implemented. This document is the canonical package baseline for V1; future package decomposition must not be treated as a current requirement.
+Describes the package structure present in the current source tree. It is a snapshot of implementation, not an approval that every package is production-ready.
 
 ## Repository Layout
 
 ```text
 orion/
-├── docs/
-├── src/
-│   ├── data/
-│   └── orion/
-│       ├── cli/
-│       ├── core/
-│       ├── dashboard/
-│       ├── frameworks/
-│       │   ├── aurora/
-│       │   ├── moon/
-│       │   ├── phoenix/
-│       │   └── supernova/
-│       └── services/
-├── tests/
-├── config/
-├── requirements.txt
-└── README.md
++-- docs/
++-- src/
+|   +-- data/
+|   |   +-- adapters.py
+|   |   +-- contracts.py
+|   |   +-- governance.py
+|   |   +-- pipeline.py
+|   +-- orion/
+|       +-- cli/
+|       +-- core/
+|       |   +-- account/
+|       |   +-- asset/
+|       |   +-- portfolio/
+|       |   +-- ids.py
+|       |   +-- runtime and state/event contracts
+|       +-- dashboard/
+|       +-- frameworks/
+|       |   +-- aurora/
+|       |   +-- moon/
+|       |   +-- orbit/
+|       |   +-- phoenix/
+|       |   +-- supernova/
+|       +-- services/
++-- tests/
++-- config/
++-- requirements.txt
++-- README.md
 ```
 
-## `src/orion/core`
+## Core Packages
 
-Owns cross-framework Core contracts and runtime-oriented scaffolding, including configuration, state/event contracts and stores, registries, execution metadata, and API/result contracts.
+`src/orion/core` owns cross-framework identifiers, Account and Asset models,
+Common Portfolio Domain models and operations, Runtime contracts, state/event
+stores, registries, and API/result contracts. It does not own Framework
+investment methodology.
 
-Core does not own Framework investment methodology.
+`src/data` provides canonical market observation contracts, deterministic
+source-agnostic normalization and structural validation, and a provider-neutral
+adapter boundary. Production source collection, source-specific semantics,
+freshness policy, and fallback behavior remain open implementation work.
 
-## `src/data`
+## Framework Packages
 
-Shared normalized data-contract package.
+Framework-owned code resides under `src/orion/frameworks/<framework>`:
 
-It contains:
+* `aurora/` -> market and environment monitoring
+* `moon/` -> tactical asset allocation
+* `orbit/` -> static asset allocation
+* `supernova/` -> equity research and portfolio governance
+* `phoenix/` -> digital-asset research and portfolio governance
 
-* observation contracts
-* MarketDataSet contracts
-* validation boundary
+Each Framework may contain its own Engines, Strategies, models, and governance
+implementation. Framework membership does not imply that every methodology is
+production-ready or active.
 
-It does not contain:
+## Presentation and Services
 
-* investment logic
-* scoring
-* strategy selection
-* portfolio decisions
-* state/events
+`src/orion/dashboard` is a read-only presentation boundary. It consumes Runtime
+outputs and does not calculate investment decisions or mutate State.
 
-Source collection and normalization implementation remain future work.
+`src/orion/cli` owns command routing and application entry points.
 
-## `src/orion/frameworks/<framework>`
-
-Framework-owned implementation:
-
-* `aurora/` ? market-climate monitoring
-* `moon/` ? ETF portfolio framework
-* `supernova/` ? equity portfolio framework
-* `phoenix/` ? digital-asset portfolio framework
-
-Each Framework may contain its own Engines, Strategies, models, and governance implementation.
-
-## `src/orion/dashboard`
-
-Read-only presentation boundary. It consumes Runtime/Framework outputs and builds presentation models. It does not calculate investment decisions or mutate State.
-
-## `src/orion/cli`
-
-Command routing and application entry-point handling. Business methodology belongs to Frameworks, not CLI commands.
-
-## `src/orion/services`
-
-Current service registry/infrastructure scaffolding. Do not create generic services without a concrete responsibility.
+`src/orion/services` currently provides an in-memory service registry. Add
+services only for concrete responsibilities.
 
 ## Future Package Evolution
 
-The following are possible future refactors, not current V1 requirements:
+The following are possible future refactors, not current requirements:
 
 ```text
 src/orion/
-├── runtime/
-├── domain/
-├── infrastructure/
-├── config/
-└── utils/
++-- runtime/
++-- domain/
++-- infrastructure/
++-- config/
++-- utils/
 ```
 
-Do not perform another package migration solely to make the directory tree match an abstract architecture diagram.
+Do not migrate packages solely to make the source tree match a conceptual
+diagram.

@@ -6,9 +6,10 @@ Date: 2026-10-10
 
 ## Core Architectural Blockers
 
-**0**
-
-The Core Architecture Review is closed by `CORE-001` through `CORE-020`.
+No unresolved Core requirement has yet been confirmed. The claimed `CORE-001`
+through `CORE-020` closure set is undergoing a per-ID provenance and numbering
+audit; its current evidence is insufficient to independently verify a blocker
+count.
 
 ## Reclassified Historical Blockers
 

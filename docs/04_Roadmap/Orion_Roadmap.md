@@ -4,7 +4,7 @@ Version: 2.0
 
 Status: Active
 
-Last Updated: 2026-10-07
+Last Updated: 2026-10-10
 
 ## Vision
 
@@ -16,66 +16,48 @@ The previous phase-only roadmap is superseded because implementation maturity no
 
 ### A. Architecture & Contract
 
-**Architecture: CLOSED**
+**Architecture baseline: declared closed; traceability audit open**
 
-* CORE-001 through CORE-020 established
-* Canonical domain ownership established
-* Runtime lifecycle established
-* State/Event/Decision/Error contracts established
-* Data handoff established
-* Package baseline reconciled
-* Core architectural blockers: 0
-
-Remaining: documentation reconciliation/maintenance only.
+* The 2026-10-07 baseline reports CORE-001 through CORE-020; individual ID-to-evidence mapping is under audit.
+* Canonical domain ownership, Runtime lifecycle, State/Event/Decision/Error contracts, and data handoff are recorded in the architecture baseline.
+* Do not infer an individual decision record from the ordinal position of a topic in the baseline.
 
 ### B. Core Runtime
 
-**Architecture: CLOSED / Implementation: PENDING**
+**Architecture: established / Implementation: MVP implemented**
 
-* RuntimeSession ? implemented
-* RuntimeContext ? implemented
-* ServiceRegistry ? implemented
-* StateStore ? in-memory implementation
-* EventStore ? in-memory implementation
-* Public Runtime orchestration ? pending
-* Full Decision → State Transition → Event pipeline integration ? pending
-* RuntimeResult integration ? pending
+* RuntimeSession, RuntimeContext, and ServiceRegistry -> implemented
+* StateStore and EventStore -> in-memory implementations
+* Public OrionRuntime.run() -> implemented
+* Decision -> State Transition -> State Commit -> Event lifecycle -> implemented as an in-memory MVP; failure residual-effect semantics are open in D-052
+* OrionResult construction -> implemented
 
 ### C. Data Pipeline
 
-**Contract: CLOSED / Implementation: PENDING**
+**Contract: Established / Implementation: Partial**
 
-```text
-Source → Raw → Normalize → Validate → Canonical MarketDataSet
-```
-
-Remaining:
-
-* source adapters
-* normalization implementation
-* freshness validation
-* missing-data/source-failure handling
-* production data integration
+* Canonical observation and MarketDataSet contracts -> implemented
+* Source-agnostic normalization and structural validation -> implemented
+* Direct/provider MarketDataSet Runtime handoff -> implemented
+* Source collection, source-specific semantic validation, freshness policy, and fallback behavior -> pending
 
 ### D. Framework Implementation
 
 #### Moon
 
-**Architecture: mostly CLOSED / Implementation: PARTIAL**
+**Architecture: established / Implementation: Partial**
 
 Established:
 
 * StrategyResult
-* consensus allocation
-* execution mapping
-* PortfolioTarget
+* ConsensusAllocation
+* Common PortfolioTarget production
 
 Remaining:
 
-* PortfolioSnapshot
-* RebalancePlan
-* end-to-end Runtime integration
-* data pipeline integration
+* Account aggregation and authoritative PortfolioState projection
+* Runtime handoff and end-to-end Moon rebalance integration
+* ADM signal-to-execution mapping approval (Draft D-051; ADM is inactive in current configuration)
 
 #### Aurora
 
@@ -99,19 +81,18 @@ Category/Leader/Scoring governance is Framework-owned. Core tracks implementatio
 
 CLI:
 
-* architecture ? CLOSED
-* routing ? IMPLEMENTED
-* full Runtime-backed framework execution ? pending
+* Command routing is implemented.
+* Runtime-backed report commands are partial; full integration remains pending.
 
 Dashboard:
 
-* presentation-only boundary ? CLOSED
-* Runtime-integrated view ? pending
+* Read-only presentation boundary is implemented.
+* Runtime-integrated view is partial.
 
 API:
 
-* public Runtime/API error contract ? CLOSED
-* concrete endpoint/serialization implementation ? pending/future
+* Public Runtime/API error contract is specified; standardized client-facing exception mapping remains pending.
+* Concrete endpoint and serialization implementation are future work.
 
 ## Status Principle
 
@@ -131,18 +112,6 @@ Configuration cannot create approval. A strategy or framework becomes executable
 
 ## Next Implementation Direction
 
-```text
-Core Runtime implementation
-        ↓
-Canonical Data pipeline
-        ↓
-Moon end-to-end vertical slice
-        ↓
-Framework-specific implementation
-        ↓
-CLI / Dashboard integration
-        ↓
-API / durable persistence as required
-```
+Resolve D-051 and D-052, complete the Core decision-evidence traceability audit, then continue with production data policies, authoritative portfolio-state projection, Moon rebalance Runtime integration, and remaining CLI/Dashboard/API work.
 
 This roadmap does not redefine investment methodology or framework governance.
