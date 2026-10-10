@@ -647,6 +647,13 @@ class ADMAbsoluteMomentumComparisonPolicy:
             raise ValueError("operator must be an ADMAbsoluteMomentumComparisonOperator")
 
 
+APPROVED_ADM_ABSOLUTE_MOMENTUM_POLICY = ADMAbsoluteMomentumComparisonPolicy(
+    policy_id="D-055",
+    benchmark_symbol="SGOV",
+    operator=ADMAbsoluteMomentumComparisonOperator.RISK_RETURN_GT_BENCHMARK,
+)
+
+
 @dataclass(frozen=True)
 class ADMAbsoluteMomentumComparisonResult:
     """Auditable comparison outcome; UNAVAILABLE is not a negative signal."""
@@ -684,16 +691,19 @@ def compare_adm_absolute_momentum_returns(
     *,
     policy: ADMAbsoluteMomentumComparisonPolicy | None = None,
 ) -> ADMAbsoluteMomentumComparisonResult:
-    """Compare explicit return inputs only when an explicit policy is supplied.
+    """Compare returns using D-055 or an explicitly supplied policy.
 
-    No policy is inferred. A supplied policy is caller configuration and its
-    presence does not itself constitute governance approval. The result does
-    not construct ADMSignalInput or activate an ADM strategy.
+    The approved default uses SGOV as benchmark and strict risk-return greater
+    than benchmark-return comparison. A supplied policy is caller configuration
+    and does not itself constitute governance approval. The result does not
+    construct ADMSignalInput or activate an ADM strategy.
     """
 
     if not isinstance(inputs, ADMAbsoluteMomentumInputs):
         raise ValueError("inputs must be an ADMAbsoluteMomentumInputs")
-    if policy is not None and not isinstance(policy, ADMAbsoluteMomentumComparisonPolicy):
+    if policy is None:
+        policy = APPROVED_ADM_ABSOLUTE_MOMENTUM_POLICY
+    elif not isinstance(policy, ADMAbsoluteMomentumComparisonPolicy):
         raise ValueError("policy must be an ADMAbsoluteMomentumComparisonPolicy or None")
 
     common = dict(
@@ -702,14 +712,6 @@ def compare_adm_absolute_momentum_returns(
         risk_asset_return=inputs.risk_asset_return,
         benchmark_return=inputs.benchmark_return,
     )
-    if policy is None:
-        return ADMAbsoluteMomentumComparisonResult(
-            status=ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE,
-            **common,
-            policy_id=None,
-            operator=None,
-            reason="comparison_policy_not_supplied",
-        )
     if policy.benchmark_symbol != inputs.benchmark_symbol:
         return ADMAbsoluteMomentumComparisonResult(
             status=ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE,
@@ -760,8 +762,6 @@ class ADMDataAssemblyReadiness:
     max_age_days: int
     absolute_freshness_by_symbol: Mapping[str, ADMObservationFreshnessResult]
     unresolved_policy_gates: tuple[str, ...] = (
-        "absolute_momentum_benchmark_approval",
-        "absolute_momentum_comparison_expression_and_equality_behavior",
         "adjusted_price_semantics_approval",
         "provider_calendar_and_data_quality_policy_approval",
     )

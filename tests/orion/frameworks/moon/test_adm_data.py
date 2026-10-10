@@ -591,7 +591,9 @@ def test_adm_signal_assembly_readiness_passes_data_gates_but_not_policy_gates() 
     assert readiness.data_quality_passed is True
     assert readiness.signal_ready is False
     assert set(readiness.absolute_freshness_by_symbol) == {"VTI", "SGOV"}
-    assert "absolute_momentum_benchmark_approval" in readiness.unresolved_policy_gates
+    assert "absolute_momentum_benchmark_approval" not in readiness.unresolved_policy_gates
+    assert "absolute_momentum_comparison_expression_and_equality_behavior" not in readiness.unresolved_policy_gates
+    assert "adjusted_price_semantics_approval" in readiness.unresolved_policy_gates
 
 
 def test_adm_signal_assembly_readiness_rejects_mismatched_target_dates() -> None:
@@ -708,15 +710,23 @@ def _absolute_inputs_for_comparison(risk_return: float = 0.12, benchmark_return:
     )
 
 
-def test_absolute_momentum_comparison_is_unavailable_without_policy() -> None:
+def test_absolute_momentum_comparison_uses_d055_policy_without_override() -> None:
     from orion.frameworks.moon.adm_data import (
+        ADMAbsoluteMomentumComparisonOperator,
         ADMAbsoluteMomentumComparisonStatus,
         compare_adm_absolute_momentum_returns,
     )
 
     result = compare_adm_absolute_momentum_returns(_absolute_inputs_for_comparison())
-    assert result.status is ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE
-    assert result.reason == "comparison_policy_not_supplied"
+    assert result.status is ADMAbsoluteMomentumComparisonStatus.TRUE
+    assert result.policy_id == "D-055"
+    assert result.benchmark_symbol == "SGOV"
+    assert result.operator is ADMAbsoluteMomentumComparisonOperator.RISK_RETURN_GT_BENCHMARK
+
+    tied = compare_adm_absolute_momentum_returns(
+        _absolute_inputs_for_comparison(0.04, 0.04)
+    )
+    assert tied.status is ADMAbsoluteMomentumComparisonStatus.FALSE
 
 
 def test_absolute_momentum_comparison_uses_explicit_strict_operator() -> None:
@@ -823,7 +833,7 @@ def _comparison_for_readiness(readiness):
     return compare_adm_absolute_momentum_returns(readiness.absolute_momentum_inputs, policy=policy)
 
 
-def test_comparison_signal_guard_blocks_unavailable_and_unknown_policy() -> None:
+def test_comparison_signal_guard_blocks_unknown_approval_and_open_data_gates() -> None:
     from orion.frameworks.moon.adm_data import (
         ADMAbsoluteMomentumComparisonStatus,
         ADMComparisonSignalGuardResult,
@@ -836,10 +846,10 @@ def test_comparison_signal_guard_blocks_unavailable_and_unknown_policy() -> None
     comparison = compare_adm_absolute_momentum_returns(readiness.absolute_momentum_inputs)
     result = guard_adm_comparison_for_signal_assembly(comparison, readiness)
     assert isinstance(result, ADMComparisonSignalGuardResult)
-    assert result.comparison_status is ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE
+    assert result.comparison_status is ADMAbsoluteMomentumComparisonStatus.TRUE
     assert result.policy_approval_status is ADMPolicyApprovalStatus.UNKNOWN
     assert result.eligible_for_signal_assembly is False
-    assert "comparison_unavailable" in result.blocked_reasons
+    assert "comparison_policy_not_approved" in result.blocked_reasons
     assert "unresolved_policy_gates" in result.blocked_reasons
 
 
@@ -925,15 +935,15 @@ def test_adm_composed_data_pipeline_keeps_readiness_distinct_from_signal_approva
     assert relative.selection_policy_id == readiness.absolute_momentum_inputs.selection_policy_id
     assert readiness.data_quality_passed is True
 
-    # No comparison policy means UNAVAILABLE, not FALSE; data readiness alone
-    # cannot pass the signal-integration guard.
+    # D-055 provides the approved comparison rule; open data gates and the
+    # missing caller approval attestation still prevent signal integration.
     comparison = compare_adm_absolute_momentum_returns(readiness.absolute_momentum_inputs)
-    assert comparison.status is ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE
+    assert comparison.status is ADMAbsoluteMomentumComparisonStatus.TRUE
     guarded = guard_adm_comparison_for_signal_assembly(
         comparison,
         readiness,
         policy_approval_status=ADMPolicyApprovalStatus.UNKNOWN,
     )
     assert guarded.eligible_for_signal_assembly is False
-    assert "comparison_unavailable" in guarded.blocked_reasons
+    assert "comparison_policy_not_approved" in guarded.blocked_reasons
     assert "unresolved_policy_gates" in guarded.blocked_reasons
