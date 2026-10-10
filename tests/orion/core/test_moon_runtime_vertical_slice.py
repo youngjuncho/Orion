@@ -130,8 +130,12 @@ def test_moon_adapter_adds_rebalance_plan_when_current_state_and_prices_are_supp
         }
     )
 
-    candidate = result.framework_results[0].decision_candidates[0]
-    plan = candidate.payload["rebalance_plan"]
+    target_candidate, plan_candidate = result.framework_results[0].decision_candidates
+    plan = plan_candidate.payload["rebalance_plan"]
+    assert target_candidate.decision_type == "PortfolioTargetProposal"
+    assert plan_candidate.decision_type == "RebalancePlanProposal"
+    assert plan_candidate.entity_type == "RebalancePlan"
+    assert plan_candidate.payload["portfolio_target_id"] == "moon-rebalance-target"
     assert plan.as_of == "2026-10-08"
     assert [(change.asset_id, change.delta_weight) for change in plan.changes] == [
         (AssetId("SPYM"), Decimal("0.2")),

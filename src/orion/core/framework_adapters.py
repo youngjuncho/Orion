@@ -129,17 +129,27 @@ class MoonPortfolioAdapter:
             payload={
                 "portfolio_target": target,
                 "strategy_results": results,
-                **(
-                    {"rebalance_plan": rebalance_plan}
-                    if rebalance_plan is not None
-                    else {}
-                ),
             },
         )
+        candidates = [candidate]
+        if rebalance_plan is not None:
+            candidates.append(
+                DecisionCandidate(
+                    candidate_id=f"moon-rebalance:{self.target_id}",
+                    framework_name="Moon",
+                    decision_type="RebalancePlanProposal",
+                    entity_type="RebalancePlan",
+                    entity_id=str(self.target_id),
+                    payload={
+                        "rebalance_plan": rebalance_plan,
+                        "portfolio_target_id": str(self.target_id),
+                    },
+                )
+            )
         return FrameworkResult(
             framework_name="Moon",
             execution_status="Completed",
-            decision_candidates=(candidate,),
+            decision_candidates=tuple(candidates),
         )
 
 
