@@ -32,7 +32,7 @@ engineering assessment:
 
 | Candidate | Relevant documented behavior | Assessment for ADM | Status |
 |---|---|---|---|
-| Alpha Vantage | Its monthly adjusted endpoint documents last-trading-day monthly bars and adjusted close; its support page says adjusted OHLCV accounts for splits and cash dividends. | Selected by D-057 for a private individual research adapter; instrument coverage and revision behavior remain to be checked against live responses. | Selected within D-057 scope |
+| Alpha Vantage | Its monthly adjusted endpoint documents last-trading-day monthly bars, adjusted close, and monthly dividend; its core time-series APIs cover stocks, ETFs, and mutual funds. Its support page documents split and cash-dividend adjustments. | Selected by D-057 for a private individual research adapter. General ETF support does not confirm VTI, VEU, and SGOV individually; exact live coverage and adjusted-history parity remain unverified. | Selected within D-057 scope |
 | Massive | Its aggregate bars are split-adjusted by default; its FAQ states they are not dividend-adjusted. | Does not meet D-028's adjusted-price total-return proxy requirement as-is. Could only be reconsidered with a separately validated dividend adjustment calculation. | Not suitable as-is |
 | Yahoo Finance | No reviewed official evidence in this assessment establishes a supported API contract, adjustment methodology, or permitted use for this project. | Existing research-list mention is not sufficient evidence for production selection. | Unassessed; not approved |
 
@@ -45,6 +45,12 @@ ADM data load uses three. Entitlements and quotas must be rechecked before
 scheduled or broader use; this is not a legal determination.
 
 Sources: [Alpha Vantage Monthly Adjusted API documentation](https://www.alphavantage.co/documentation/), [Alpha Vantage adjustment-method support](https://www.alphavantage.co/support/), [Alpha Vantage Terms of Service](https://www.alphavantage.co/terms_of_service/), [Alpha Vantage request limits](https://www.alphavantage.co/premium/), [Alpha Vantage Market Data Policies](https://www.alphavantage.co/realtime_data_policy/), and [Massive stock-data FAQ](https://massive.com/knowledge-base/categories/faq).
+
+The official materials establish the general endpoint contract and adjustment
+description, not successful responses for the three selected ETFs. No live
+symbol requests were made for this review. PCD-02 therefore remains open until
+each exact symbol returns matching metadata and at least 13 valid monthly
+adjusted observations under the configured account.
 
 ### D-057 selection and integration
 
@@ -69,7 +75,7 @@ execution-date/timezone mapping remain engineering/operations items.
 | ID | Decision area | Current status | Required decision / evidence | Consequence while open |
 |---|---|---|---|---|
 | PCD-01 | Provider selection and permitted use | Selected by D-057 for private individual use | Alpha Vantage monthly adjusted endpoint; no organization, redistribution, third-party display, or commercial service without written permission | Adapter available only when explicitly configured; broader-use collection is not authorized |
-| PCD-02 | Instrument identity | Implemented; live coverage check open | Request VTI, VEU, SGOV and require exact response symbol identity | Fail whole batch on missing/mismatched identity |
+| PCD-02 | Instrument identity | General ETF support documented; exact live coverage open | Request VTI, VEU, SGOV and require exact response symbol identity plus at least 13 valid monthly observations for each | Fail whole batch on missing/mismatched identity; no live coverage claim until checked |
 | PCD-03 | Canonical symbol/field mapping | Implemented | Provider `Monthly Adjusted Time Series` / `5. adjusted close` to canonical `adjusted_close`, date-only observation, USD, and explicit source metadata | No inferred aliases or silent field substitutions |
 | PCD-04 | Adjusted-price semantics | Provider-documented mapping selected by D-057; empirical revision/parity check open | Provider says adjustment includes splits and cash dividends; review point-in-time/revision behavior and fixture parity | Do not claim point-in-time snapshots; live signal remains gated |
 | PCD-05 | Timestamp and timezone | Monthly date semantics documented; timezone detail open | Use provider's date-only monthly final-trading-day label; preserve it without timezone conversion | No fabricated intraday timestamp or timezone |
