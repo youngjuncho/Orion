@@ -2,6 +2,9 @@ import pytest
 
 from data import MarketDataPoint, MarketDataSet
 from orion.frameworks.moon.adm_data import (
+    ADMAbsoluteMomentumComparisonStatus,
+    ADM_MONTHLY_MAX_OBSERVATION_AGE_DAYS,
+    assess_adm_monthly_dataset,
     derive_adm_monthly_target_dates,
     calculate_adm_asset_return,
     calculate_adm_observation_pair_return,
@@ -32,6 +35,70 @@ def test_monthly_target_dates_exclude_current_month_on_first_day() -> None:
     targets = derive_adm_monthly_target_dates("2026-10-01")
 
     assert targets.current_target_date == "2026-09-30"
+
+
+def test_monthly_assessment_uses_seven_day_gate_and_d055_comparison() -> None:
+    dataset = MarketDataSet(
+        (
+            MarketDataPoint("VTI", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("VTI", "adjusted_close", "2026-09-30", 115.0, "fixture"),
+            MarketDataPoint("VEU", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("VEU", "adjusted_close", "2026-09-30", 110.0, "fixture"),
+            MarketDataPoint("SGOV", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("SGOV", "adjusted_close", "2026-09-30", 104.0, "fixture"),
+        ),
+        as_of="2026-10-10",
+    )
+
+    assessment = assess_adm_monthly_dataset(dataset)
+
+    assert ADM_MONTHLY_MAX_OBSERVATION_AGE_DAYS == 7
+    assert assessment.targets.current_target_date == "2026-09-30"
+    assert assessment.selected_risk_asset == "VTI"
+    assert assessment.comparison.status is ADMAbsoluteMomentumComparisonStatus.TRUE
+    assert assessment.readiness.max_age_days == 7
+    assert assessment.signal_assembly_ready is False
+
+
+def test_monthly_assessment_rejects_stale_endpoint_for_any_risk_asset() -> None:
+    dataset = MarketDataSet(
+        (
+            MarketDataPoint("VTI", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("VTI", "adjusted_close", "2026-08-31", 110.0, "fixture"),
+            MarketDataPoint("VEU", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("VEU", "adjusted_close", "2026-09-30", 105.0, "fixture"),
+            MarketDataPoint("SGOV", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("SGOV", "adjusted_close", "2026-09-30", 104.0, "fixture"),
+        ),
+        as_of="2026-10-10",
+    )
+
+    with pytest.raises(ValueError, match="maximum age"):
+        assess_adm_monthly_dataset(dataset)
+
+
+def test_monthly_assessment_rejects_stale_sgov_benchmark_endpoint() -> None:
+    dataset = MarketDataSet(
+        (
+            MarketDataPoint("VTI", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("VTI", "adjusted_close", "2026-09-30", 115.0, "fixture"),
+            MarketDataPoint("VEU", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("VEU", "adjusted_close", "2026-09-30", 110.0, "fixture"),
+            MarketDataPoint("SGOV", "adjusted_close", "2025-09-30", 100.0, "fixture"),
+            MarketDataPoint("SGOV", "adjusted_close", "2026-08-31", 104.0, "fixture"),
+        ),
+        as_of="2026-10-10",
+    )
+
+    with pytest.raises(ValueError, match="maximum age"):
+        assess_adm_monthly_dataset(dataset)
+
+
+def test_monthly_assessment_does_not_allow_a_looser_than_approved_age_limit() -> None:
+    dataset = MarketDataSet((), as_of="2026-10-10")
+
+    with pytest.raises(ValueError, match="approved D-058 limit"):
+        assess_adm_monthly_dataset(dataset, max_age_days=8)
 
 
 def test_adm_asset_return_uses_exact_caller_selected_observations() -> None:

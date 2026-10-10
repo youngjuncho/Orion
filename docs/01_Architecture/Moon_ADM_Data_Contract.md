@@ -1,12 +1,12 @@
 # Moon ADM Data Contract
 
 Version: 1.0  
-Status: Contract Baseline - D-055 Comparison Approved; D-057 Provider Adapter Implemented; D-058 Freshness Proposal Open
+Status: Contract Baseline - D-055 Comparison Approved; D-057 Provider Adapter Implemented; D-058 Freshness Approved
 Last Updated: 2026-10-10
 
 ## Purpose
 
-This document records the ADM data boundary implied by the implementation specification and decisions D-028, D-055, D-056, and D-057. Alpha Vantage's monthly adjusted endpoint is implemented for private individual research under D-057. D-058 proposes target-date and freshness defaults; its seven-day limit remains unapproved. Provider access does not authorize ADM signal assembly or activation.
+This document records the ADM data boundary implied by the implementation specification and decisions D-028, D-055, D-056, D-057, and D-058. Alpha Vantage's monthly adjusted endpoint is implemented for private individual research under D-057. D-058 approves a seven-day maximum age for selected observations; its target-date convention remains an engineering default. Provider access does not authorize ADM signal assembly or activation.
 
 ## Existing strategy contract
 
@@ -19,10 +19,11 @@ The input contains:
 - the configured defensive asset.
 
 `ADMStrategy` compares the supplied relative momentum values and applies the
-supplied absolute-momentum result. It does not select historical observations,
-calculate the absolute-momentum result, determine data freshness, or resolve
-source conflicts. A future adapter/calculation component must perform those
-responsibilities before constructing `ADMSignalInput`.
+supplied absolute-momentum result. `assess_adm_monthly_dataset()` selects the
+monthly observations, calculates relative returns, compares the winner to
+SGOV, and applies D-058 freshness validation. It returns an auditable data
+assessment only; source-revision validation and governance approval remain
+required before constructing `ADMSignalInput`.
 
 ## Price field and calculation
 
@@ -47,23 +48,25 @@ layer needs:
 
 The strategy's research specification describes monthly evaluation on the
 last trading day. `derive_adm_monthly_target_dates(as_of_date)` implements the
-D-058 proposed target rule: use the last calendar day of the month preceding
+D-058 engineering target rule: use the last calendar day of the month preceding
 the `as_of` month and the same month's end one year earlier. This excludes a
-possibly incomplete current-month bar and handles leap-month ends. For each
+possibly incomplete current-month bar and handles leap-month ends. This is an
+engineering default, not an independently approved signal-timing policy. For each
 explicit target, select the latest available observation on or before it,
 never a future observation, and retain targets plus selected observations.
 
 This is the selected prior-observation policy for the engineering baseline,
 not proof that the selected observation is a valid exchange trading day; it
-also does not impose an approved numeric maximum age. D-058 recommends seven
-calendar days for every selected endpoint, but callers must continue to pass
-an explicit threshold until that proposal is approved. Under D-056, the same field,
+also does not impose a maximum age in the low-level selector. D-058 approves
+seven calendar days for every selected endpoint; `assess_adm_monthly_dataset`
+applies that limit by default. Lower-level callers must pass an explicit
+threshold. Under D-056, the same field,
 targets, and selection rule apply to VTI, VEU, and the SGOV comparison input.
 Required missing, invalid, stale under an explicit caller policy, or
 conflicting observations fail closed; no fill, interpolation, or partial
-success is allowed. Provider bar calendars, timezone, numeric freshness
-limits, conflict/revision semantics, and empirical validation of the provider's
-adjusted-price history remain separate source-contract gates. Production signal
+success is allowed. Provider publication-time SLA, conflict/revision semantics,
+and empirical validation of the provider's adjusted-price history remain
+separate source-contract gates. Production signal
 assembly remains gated on those decisions and governance approval.
 
 ## Defensive benchmark dependency
@@ -87,8 +90,8 @@ Before ADM signal assembly can be considered ready, it must:
 - map provider fields explicitly to canonical `symbol`, `field`, `observed_at`,
   `value`, `source`, `currency`, and metadata;
 - document instrument identity and adjusted-price semantics;
-- approve the D-058 target-date rule and freshness threshold, and document any
-  execution-date/timezone mapping;
+- review the D-058 engineering target-date convention and document the
+  execution-date/timezone mapping; apply the approved D-058 freshness limit;
 - define missing, duplicate, stale, revised, and conflicting observations;
 - honor D-055's SGOV comparison benchmark; document any separate configured defensive holding relationship;
 - provide deterministic fixtures covering normal and invalid input cases;

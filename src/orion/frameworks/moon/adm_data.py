@@ -1,8 +1,8 @@
-"""Policy-explicit data lookup helpers for Moon's ADM return calculations.
+"""Policy-explicit market-data and calculation helpers for Moon ADM.
 
-These helpers consume an already normalized dataset. They intentionally do not
-choose trading dates, resolve provider identities, infer adjusted-price
-semantics, or decide freshness/missing-data policies.
+These helpers consume an already normalized dataset. Provider identities,
+adjusted-price semantics, provider revisions, and signal activation remain
+explicit governance concerns.
 """
 
 from __future__ import annotations
@@ -18,6 +18,9 @@ from typing import Mapping
 from data.contracts import MarketDataPoint, MarketDataSet
 
 from .adm import ADM_RISK_ASSETS, calculate_adjusted_price_return
+
+ADM_MONTHLY_MAX_OBSERVATION_AGE_DAYS = 7
+ADM_ABSOLUTE_MOMENTUM_BENCHMARK = "SGOV"
 
 
 def _exact_numeric_price(
@@ -903,6 +906,129 @@ def prepare_adm_signal_assembly_readiness(
         absolute_momentum_inputs=absolute_momentum_inputs,
         max_age_days=max_age_days,
         absolute_freshness_by_symbol=absolute_freshness,
+    )
+
+
+@dataclass(frozen=True)
+class ADMMonthlyDataAssessment:
+    """Auditable monthly ADM data assessment without a strategy signal."""
+
+    targets: ADMMonthlyTargetDates
+    relative_momentum_freshness: ADMRelativeMomentumFreshnessResult
+    selected_risk_asset: str
+    absolute_momentum_inputs: ADMAbsoluteMomentumInputs
+    comparison: ADMAbsoluteMomentumComparisonResult
+    readiness: ADMDataAssemblyReadiness
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.targets, ADMMonthlyTargetDates):
+            raise ValueError("targets must be ADMMonthlyTargetDates")
+        if not isinstance(self.relative_momentum_freshness, ADMRelativeMomentumFreshnessResult):
+            raise ValueError("relative_momentum_freshness has an invalid type")
+        if self.selected_risk_asset not in ADM_RISK_ASSETS:
+            raise ValueError("selected_risk_asset must be an ADM risk asset")
+        if not isinstance(self.absolute_momentum_inputs, ADMAbsoluteMomentumInputs):
+            raise ValueError("absolute_momentum_inputs has an invalid type")
+        if self.absolute_momentum_inputs.risk_asset_symbol != self.selected_risk_asset:
+            raise ValueError("absolute-momentum risk asset must match the relative-momentum winner")
+        if self.absolute_momentum_inputs.benchmark_symbol != ADM_ABSOLUTE_MOMENTUM_BENCHMARK:
+            raise ValueError("absolute-momentum benchmark must be SGOV")
+        relative = self.relative_momentum_freshness.relative_momentum_result
+        absolute = self.absolute_momentum_inputs
+        if (
+            relative.current_target_date != self.targets.current_target_date
+            or relative.trailing_target_date != self.targets.trailing_target_date
+            or absolute.current_target_date != self.targets.current_target_date
+            or absolute.trailing_target_date != self.targets.trailing_target_date
+        ):
+            raise ValueError("all assessment inputs must use the derived monthly targets")
+        if not isinstance(self.comparison, ADMAbsoluteMomentumComparisonResult):
+            raise ValueError("comparison has an invalid type")
+        if self.comparison.risk_asset_symbol != self.selected_risk_asset:
+            raise ValueError("comparison risk asset must match the selected risk asset")
+        if (
+            self.comparison.benchmark_symbol != absolute.benchmark_symbol
+            or self.comparison.risk_asset_return != absolute.risk_asset_return
+            or self.comparison.benchmark_return != absolute.benchmark_return
+            or self.comparison.policy_id != "D-055"
+        ):
+            raise ValueError("comparison must match the approved D-055 input values")
+        if not isinstance(self.readiness, ADMDataAssemblyReadiness):
+            raise ValueError("readiness has an invalid type")
+        if not self.readiness.data_quality_passed:
+            raise ValueError("monthly assessment requires a passing data-quality result")
+
+    @property
+    def signal_assembly_ready(self) -> bool:
+        """Expose readiness while preserving independent governance gates."""
+
+        return (
+            self.readiness.signal_ready
+            and self.comparison.status is not ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE
+        )
+
+
+def assess_adm_monthly_dataset(
+    dataset: MarketDataSet,
+    *,
+    max_age_days: int = ADM_MONTHLY_MAX_OBSERVATION_AGE_DAYS,
+) -> ADMMonthlyDataAssessment:
+    """Assess monthly VTI/VEU momentum and compare its winner with SGOV.
+
+    This connects the canonical monthly dataset to the existing calculation,
+    D-055 comparison, and freshness boundaries. It uses the last-completed-
+    month target helper and the approved seven-calendar-day selected-observation
+    age limit. It returns auditable inputs/readiness only; it never constructs
+    ``ADMSignalInput`` or activates a Moon strategy. Open provider revision and
+    governance gates remain visible through ``signal_assembly_ready``.
+    """
+
+    if not isinstance(dataset, MarketDataSet):
+        raise ValueError("dataset must be a MarketDataSet")
+    if isinstance(max_age_days, bool) or not isinstance(max_age_days, int) or max_age_days < 0:
+        raise ValueError("max_age_days must be a non-negative integer")
+    if max_age_days > ADM_MONTHLY_MAX_OBSERVATION_AGE_DAYS:
+        raise ValueError("max_age_days must not exceed the approved D-058 limit of seven days")
+
+    targets = derive_adm_monthly_target_dates(dataset.as_of)
+    relative = calculate_adm_relative_momentum(
+        dataset,
+        field="adjusted_close",
+        current_target_date=targets.current_target_date,
+        trailing_target_date=targets.trailing_target_date,
+        selection_policy_id=targets.policy_id,
+    )
+    relative_freshness = validate_adm_relative_momentum_freshness(
+        relative,
+        max_age_days=max_age_days,
+    )
+    vti_return = relative.relative_momentum["VTI"]
+    veu_return = relative.relative_momentum["VEU"]
+    if vti_return == veu_return:
+        raise ValueError("relative-momentum tie is undefined by the ADM specification")
+    selected_risk_asset = "VTI" if vti_return > veu_return else "VEU"
+    absolute_inputs = calculate_adm_absolute_momentum_inputs(
+        dataset,
+        risk_asset_symbol=selected_risk_asset,
+        benchmark_symbol=ADM_ABSOLUTE_MOMENTUM_BENCHMARK,
+        field="adjusted_close",
+        current_target_date=targets.current_target_date,
+        trailing_target_date=targets.trailing_target_date,
+        selection_policy_id=targets.policy_id,
+    )
+    comparison = compare_adm_absolute_momentum_returns(absolute_inputs)
+    readiness = prepare_adm_signal_assembly_readiness(
+        relative_freshness,
+        absolute_inputs,
+        max_age_days=max_age_days,
+    )
+    return ADMMonthlyDataAssessment(
+        targets=targets,
+        relative_momentum_freshness=relative_freshness,
+        selected_risk_asset=selected_risk_asset,
+        absolute_momentum_inputs=absolute_inputs,
+        comparison=comparison,
+        readiness=readiness,
     )
 
 

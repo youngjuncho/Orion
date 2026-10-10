@@ -2663,27 +2663,29 @@ provider limit.
 
 ---
 
-## D-058 — ADM Monthly Targets and Freshness Proposal
+## D-058 — ADM Monthly Targets and Freshness Policy
 
-Status: **Proposed — freshness threshold requires owner approval**
+Status: **Approved — seven-day freshness limit; target generation remains an engineering default**
 Date: 2026-10-10
 
-Recommend deriving the current endpoint as the last calendar day of the month
-before the dataset's `as_of` month, which excludes a potentially incomplete
-monthly bar. Derive the trailing endpoint as the last calendar day of the same
-month in the prior year; this aligns monthly bars across leap years. The
-provider's observation label remains the last trading day of each month, and
+The recommended target convention derives the current endpoint as the last
+calendar day of the month before the dataset's `as_of` month, excluding a
+potentially incomplete monthly bar. The trailing endpoint is the last calendar
+day of the same month in the prior year, aligning monthly bars across leap
+years. The provider labels observations with each month's last trading day;
 D-056's prior-observation-on-or-before selector remains in force. This target
-rule is implemented by `derive_adm_monthly_target_dates()` as an explicit
-engineering utility; its output does not itself authorize signal assembly.
+rule is implemented by `derive_adm_monthly_target_dates()` as an engineering
+utility. D-058's approval does not elevate target generation, signal timing,
+or activation to approved policy.
 
-Recommend a maximum calendar-age of seven days for each selected current and
-trailing observation across VTI, VEU, and SGOV. This accommodates a month-end
-falling on a weekend/holiday and short publication delay, while rejecting a
-fallback to the previous monthly bar if the latest completed month is absent.
-Apply one common limit to all required observations and fail closed if any
-exceeds it. Keep the threshold caller-supplied until approved; do not silently
-apply seven days to production calculations.
+The owner approved a maximum calendar-age of seven days for every selected
+current and trailing observation across VTI, VEU, and SGOV. This accommodates
+a month-end falling on a weekend/holiday and short publication delay, while
+rejecting fallback to the previous monthly bar if the latest completed month
+is absent. Apply one common limit to all required observations and fail closed
+if any exceeds it. `assess_adm_monthly_dataset()` applies this approved D-058
+limit by default; lower-level freshness helpers continue to require an
+explicit caller value.
 
-The proposal does not specify the next-trading-day execution date, session
+This decision does not specify the next-trading-day execution date, session
 timezone, publication-time SLA, provider revision handling, or ADM activation.

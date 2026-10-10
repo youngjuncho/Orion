@@ -1,12 +1,12 @@
 # Moon ADM Data Readiness and Closure Matrix
 
 Version: 1.0
-Status: Engineering Baseline - D-055 Comparison Approved; D-057 Source Adapter Implemented; D-058 Freshness Proposal Open
+Status: Engineering Baseline - D-055 Comparison Approved; D-057 Source Adapter Implemented; D-058 Freshness Approved
 Last Updated: 2026-10-10
 
 ## Purpose
 
-This matrix separates approved ADM methodology, the D-057 source-adapter scope, and remaining data/activation gates. D-055 closes the absolute-momentum benchmark/operator decision. D-057 selects Alpha Vantage's monthly adjusted endpoint for private individual research; D-058's seven-day freshness proposal still needs approval. None of these decisions activates ADM.
+This matrix separates approved ADM methodology, the D-057 source-adapter scope, and remaining data/activation gates. D-055 closes the absolute-momentum benchmark/operator decision. D-057 selects Alpha Vantage's monthly adjusted endpoint for private individual research; D-058 approves a seven-day maximum age for selected observations. The target-date helper remains an engineering default. None of these decisions activates ADM.
 
 ## Existing approved methodology
 
@@ -15,7 +15,7 @@ The following points are grounded in existing decisions or the current ADM imple
 | Item | Current baseline | Boundary |
 |---|---|---|
 | Return measurement | D-028 approves adjusted-price-based total-return measurement; D-055 applies it to risk asset and SGOV; D-057 selects Alpha Vantage monthly adjusted close mapping | Provider adjustment history/revisions and empirical parity remain to be validated |
-| Momentum horizon | `ADM_Orion.md` specifies trailing 12-month return; D-055 requires the same horizon for the risk asset and SGOV | D-058 proposes matching calendar month-ends; freshness remains open |
+| Momentum horizon | `ADM_Orion.md` specifies trailing 12-month return; D-055 requires the same horizon for the risk asset and SGOV | The engineering helper aligns monthly endpoints; execution-date mapping remains open |
 | Risk universe | VTI and VEU | Do not add assets without a separate methodology decision |
 | Selection behavior | ADMStrategy compares precomputed relative momentum and absolute-momentum inputs | It does not calculate them from market observations |
 | Allocation output | Current specification selects one asset at 100% of ADM strategy allocation | Moon-level aggregation and execution remain outside ADM |
@@ -27,11 +27,11 @@ These items are not closed sufficiently to authorize end-to-end production calcu
 
 | Item | Current document state | Required closure |
 |---|---|---|
-| Absolute-momentum benchmark/operator | D-055 approves SGOV and strict selected-risk-return greater-than-benchmark; equality is false | Provider adjusted-price semantics, calendar, freshness, configured defensive holding, and activation are separate gates |
+| Absolute-momentum benchmark/operator | D-055 approves SGOV and strict selected-risk-return greater-than-benchmark; equality is false | Provider revision/parity, target/execution calendar, configured defensive holding, and activation remain separate gates; D-058 age limit is approved |
 | Adjusted-price semantics | D-057 maps Alpha Vantage's `5. adjusted close`; provider documents split and cash-dividend adjustments | Validate instrument coverage, revision behavior, and historical parity before production signal assembly |
-| Twelve-month endpoint selection | D-056 prior-observation-on-or-before; D-058 implements a proposed last-completed-month-end target helper | Approve target generation and seven-day maximum selected-observation age |
+| Twelve-month endpoint selection | D-056 prior-observation-on-or-before; D-058 implements the last-completed-month-end helper as an engineering default | Target generation is not signal-timing approval; selected observations must be no more than seven calendar days from each target |
 | Monthly signal date | Research spec says last trading day; execution spec says next trading day | Confirm how the signal date is represented and how the next trading day is identified across calendars |
-| Missing/stale observations | Provider batch fails closed; D-058 proposes seven calendar days for all selected endpoints | Approve the threshold; current calculation API continues to require an explicit caller value |
+| Missing/stale observations | Provider batch fails closed; D-058 approves seven calendar days for all selected endpoints | Integrated monthly assessment applies the seven-day limit; low-level validation still takes an explicit caller value |
 | Historical revisions | Not specified | Decide whether recalculation uses latest revised history or preserves an as-observed snapshot, and what reproducibility means for MVP |
 | Provider choice | D-057 selects Alpha Vantage monthly adjusted data for private individual research | Verify live symbol coverage and use only within the approved private individual scope |
 
@@ -64,7 +64,7 @@ The adapter performs network access only when explicitly configured with a key. 
 
 ## 4. Implementation gate
 
-Pure calculation/selection utilities use the explicit prior-observation-on-or-before rule. D-057 implements Alpha Vantage monthly data for private research. The D-058 target-date and freshness defaults remain proposed, and provider revision/coverage plus governance gates remain open. SGOV comparison is approved by D-055.
+Pure calculation/selection utilities use the explicit prior-observation-on-or-before rule. D-057 implements Alpha Vantage monthly data for private research. D-058 applies the approved seven-day observation-age gate; target-date generation remains an engineering default. Provider revision/coverage plus governance gates remain open. SGOV comparison is approved by D-055.
 
 Until then:
 

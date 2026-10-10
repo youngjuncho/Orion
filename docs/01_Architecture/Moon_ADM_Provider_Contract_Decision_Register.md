@@ -60,8 +60,9 @@ does not retry, cache, persist, calculate an ADM signal, or activate Moon.
 The provider terms permit private, individual investment analysis and research
 within the personal-use grant. Organizational use or third-party access is not
 covered by this decision; obtain written provider approval for those cases.
-The documented monthly response is the last trading day of each month. Exact
-calendar/timezone target generation and numeric freshness limits remain open.
+The documented monthly response is the last trading day of each month. D-058
+approves the seven-day selected-observation age; target-date generation and
+execution-date/timezone mapping remain engineering/operations items.
 
 ## Decision register
 
@@ -73,7 +74,7 @@ calendar/timezone target generation and numeric freshness limits remain open.
 | PCD-04 | Adjusted-price semantics | Provider-documented mapping selected by D-057; empirical revision/parity check open | Provider says adjustment includes splits and cash dividends; review point-in-time/revision behavior and fixture parity | Do not claim point-in-time snapshots; live signal remains gated |
 | PCD-05 | Timestamp and timezone | Monthly date semantics documented; timezone detail open | Use provider's date-only monthly final-trading-day label; preserve it without timezone conversion | No fabricated intraday timestamp or timezone |
 | PCD-06 | Trading calendar and evaluation endpoint | Monthly bar convention selected; D-058 target construction proposed | Use last completed month-end and corresponding prior-year month-end; define signal/execution date mapping before activation | D-056 prior-on-or-before remains; helper output is not signal authorization |
-| PCD-07 | Freshness and publication delay | Open; D-058 proposes seven calendar days | Approve a common maximum selected-observation age and publication-delay handling for weekends, holidays, and delayed provider updates | Callers must pass an explicit threshold; no implicit production default |
+| PCD-07 | Selected-observation age | Seven calendar days approved by D-058 | Apply one maximum age to all selected VTI/VEU/SGOV current and trailing observations | Integrated monthly assessment fails closed above seven days |
 | PCD-08 | Missing and partial responses | Generic fail-closed behavior implemented | Require all three symbols and at least 13 valid monthly observations each; reject provider notices, malformed values, or any incomplete symbol response | No silent fill, interpolation, or partial dataset |
 | PCD-09 | Duplicate and conflicting observations | Generic duplicate identity rejected; conflict policy open | Define provider-specific handling for conflicting records, overlapping pages, and repeated retrievals | No arbitrary winner selection |
 | PCD-10 | Revisions and corrections | Open | Decide whether calculation uses latest revised history or retrieval-time snapshots; define revision identity and correction precedence | No revision selection or durable snapshot behavior implemented |
@@ -104,15 +105,16 @@ A status change in this register is not sufficient evidence of approval by itsel
 4. Close PCD-15 and PCD-16 before end-to-end signal integration or activation review.
 
 D-056 supplies provider-independent engineering defaults. D-057 resolves the
-initial provider and adapter scope for private individual research. Numeric
-freshness limits, exact target generation, live instrument coverage, revision
-reproducibility, and end-to-end signal activation remain open.
+initial provider and adapter scope for private individual research. D-058
+approves a seven-day selected-observation age limit. Exact target generation,
+publication-time SLA, live instrument coverage, revision reproducibility, and
+end-to-end signal activation remain open.
 
-This order does not require all decisions to be made in one session and does not imply that any particular provider is preferred.
+This order does not require all remaining decisions to be made in one session. D-057 has selected Alpha Vantage within its limited private-use scope.
 
 ## Explicit non-goals
 
-This register does not select the configured defensive holding, set a numeric freshness threshold, add retries, caching, fallback sources, persistence, or scheduling, assemble an ADM signal, activate ADM, or modify Core Runtime. The adapter's source selection and adjustment mapping are scoped only as D-057 states. D-055 approves SGOV as comparison benchmark and strict greater-than operator.
+This register does not select the configured defensive holding, revise D-058's seven-day maximum age, add retries, caching, fallback sources, persistence, or scheduling, assemble an ADM signal, activate ADM, or modify Core Runtime. The adapter's source selection and adjustment mapping are scoped only as D-057 states. D-055 approves SGOV as comparison benchmark and strict greater-than operator.
 
 ## Related documents
 
