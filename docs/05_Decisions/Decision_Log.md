@@ -2493,8 +2493,26 @@ The owner must define:
   how execution identity and stores behave if it is reused;
 * which snapshot execution/entity relationships are validated at commit.
 
-This draft does not select all-or-nothing behavior, rollback, compensation, or
-single-use semantics.
+### Proposed MVP Policy (Owner Confirmation Required)
+
+1. **All-or-nothing in-memory effects.** Stage Framework events, accepted
+   transitions, the snapshot, and transition events; validate the whole batch;
+   then publish state and events together. Any failure before that commit leaves
+   both stores unchanged and closes the session as `Error`.
+2. **One public run per `OrionRuntime` instance.** A second `run()` call is
+   rejected. A separate execution uses a new Runtime with a new execution ID
+   and fresh stores. This avoids reusing stores whose snapshots/events are
+   correlated to the first execution.
+3. **Commit validation.** Require the snapshot execution ID to match the
+   current execution and its status to be `Running`. Require each transition's
+   decision ID and entity type/ID to match its accepted candidate. Validate all
+   event execution IDs and duplicate IDs before publishing anything. Previous
+   state continuity remains outside this MVP until the authoritative entity
+   state projection is defined.
+
+This proposal changes the current post-commit event-creation order: event
+objects must be created and validated before the coordinated in-memory commit.
+The owner must approve or revise the proposal before implementation.
 
 ### Required Follow-up
 

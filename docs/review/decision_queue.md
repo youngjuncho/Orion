@@ -31,7 +31,7 @@ Therefore the following historical queue items are closed at the architecture le
 | Draft ID | Topic | Current evidence / unresolved choice |
 |---|---|---|
 | D-051 | ADM signal-to-execution mapping | **Approved 2026-10-10:** ADM identity mappings VTI->VTI, VEU->VEU, and SGOV->SGOV. This resolves mapping only; `config/moon.yaml` still has `active_strategies: []`, so ADM activation remains separate. |
-| D-052 | Runtime failure and commit semantics | The contract requires state commit before transition-event creation, but does not define rollback/compensation when event creation fails, whether framework events survive a later lifecycle failure, or whether a Runtime instance may be reused. Specify allowed residual state/events and session/store reuse behavior before claiming all-or-nothing semantics. |
+| D-052 | Runtime failure and commit semantics | Proposed MVP: stage and validate all events/state, then commit both stores together; any failure leaves stores unchanged and session `Error`. Make `OrionRuntime` single-run and validate snapshot execution/status plus transition-to-candidate identity. Owner confirmation is required because this changes event creation to pre-commit. |
 | D-053 | Portfolio cash valuation and target semantics | `PortfolioState.cash` is ignored by current valuation unless the caller separately supplies `cash_value`; `PortfolioTarget` has no cash sleeve and requires asset weights to sum to 1. Define cash inclusion, target/residual treatment, authoritative balance aggregation, valuation currency, and FX boundary before changing valuation behavior. |
 
 Both entries are Draft and require owner resolution. They do not approve a mapping or select a transaction policy.

@@ -24,7 +24,7 @@ D-051 is approved and implemented: VTI->VTI, VEU->VEU, and SGOV->SGOV. Focused m
 
 ### 2. Resolve Draft D-052 — Runtime Failure / Commit Semantics
 
-The existing contract specifies commit-before-transition-event ordering but not rollback or residual side effects on failures. Define the failure outcome for framework events, StateStore publication, event-factory/EventStore failures, and reuse of an `OrionRuntime` with its existing stores and execution identity. Then reconcile `Orion_Runtime.md`, `Orion_Event_Model.md`, and `Codex_Handoff_Specification.md` before implementation.
+The proposed MVP policy is all-or-nothing in-memory effects: stage/validate framework events, snapshot, and transition events, then commit both stores together; any earlier failure leaves stores unchanged and closes the session as `Error`. Make each `OrionRuntime` single-run, and validate snapshot execution ID/status plus transition-to-candidate identity. This changes event creation to pre-commit; confirm or revise the proposal before implementation.
 
 Do not describe the in-memory lifecycle as all-or-nothing until that behavior is explicitly chosen and validated.
 
