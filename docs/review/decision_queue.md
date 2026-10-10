@@ -2,7 +2,7 @@
 
 Version: 2.0
 
-Date: 2026-10-07
+Date: 2026-10-10
 
 ## Purpose
 
@@ -17,10 +17,10 @@ Therefore the following historical queue items are closed at the architecture le
 | Historical ID | Current status |
 |---|---|
 | DQ-DOMAIN-001 | Architecture resolved by CORE-019; exact Python reconciliation is implementation work |
-| DQ-RUNTIME-001 | Resolved by CORE-004/012; implementation pending |
-| DQ-RUNTIME-002 | Resolved by CORE-003; implementation pending |
+| DQ-RUNTIME-001 | Resolved by CORE-004/012; in-memory public Runtime lifecycle implemented, production hardening/persistence deferred |
+| DQ-RUNTIME-002 | Resolved by CORE-003; execution-correlated in-memory EventStore integration implemented |
 | Runtime persistence | Resolved as MVP in-memory / durable storage future by CORE-005/015 |
-| API error contract | Resolved by CORE-018; implementation pending |
+| API error contract | Resolved by CORE-018; standardized client-facing error mapping remains |
 
 ## Remaining Open Items
 
@@ -34,9 +34,10 @@ Therefore the following historical queue items are closed at the architecture le
 
 ### Moon Implementation
 
-* PortfolioSnapshot implementation
-* RebalancePlan implementation
-* end-to-end Runtime integration
+* Account aggregation and authoritative PortfolioState projection
+* Runtime handoff of current PortfolioState/current weights
+* end-to-end Moon rebalance integration
+* Execution sizing policy and broker lifecycle (outside current MVP)
 
 ### Aurora Framework
 

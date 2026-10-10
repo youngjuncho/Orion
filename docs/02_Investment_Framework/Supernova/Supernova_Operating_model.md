@@ -90,7 +90,7 @@ Conceptually:
 Deficit_i = max(Target Weight_i - Current Weight_i, 0)
 
 DCA Allocation_i
-= Deficit_i / Sum(Deficit) ¡¿ Monthly DCA
+= Deficit_i / Sum(Deficit) Ã— Monthly DCA
 ```
 
 The Company Score does not determine purchase timing or DCA allocation.

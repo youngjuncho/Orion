@@ -14,23 +14,23 @@ Defines the repository and source structure that is actually implemented. This d
 
 ```text
 orion/
-¦§¦¡¦¡ docs/
-¦§¦¡¦¡ src/
-¦¢   ¦§¦¡¦¡ data/
-¦¢   ¦¦¦¡¦¡ orion/
-¦¢       ¦§¦¡¦¡ cli/
-¦¢       ¦§¦¡¦¡ core/
-¦¢       ¦§¦¡¦¡ dashboard/
-¦¢       ¦§¦¡¦¡ frameworks/
-¦¢       ¦¢   ¦§¦¡¦¡ aurora/
-¦¢       ¦¢   ¦§¦¡¦¡ moon/
-¦¢       ¦¢   ¦§¦¡¦¡ phoenix/
-¦¢       ¦¢   ¦¦¦¡¦¡ supernova/
-¦¢       ¦¦¦¡¦¡ services/
-¦§¦¡¦¡ tests/
-¦§¦¡¦¡ config/
-¦§¦¡¦¡ requirements.txt
-¦¦¦¡¦¡ README.md
+â”œâ”€â”€ docs/
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ data/
+â”‚   â””â”€â”€ orion/
+â”‚       â”œâ”€â”€ cli/
+â”‚       â”œâ”€â”€ core/
+â”‚       â”œâ”€â”€ dashboard/
+â”‚       â”œâ”€â”€ frameworks/
+â”‚       â”‚   â”œâ”€â”€ aurora/
+â”‚       â”‚   â”œâ”€â”€ moon/
+â”‚       â”‚   â”œâ”€â”€ phoenix/
+â”‚       â”‚   â””â”€â”€ supernova/
+â”‚       â””â”€â”€ services/
+â”œâ”€â”€ tests/
+â”œâ”€â”€ config/
+â”œâ”€â”€ requirements.txt
+â””â”€â”€ README.md
 ```
 
 ## `src/orion/core`
@@ -88,11 +88,11 @@ The following are possible future refactors, not current V1 requirements:
 
 ```text
 src/orion/
-¦§¦¡¦¡ runtime/
-¦§¦¡¦¡ domain/
-¦§¦¡¦¡ infrastructure/
-¦§¦¡¦¡ config/
-¦¦¦¡¦¡ utils/
+â”œâ”€â”€ runtime/
+â”œâ”€â”€ domain/
+â”œâ”€â”€ infrastructure/
+â”œâ”€â”€ config/
+â””â”€â”€ utils/
 ```
 
 Do not perform another package migration solely to make the directory tree match an abstract architecture diagram.

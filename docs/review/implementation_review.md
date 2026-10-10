@@ -2,7 +2,7 @@
 
 Version: 2.0
 
-Review Date: 2026-10-07
+Review Date: 2026-10-10
 
 ## Executive Decision
 
@@ -72,15 +72,43 @@ Architecture closed:
 * package baseline
 * roadmap/status reconciliation
 
-Implementation pending:
+## Current Implementation Status (2026-10-10)
 
-* public Runtime orchestration
-* full State Transition/Event pipeline integration
-* production Data pipeline
-* Moon PortfolioSnapshot/RebalancePlan/E2E
-* framework-specific engines
-* full CLI/Dashboard integration
-* API implementation as required
+The source tree now implements more than the original closure review recorded.
+The following status reflects the implemented boundaries, not production
+readiness or a claim that downstream external systems are integrated.
+
+Implemented MVP boundaries:
+
+* Public `OrionRuntime.run()` and `RuntimeSession` framework orchestration.
+* Optional Decision acceptance, State Transition, StateStore commit, and
+  execution-correlated EventStore append lifecycle.
+* `MarketDataSet` direct/provider handoff to framework `RuntimeContext`.
+* Common `PortfolioState` / `PortfolioSnapshot` records, caller-supplied
+  valuation, current allocation projection, deterministic `RebalancePlan`,
+  and `ExecutionOrder` materialization from explicit sizing inputs.
+* Moon proposal boundary through the common `PortfolioTarget` and
+  `DecisionCandidate` contracts.
+
+Still pending or deliberately outside the current boundary:
+
+* A production data pipeline: source-specific adapters, collection,
+  freshness policy, semantic validation, and fallback behavior.
+* A portfolio state projection from one or more Accounts and a Runtime handoff
+  of authoritative portfolio state/current weights into Moon rebalance planning.
+* End-to-end Moon rebalance integration. The present portfolio operations are
+  callable domain functions, not an execution lifecycle wired into Runtime.
+* Order sizing policy, broker submission, fills, settlement, ledger updates,
+  and resulting position/cash mutation.
+* Framework methodology/governance that remains unresolved in Aurora,
+  Supernova, and Phoenix specifications.
+* Full CLI/Dashboard integration and a client-facing API error mapping.
+* Durable State/Event persistence, replay, and production infrastructure.
+
+The current public Runtime lifecycle is an in-memory MVP. Framework-only
+execution remains supported. Auto-Approval is the current default acceptance
+policy when callers opt into the decision lifecycle; it does not supply
+portfolio execution or broker approval.
 
 Future:
 

@@ -38,7 +38,7 @@ Remaining: documentation reconciliation/maintenance only.
 * StateStore ? in-memory implementation
 * EventStore ? in-memory implementation
 * Public Runtime orchestration ? pending
-* Full Decision ¡æ State Transition ¡æ Event pipeline integration ? pending
+* Full Decision â†’ State Transition â†’ Event pipeline integration ? pending
 * RuntimeResult integration ? pending
 
 ### C. Data Pipeline
@@ -46,7 +46,7 @@ Remaining: documentation reconciliation/maintenance only.
 **Contract: CLOSED / Implementation: PENDING**
 
 ```text
-Source ¡æ Raw ¡æ Normalize ¡æ Validate ¡æ Canonical MarketDataSet
+Source â†’ Raw â†’ Normalize â†’ Validate â†’ Canonical MarketDataSet
 ```
 
 Remaining:
@@ -117,13 +117,13 @@ API:
 
 ```text
 DECIDED
-  ¡é
+  â†“
 IMPLEMENTATION READY
-  ¡é
+  â†“
 IMPLEMENTED
-  ¡é
+  â†“
 VALIDATED
-  ¡é
+  â†“
 ACTIVE
 ```
 
@@ -133,15 +133,15 @@ Configuration cannot create approval. A strategy or framework becomes executable
 
 ```text
 Core Runtime implementation
-        ¡é
+        â†“
 Canonical Data pipeline
-        ¡é
+        â†“
 Moon end-to-end vertical slice
-        ¡é
+        â†“
 Framework-specific implementation
-        ¡é
+        â†“
 CLI / Dashboard integration
-        ¡é
+        â†“
 API / durable persistence as required
 ```
 

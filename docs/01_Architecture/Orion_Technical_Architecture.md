@@ -1,22 +1,22 @@
 # 2026-10-07 Core Reconciliation Addendum
 
-> **Current authority:** The canonical application execution boundary is **Orion Runtime**. The historical ¡°Portfolio Engine¡± wording below is superseded by `CORE-001` and `CORE-019`: Moon, Orbit, Supernova, and Phoenix are Portfolio / Investment Frameworks; their Engines are framework-internal.
+> **Current authority:** The canonical application execution boundary is **Orion Runtime**. The historical â€œPortfolio Engineâ€ wording below is superseded by `CORE-001` and `CORE-019`: Moon, Orbit, Supernova, and Phoenix are Portfolio / Investment Frameworks; their Engines are framework-internal.
 
 Current package baseline:
 
 ```text
 src/
-¦§¦¡¦¡ data/
-¦¦¦¡¦¡ orion/
-    ¦§¦¡¦¡ cli/
-    ¦§¦¡¦¡ core/
-    ¦§¦¡¦¡ dashboard/
-    ¦§¦¡¦¡ frameworks/
-    ¦¢   ¦§¦¡¦¡ aurora/
-    ¦¢   ¦§¦¡¦¡ moon/
-    ¦¢   ¦§¦¡¦¡ phoenix/
-    ¦¢   ¦¦¦¡¦¡ supernova/
-    ¦¦¦¡¦¡ services/
+â”œâ”€â”€ data/
+â””â”€â”€ orion/
+    â”œâ”€â”€ cli/
+    â”œâ”€â”€ core/
+    â”œâ”€â”€ dashboard/
+    â”œâ”€â”€ frameworks/
+    â”‚   â”œâ”€â”€ aurora/
+    â”‚   â”œâ”€â”€ moon/
+    â”‚   â”œâ”€â”€ phoenix/
+    â”‚   â””â”€â”€ supernova/
+    â””â”€â”€ services/
 ```
 
 Current Core rule: Frameworks consume canonical `MarketDataSet` through `RuntimeContext`, return `FrameworkResult`, and do not directly mutate StateStore/EventStore or Dashboard state.
