@@ -158,16 +158,17 @@ class RuntimeSession:
                         f"framework '{name}' returned result for '{result.framework_name}'"
                     )
                 results.append(result)
+
+            generated_events = tuple(
+                event
+                for result in results
+                for event in result.events
+            )
+            self.record_events(generated_events)
         except Exception:
             self.fail()
             raise
 
-        generated_events = tuple(
-            event
-            for result in results
-            for event in result.events
-        )
-        self.record_events(generated_events)
         return tuple(results)
 
     def _build_result(
