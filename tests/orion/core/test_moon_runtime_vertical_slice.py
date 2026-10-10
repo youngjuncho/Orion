@@ -11,6 +11,7 @@ from orion.core import (
 )
 from orion.core.ids import PortfolioId, TargetId
 from orion.core.portfolio import Allocation
+from data.contracts import MarketDataPoint, MarketDataSet
 from orion.frameworks.moon import ADMSignalInput, ADMStrategy
 from orion.frameworks.moon.models import StrategyResult
 
@@ -75,6 +76,36 @@ def test_moon_adapter_rejects_non_strategy_results() -> None:
                 )
             }
         )
+
+
+def test_moon_adapter_context_factory_receives_runtime_market_data_and_configuration() -> None:
+    dataset = MarketDataSet(
+        (MarketDataPoint("VTI", "adjusted_close", "2026-10-08", 100.0, "fixture"),),
+        "2026-10-08",
+    )
+    received = []
+
+    def results_from_context(context):
+        received.append(context)
+        assert context.market_data is dataset
+        assert context.configuration.system.currency == "KRW"
+        return _strategies()
+
+    result = _runtime().run(
+        {
+            "Moon": make_moon_portfolio_adapter(
+                None,
+                PortfolioId("moon-main"),
+                target_id=TargetId("moon-context-target"),
+                effective_from=date(2026, 10, 8),
+                context_strategy_results_factory=results_from_context,
+            )
+        },
+        market_data=dataset,
+    )
+
+    assert len(received) == 1
+    assert result.framework_results[0].decision_candidates[0].entity_id == "moon-context-target"
 
 
 @pytest.mark.parametrize(
