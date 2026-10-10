@@ -3,12 +3,20 @@
 from .contracts import MarketDataPoint, MarketDataSet, MarketDataProvider
 from .pipeline import normalize_dataset, normalize_observation, validate_dataset
 from .adapters import ProviderNeutralMarketDataAdapter, RawMarketDataSource
+from .alphavantage import (
+    AlphaVantageMonthlyAdjustedProvider,
+    AlphaVantageMonthlyAdjustedSource,
+    AlphaVantageProviderError,
+)
 
 __all__ = [
     "MarketDataPoint",
     "MarketDataSet",
     "MarketDataProvider",
     "ProviderNeutralMarketDataAdapter",
+    "AlphaVantageMonthlyAdjustedProvider",
+    "AlphaVantageMonthlyAdjustedSource",
+    "AlphaVantageProviderError",
     "RawMarketDataSource",
     "normalize_dataset",
     "normalize_observation",

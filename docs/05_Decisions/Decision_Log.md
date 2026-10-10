@@ -2623,3 +2623,40 @@ assembly, or ADM activation.
 The engineering boundary must retain enough selected-observation identity and
 source metadata to explain a result. Durable snapshot storage and provider
 revision precedence are not specified by this decision.
+
+---
+
+## D-057 — Alpha Vantage Monthly Adjusted Data Integration
+
+Status: **Approved — private individual research scope; signal activation remains gated**
+Date: 2026-10-10
+
+The owner directed that the provider and integration be decided. Select Alpha
+Vantage's `TIME_SERIES_MONTHLY_ADJUSTED` endpoint for VTI, VEU, and SGOV as
+Orion's first concrete ADM source. The documented monthly series represents
+the last trading day of each month and provides adjusted close plus dividend
+information; Alpha Vantage states its adjusted pricing accounts for splits
+and cash-dividend events. The strategy evaluates monthly, so this endpoint is
+preferred over the premium daily-adjusted endpoint for the first integration.
+
+The supported use is limited to private, individual investment research by the
+user under Alpha Vantage's published terms and applicable account entitlement.
+No redistribution, third-party display, organizational use, or commercial
+service is authorized by this decision. If the actual use falls outside the
+private individual scope, obtain written provider approval before fetching
+data. The provider's documented adjustment method is accepted as the adapter
+mapping for D-028's adjusted-price proxy, but historical revision behavior,
+instrument coverage, and empirical parity remain subject to validation.
+
+Implement a read-only provider adapter that loads all three instruments into
+the canonical `MarketDataSet`, preserves provider/date/field/retrieval
+provenance, enforces complete-batch validation, and fails closed on errors.
+Read the API key only from `ORION_ALPHA_VANTAGE_API_KEY`; make three monthly
+requests per load, sequentially, with a 15-second per-request timeout and no
+retry, fallback, cache, or persistence. API errors or insufficient history
+must reject the whole batch. The adapter does not calculate `ADMSignalInput`,
+activate ADM, or imply a numeric freshness policy. Live execution remains
+disabled until the open freshness and end-to-end governance gates are closed.
+The provider currently documents a standard allowance of 25 API requests per
+day; one full load uses three. Repeated manual runs remain subject to that
+provider limit.

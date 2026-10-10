@@ -1,14 +1,14 @@
 # Moon ADM Provider Contract Decision Register
 
 Version: 1.0
-Status: Open — decision inventory; D-055 approves comparison methodology; no provider approved
+Status: Open — D-057 selects Alpha Vantage for a limited private-use adapter; signal activation remains gated
 Last Updated: 2026-10-10
 
 ## Purpose
 
-This register consolidates decisions that must be resolved before a concrete market-data provider adapter can be implemented or connected to Moon ADM. It is a decision-tracking artifact, not itself an approval record. Listing a candidate or an acceptance test does not authorize that candidate or close a policy gate.
+This register tracks source and governance decisions that must be resolved before provider data can enter ADM signal assembly or Moon activation. It is a decision-tracking artifact, not itself an approval record. Listing a candidate or acceptance test does not authorize a use beyond the scope recorded in the Decision Log.
 
-The provider-neutral adapter and fixture-based acceptance tests are implemented. D-055 approves the SGOV/strict-greater-than methodology. D-056 approves limited provider-independent engineering defaults for endpoint selection and fail-closed handling; it does not close provider-specific gates. The live provider boundary remains closed. Core Runtime remains frozen, and Moon's `active_strategies` remains unchanged (`[]`).
+The provider-neutral adapter and fixture-based acceptance tests are implemented. D-055 approves the SGOV/strict-greater-than methodology. D-056 approves provider-independent endpoint selection and fail-closed defaults. D-057 selects Alpha Vantage's monthly adjusted series for private individual research and an opt-in data adapter. Signal assembly and live ADM activation remain gated. Core Runtime remains frozen, and Moon's `active_strategies` remains unchanged (`[]`).
 
 ## D-056 engineering defaults
 
@@ -32,37 +32,53 @@ engineering assessment:
 
 | Candidate | Relevant documented behavior | Assessment for ADM | Status |
 |---|---|---|---|
-| Alpha Vantage | Its Daily Adjusted endpoint documents adjusted close and historical split/dividend events. Its support page says adjusted OHLCV accounts for splits and cash dividends. | Best documented first candidate for a fixture-based semantics and coverage review against D-028. This does not establish point-in-time behavior, VTI/VEU/SGOV coverage, or permission for this project's use. | Candidate only; PCD-01/02/04 remain open |
+| Alpha Vantage | Its monthly adjusted endpoint documents last-trading-day monthly bars and adjusted close; its support page says adjusted OHLCV accounts for splits and cash dividends. | Selected by D-057 for a private individual research adapter; instrument coverage and revision behavior remain to be checked against live responses. | Selected within D-057 scope |
 | Massive | Its aggregate bars are split-adjusted by default; its FAQ states they are not dividend-adjusted. | Does not meet D-028's adjusted-price total-return proxy requirement as-is. Could only be reconsidered with a separately validated dividend adjustment calculation. | Not suitable as-is |
 | Yahoo Finance | No reviewed official evidence in this assessment establishes a supported API contract, adjustment methodology, or permitted use for this project. | Existing research-list mention is not sufficient evidence for production selection. | Unassessed; not approved |
 
-Alpha Vantage's Terms of Service describe the default license as personal,
-non-commercial use and define investment analysis/research among activities
-that may constitute commercial use. Its market-data policy separately
-describes entitlements and onboarding. The project's intended use and the
-applicable plan or written permission must therefore be confirmed before
-selection; this register makes no legal conclusion. Do not add credentials,
-network access, or a provider adapter as a consequence of this candidate
-assessment.
+Alpha Vantage's Terms of Service grant personal, non-commercial use and define
+private, individual investment analysis and research as within that scope;
+organizational use and third-party access can require commercial approval.
+D-057 selects the provider only for the user's private individual research.
+The provider's current standard limit is 25 requests per day, and one complete
+ADM data load uses three. Entitlements and quotas must be rechecked before
+scheduled or broader use; this is not a legal determination.
 
-Sources: [Alpha Vantage Daily Adjusted API documentation](https://www.alphavantage.co/documentation/), [Alpha Vantage adjustment-method support](https://www.alphavantage.co/support/), [Alpha Vantage Terms of Service](https://www.alphavantage.co/terms_of_service/), [Alpha Vantage Market Data Policies](https://www.alphavantage.co/realtime_data_policy/), and [Massive stock-data FAQ](https://massive.com/knowledge-base/categories/faq).
+Sources: [Alpha Vantage Monthly Adjusted API documentation](https://www.alphavantage.co/documentation/), [Alpha Vantage adjustment-method support](https://www.alphavantage.co/support/), [Alpha Vantage Terms of Service](https://www.alphavantage.co/terms_of_service/), [Alpha Vantage request limits](https://www.alphavantage.co/premium/), [Alpha Vantage Market Data Policies](https://www.alphavantage.co/realtime_data_policy/), and [Massive stock-data FAQ](https://massive.com/knowledge-base/categories/faq).
+
+### D-057 selection and integration
+
+D-057 selects Alpha Vantage `TIME_SERIES_MONTHLY_ADJUSTED` for VTI, VEU, and
+SGOV. The concrete adapter is `data.alphavantage` and reads
+`ORION_ALPHA_VANTAGE_API_KEY` only when configured. It issues three sequential
+requests per load, uses a 15-second request timeout, requires at least 13
+monthly observations per instrument, retains retrieval and provider-field
+provenance, and rejects the whole batch on any provider or validation error.
+It consumes three of the documented 25 standard daily requests per load. It
+does not retry, cache, persist, calculate an ADM signal, or activate Moon.
+
+The provider terms permit private, individual investment analysis and research
+within the personal-use grant. Organizational use or third-party access is not
+covered by this decision; obtain written provider approval for those cases.
+The documented monthly response is the last trading day of each month. Exact
+calendar/timezone target generation and numeric freshness limits remain open.
 
 ## Decision register
 
 | ID | Decision area | Current status | Required decision / evidence | Consequence while open |
 |---|---|---|---|---|
-| PCD-01 | Provider selection and permitted use | Open | Name the provider and access method; record intended use, licensing/usage constraints, and explicit approval | No provider-specific adapter or live access |
-| PCD-02 | Instrument identity | Open | Verify stable provider identifiers for VTI and VEU; identify the D-055-approved SGOV comparison benchmark | No inferred aliases or ticker-only identity assumptions |
-| PCD-03 | Canonical symbol/field mapping | Partially defined at generic boundary | Record a reviewed, deterministic mapping from provider fields and identifiers to canonical `symbol`, `field`, `observed_at`, `value`, `source`, `currency`, and metadata; specify unsupported-field behavior | No guessed mappings or silent field substitutions |
-| PCD-04 | Adjusted-price semantics | Open | Document provider adjustment methodology, including distributions and splits; provide evidence that the selected series is suitable for D-028's total-return proxy | `adjusted_close` remains a candidate label, not proof of total-return semantics |
-| PCD-05 | Timestamp and timezone | Open | Define timestamp format, timezone, date extraction, daily-bar timestamp meaning, and whether the record denotes session close | Preserve source labels; no implicit timezone conversion |
-| PCD-06 | Trading calendar and evaluation endpoint | Partially defined | Confirm source/exchange calendar, valid session observations, last-trading-day evaluation convention, and exact trailing-12-month endpoint construction | Prior-observation-on-or-before remains an engineering selection rule only |
+| PCD-01 | Provider selection and permitted use | Selected by D-057 for private individual use | Alpha Vantage monthly adjusted endpoint; no organization, redistribution, third-party display, or commercial service without written permission | Adapter available only when explicitly configured; broader-use collection is not authorized |
+| PCD-02 | Instrument identity | Implemented; live coverage check open | Request VTI, VEU, SGOV and require exact response symbol identity | Fail whole batch on missing/mismatched identity |
+| PCD-03 | Canonical symbol/field mapping | Implemented | Provider `Monthly Adjusted Time Series` / `5. adjusted close` to canonical `adjusted_close`, date-only observation, USD, and explicit source metadata | No inferred aliases or silent field substitutions |
+| PCD-04 | Adjusted-price semantics | Provider-documented mapping selected by D-057; empirical revision/parity check open | Provider says adjustment includes splits and cash dividends; review point-in-time/revision behavior and fixture parity | Do not claim point-in-time snapshots; live signal remains gated |
+| PCD-05 | Timestamp and timezone | Monthly date semantics documented; timezone detail open | Use provider's date-only monthly final-trading-day label; preserve it without timezone conversion | No fabricated intraday timestamp or timezone |
+| PCD-06 | Trading calendar and evaluation endpoint | Monthly bar convention selected; target construction partially open | Provider monthly series labels last trading day of month; define exact target date/month boundary and trailing anniversary before signal calculation | Use only explicit targets and D-056 prior-on-or-before; no target generation inferred |
 | PCD-07 | Freshness and publication delay | Open | Approve freshness threshold(s), age calculation, and handling of weekends, holidays, delayed publication, and stale-but-present observations | No production freshness policy inferred from example thresholds |
-| PCD-08 | Missing and partial responses | Generic fail-closed behavior exists; provider semantics open | Define expected response completeness and behavior for missing symbols, fields, dates, or partial batches | No silent fill, interpolation, or success-shaped partial dataset |
+| PCD-08 | Missing and partial responses | Generic fail-closed behavior implemented | Require all three symbols and at least 13 valid monthly observations each; reject provider notices, malformed values, or any incomplete symbol response | No silent fill, interpolation, or partial dataset |
 | PCD-09 | Duplicate and conflicting observations | Generic duplicate identity rejected; conflict policy open | Define provider-specific handling for conflicting records, overlapping pages, and repeated retrievals | No arbitrary winner selection |
 | PCD-10 | Revisions and corrections | Open | Decide whether calculation uses latest revised history or retrieval-time snapshots; define revision identity and correction precedence | No revision selection or durable snapshot behavior implemented |
-| PCD-11 | Provenance and reproducibility | Contract design required | Specify provider/source ID, requested and returned instrument IDs, retrieval time, adapter version, field semantics, selected observation identities/dates, and revision/snapshot identifiers where available | Preserve supplied metadata; do not fabricate missing provenance |
-| PCD-12 | Timeout, rate limits, retry, cache, outage | Open | Only after provider approval, define timeout, rate-limit, retry, cache, partial-failure, and outage semantics | No network/retry/cache/fallback behavior |
+| PCD-11 | Provenance and reproducibility | Adapter provenance implemented; reproducible snapshots open | Specify provider/source ID, requested and returned instrument IDs, retrieval time, adapter version, field semantics, selected observation identities/dates, and revision/snapshot identifiers where available | Preserve supplied metadata; durable input snapshot/revision identity is not implemented |
+| PCD-12 | Timeout, rate limits, retry, cache, outage | Initial adapter behavior defined by D-057; operational limits remain open | Three sequential requests; 15-second timeout each; no retry/cache/fallback; fail full load; review provider quota before scheduled use | No automatic scheduling or outage recovery |
 | PCD-13 | Absolute-momentum benchmark | SGOV approved by D-055 | Apply SGOV for the approved comparison; source measurement and configured defensive-holding relationship remain separate |
 | PCD-14 | Comparison operator and equality | Approved by D-055 | Selected risk return must be strictly greater than SGOV; equality is false |
 | PCD-15 | Governance approval binding | Open | Define how an implementation validates approval against an authoritative decision record; caller-supplied reference alone is only an attestation | No assumption that an arbitrary approval reference closes a gate |
@@ -87,15 +103,16 @@ A status change in this register is not sufficient evidence of approval by itsel
 3. PCD-13 and PCD-14 are approved by D-055; do not reopen them to unblock provider work.
 4. Close PCD-15 and PCD-16 before end-to-end signal integration or activation review.
 
-D-056 supplies engineering defaults only; it does not close PCD-01 through
-PCD-12. A numeric freshness limit and provider-specific response/revision
-semantics still require evidence and explicit resolution.
+D-056 supplies provider-independent engineering defaults. D-057 resolves the
+initial provider and adapter scope for private individual research. Numeric
+freshness limits, exact target generation, live instrument coverage, revision
+reproducibility, and end-to-end signal activation remain open.
 
 This order does not require all decisions to be made in one session and does not imply that any particular provider is preferred.
 
 ## Explicit non-goals
 
-This register does not select a provider or approve a provider's adjusted-price series, select the configured defensive holding, set a freshness threshold, add live API access, retries, caching, fallback sources, persistence, or scheduling, assemble an ADM signal, activate ADM, or modify Core Runtime. D-055 already approves SGOV as comparison benchmark and strict greater-than operator. The candidate evidence above is not provider approval.
+This register does not select the configured defensive holding, set a numeric freshness threshold, add retries, caching, fallback sources, persistence, or scheduling, assemble an ADM signal, activate ADM, or modify Core Runtime. The adapter's source selection and adjustment mapping are scoped only as D-057 states. D-055 approves SGOV as comparison benchmark and strict greater-than operator.
 
 ## Related documents
 

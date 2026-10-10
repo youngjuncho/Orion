@@ -135,7 +135,17 @@ Examples:
 FRED_API_KEY=
 
 CRYPTOQUANT_API_KEY=
+
+ORION_ALPHA_VANTAGE_API_KEY=
 ```
+
+Moon's Alpha Vantage monthly adjusted-price adapter reads
+`ORION_ALPHA_VANTAGE_API_KEY` from the process environment. Set the value in
+your local environment before calling
+`data.alphavantage.AlphaVantageMonthlyAdjustedProvider.load()`; the application
+does not automatically load `.env`. Keep personal credentials out of source
+control. This integration is scoped to private individual research under
+D-057 and does not activate ADM or submit orders.
 
 ---
 
