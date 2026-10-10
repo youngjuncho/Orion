@@ -1,12 +1,12 @@
 # Moon ADM Data Readiness and Closure Matrix
 
 Version: 1.0
-Status: Engineering Baseline - D-055 Comparison Approved; Source Policies Still Open
+Status: Engineering Baseline - D-055 Comparison Approved; D-057 Source Adapter Implemented; D-058 Freshness Proposal Open
 Last Updated: 2026-10-10
 
 ## Purpose
 
-This matrix separates approved ADM methodology from unresolved provider-specific requirements and implementation work. D-055 closes the absolute-momentum benchmark/operator decision; this remains a closure plan, not approval of a provider or permission to activate ADM.
+This matrix separates approved ADM methodology, the D-057 source-adapter scope, and remaining data/activation gates. D-055 closes the absolute-momentum benchmark/operator decision. D-057 selects Alpha Vantage's monthly adjusted endpoint for private individual research; D-058's seven-day freshness proposal still needs approval. None of these decisions activates ADM.
 
 ## Existing approved methodology
 
@@ -14,8 +14,8 @@ The following points are grounded in existing decisions or the current ADM imple
 
 | Item | Current baseline | Boundary |
 |---|---|---|
-| Return measurement | D-028 approves adjusted-price-based total-return measurement; D-055 applies the same convention to risk asset and SGOV benchmark | Data layer must supply a source series validated for the intended total-return proxy |
-| Momentum horizon | `ADM_Orion.md` specifies trailing 12-month return; D-055 requires the same horizon for the risk asset and SGOV | Provider/source semantics and endpoint calendars remain pending |
+| Return measurement | D-028 approves adjusted-price-based total-return measurement; D-055 applies it to risk asset and SGOV; D-057 selects Alpha Vantage monthly adjusted close mapping | Provider adjustment history/revisions and empirical parity remain to be validated |
+| Momentum horizon | `ADM_Orion.md` specifies trailing 12-month return; D-055 requires the same horizon for the risk asset and SGOV | D-058 proposes matching calendar month-ends; freshness remains open |
 | Risk universe | VTI and VEU | Do not add assets without a separate methodology decision |
 | Selection behavior | ADMStrategy compares precomputed relative momentum and absolute-momentum inputs | It does not calculate them from market observations |
 | Allocation output | Current specification selects one asset at 100% of ADM strategy allocation | Moon-level aggregation and execution remain outside ADM |
@@ -28,12 +28,12 @@ These items are not closed sufficiently to authorize end-to-end production calcu
 | Item | Current document state | Required closure |
 |---|---|---|
 | Absolute-momentum benchmark/operator | D-055 approves SGOV and strict selected-risk-return greater-than-benchmark; equality is false | Provider adjusted-price semantics, calendar, freshness, configured defensive holding, and activation are separate gates |
-| Adjusted-price semantics | `adjusted_close` is a candidate canonical field; D-028 requires a suitable adjusted-price series | Approve acceptance criteria for the source's adjustment methodology and validate it against the intended total-return proxy |
-| Twelve-month endpoint selection | Step 28 implements latest available observation on or before each explicit target date | The prior-observation rule is the engineering default; provider calendar validity and maximum observation age remain separate gates |
+| Adjusted-price semantics | D-057 maps Alpha Vantage's `5. adjusted close`; provider documents split and cash-dividend adjustments | Validate instrument coverage, revision behavior, and historical parity before production signal assembly |
+| Twelve-month endpoint selection | D-056 prior-observation-on-or-before; D-058 implements a proposed last-completed-month-end target helper | Approve target generation and seven-day maximum selected-observation age |
 | Monthly signal date | Research spec says last trading day; execution spec says next trading day | Confirm how the signal date is represented and how the next trading day is identified across calendars |
-| Missing/stale observations | Not specified | Approve fail-closed or other explicit behavior; do not silently forward-fill or fabricate observations |
+| Missing/stale observations | Provider batch fails closed; D-058 proposes seven calendar days for all selected endpoints | Approve the threshold; current calculation API continues to require an explicit caller value |
 | Historical revisions | Not specified | Decide whether recalculation uses latest revised history or preserves an as-observed snapshot, and what reproducibility means for MVP |
-| Provider choice | Yahoo Finance is a candidate primary source; alternatives are listed for future review | Explicitly approve a provider for the intended use before production collection |
+| Provider choice | D-057 selects Alpha Vantage monthly adjusted data for private individual research | Verify live symbol coverage and use only within the approved private individual scope |
 
 ## 2. Provider-specific contract decisions
 
@@ -58,19 +58,19 @@ The following work is mechanically implementable, but the portions dependent on 
 4. Step 32 prepares comparable returns for an explicitly supplied risk asset and benchmark. D-055 approves the comparison rule; deriving an ADM signal still requires source semantics, freshness, and orchestration gates to close.
 5. Construct `ADMSignalInput` only when every required value passes validation; otherwise return a typed validation failure rather than a partial signal.
 6. Implemented in Steps 27–28: deterministic tests cover exact selection, prior-observation selection, future-bar exclusion, missing endpoints, invalid prices, identical endpoints, date-format validation, and selection-policy provenance. Duplicate identities are rejected by `MarketDataSet`; stale/revised/conflicting data and provider-calendar validation remain open.
-7. Add a provider adapter only after the provider and source contract are approved. Keep provider I/O outside `ADMStrategy`.
+7. Implemented by D-057: Alpha Vantage monthly adjusted provider maps complete VTI/VEU/SGOV responses to the canonical data contract. Provider I/O remains outside `ADMStrategy`.
 
-This list does not authorize network access, persistence, scheduled collection, trading, or production activation.
+The adapter performs network access only when explicitly configured with a key. This list does not authorize persistence, scheduled collection, trading, or production activation.
 
 ## 4. Implementation gate
 
-Pure calculation/selection utilities may use the explicit prior-observation-on-or-before rule. The rule selects from the supplied dataset only and does not validate exchange calendars or guarantee freshness; those remain explicit caller/source-contract gates. Provider integration is gated on closure of provider choice, adjusted-price semantics, calendar/date selection, and data-quality behavior; SGOV comparison is approved by D-055.
+Pure calculation/selection utilities use the explicit prior-observation-on-or-before rule. D-057 implements Alpha Vantage monthly data for private research. The D-058 target-date and freshness defaults remain proposed, and provider revision/coverage plus governance gates remain open. SGOV comparison is approved by D-055.
 
 Until then:
 
 - `ADMStrategy` remains a consumer of precomputed `ADMSignalInput`.
 - `config/moon.yaml` active-strategy controls remain authoritative.
-- No data source is considered production-approved merely because it appears in a research document or pipeline overview.
+- Alpha Vantage access remains limited to D-057's private individual research scope.
 - No missing or ambiguous observation is silently repaired.
 
 ## Related documents

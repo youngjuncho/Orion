@@ -2660,3 +2660,30 @@ disabled until the open freshness and end-to-end governance gates are closed.
 The provider currently documents a standard allowance of 25 API requests per
 day; one full load uses three. Repeated manual runs remain subject to that
 provider limit.
+
+---
+
+## D-058 — ADM Monthly Targets and Freshness Proposal
+
+Status: **Proposed — freshness threshold requires owner approval**
+Date: 2026-10-10
+
+Recommend deriving the current endpoint as the last calendar day of the month
+before the dataset's `as_of` month, which excludes a potentially incomplete
+monthly bar. Derive the trailing endpoint as the last calendar day of the same
+month in the prior year; this aligns monthly bars across leap years. The
+provider's observation label remains the last trading day of each month, and
+D-056's prior-observation-on-or-before selector remains in force. This target
+rule is implemented by `derive_adm_monthly_target_dates()` as an explicit
+engineering utility; its output does not itself authorize signal assembly.
+
+Recommend a maximum calendar-age of seven days for each selected current and
+trailing observation across VTI, VEU, and SGOV. This accommodates a month-end
+falling on a weekend/holiday and short publication delay, while rejecting a
+fallback to the previous monthly bar if the latest completed month is absent.
+Apply one common limit to all required observations and fail closed if any
+exceeds it. Keep the threshold caller-supplied until approved; do not silently
+apply seven days to production calculations.
+
+The proposal does not specify the next-trading-day execution date, session
+timezone, publication-time SLA, provider revision handling, or ADM activation.

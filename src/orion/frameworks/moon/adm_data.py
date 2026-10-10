@@ -8,7 +8,8 @@ semantics, or decide freshness/missing-data policies.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
+from calendar import monthrange
+from datetime import date, timedelta
 from enum import Enum
 from math import isfinite
 from types import MappingProxyType
@@ -154,6 +155,56 @@ def _parse_iso_date(value: str, name: str) -> date:
     if parsed.isoformat() != value:
         raise ValueError(f"{name} must use YYYY-MM-DD format")
     return parsed
+
+
+@dataclass(frozen=True)
+class ADMMonthlyTargetDates:
+    """Calendar month-end targets for a completed monthly ADM period."""
+
+    as_of_date: str
+    current_target_date: str
+    trailing_target_date: str
+    policy_id: str = "last-completed-month-end-v1"
+
+    def __post_init__(self) -> None:
+        as_of = _parse_iso_date(self.as_of_date, "as_of_date")
+        current = _parse_iso_date(self.current_target_date, "current_target_date")
+        trailing = _parse_iso_date(self.trailing_target_date, "trailing_target_date")
+        if not isinstance(self.policy_id, str) or not self.policy_id.strip():
+            raise ValueError("policy_id must be a non-empty string")
+        if not (trailing < current < as_of):
+            raise ValueError("targets must be ordered before the as_of date")
+        if current.day != monthrange(current.year, current.month)[1]:
+            raise ValueError("current target must be a calendar month-end")
+        if trailing.day != monthrange(trailing.year, trailing.month)[1]:
+            raise ValueError("trailing target must be a calendar month-end")
+        if (current.year - trailing.year, current.month) != (1, trailing.month):
+            raise ValueError("targets must be the same month-end 12 months apart")
+
+
+def derive_adm_monthly_target_dates(as_of_date: str) -> ADMMonthlyTargetDates:
+    """Derive targets for the latest completed calendar month.
+
+    The month containing ``as_of_date`` is excluded so an in-progress monthly
+    provider bar cannot enter the calculation. The current target is the
+    previous calendar month's final date; the trailing target is the prior
+    year's final date for that same month. The monthly provider's observation
+    dates may fall before these calendar targets because they label the last
+    trading day. Freshness must still be checked separately.
+
+    This deterministic engineering rule does not establish a scheduling,
+    timezone, freshness, or production-activation policy.
+    """
+
+    as_of = _parse_iso_date(as_of_date, "as_of_date")
+    current = date(as_of.year, as_of.month, 1) - timedelta(days=1)
+    trailing_last_day = monthrange(current.year - 1, current.month)[1]
+    trailing = date(current.year - 1, current.month, trailing_last_day)
+    return ADMMonthlyTargetDates(
+        as_of_date=as_of.isoformat(),
+        current_target_date=current.isoformat(),
+        trailing_target_date=trailing.isoformat(),
+    )
 
 
 def select_adm_price_observations_on_or_before(

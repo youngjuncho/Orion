@@ -2,6 +2,7 @@ import pytest
 
 from data import MarketDataPoint, MarketDataSet
 from orion.frameworks.moon.adm_data import (
+    derive_adm_monthly_target_dates,
     calculate_adm_asset_return,
     calculate_adm_observation_pair_return,
     select_adm_price_observations,
@@ -10,6 +11,27 @@ from orion.frameworks.moon.adm_data import (
 
 def make_dataset(*points: MarketDataPoint) -> MarketDataSet:
     return MarketDataSet(tuple(points), as_of="2026-10-09")
+
+
+def test_monthly_target_dates_use_the_latest_completed_month() -> None:
+    targets = derive_adm_monthly_target_dates("2026-10-10")
+
+    assert targets.current_target_date == "2026-09-30"
+    assert targets.trailing_target_date == "2025-09-30"
+    assert targets.policy_id == "last-completed-month-end-v1"
+
+
+def test_monthly_target_dates_align_leap_month_ends() -> None:
+    targets = derive_adm_monthly_target_dates("2025-03-01")
+
+    assert targets.current_target_date == "2025-02-28"
+    assert targets.trailing_target_date == "2024-02-29"
+
+
+def test_monthly_target_dates_exclude_current_month_on_first_day() -> None:
+    targets = derive_adm_monthly_target_dates("2026-10-01")
+
+    assert targets.current_target_date == "2026-09-30"
 
 
 def test_adm_asset_return_uses_exact_caller_selected_observations() -> None:

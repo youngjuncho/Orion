@@ -72,8 +72,8 @@ calendar/timezone target generation and numeric freshness limits remain open.
 | PCD-03 | Canonical symbol/field mapping | Implemented | Provider `Monthly Adjusted Time Series` / `5. adjusted close` to canonical `adjusted_close`, date-only observation, USD, and explicit source metadata | No inferred aliases or silent field substitutions |
 | PCD-04 | Adjusted-price semantics | Provider-documented mapping selected by D-057; empirical revision/parity check open | Provider says adjustment includes splits and cash dividends; review point-in-time/revision behavior and fixture parity | Do not claim point-in-time snapshots; live signal remains gated |
 | PCD-05 | Timestamp and timezone | Monthly date semantics documented; timezone detail open | Use provider's date-only monthly final-trading-day label; preserve it without timezone conversion | No fabricated intraday timestamp or timezone |
-| PCD-06 | Trading calendar and evaluation endpoint | Monthly bar convention selected; target construction partially open | Provider monthly series labels last trading day of month; define exact target date/month boundary and trailing anniversary before signal calculation | Use only explicit targets and D-056 prior-on-or-before; no target generation inferred |
-| PCD-07 | Freshness and publication delay | Open | Approve freshness threshold(s), age calculation, and handling of weekends, holidays, delayed publication, and stale-but-present observations | No production freshness policy inferred from example thresholds |
+| PCD-06 | Trading calendar and evaluation endpoint | Monthly bar convention selected; D-058 target construction proposed | Use last completed month-end and corresponding prior-year month-end; define signal/execution date mapping before activation | D-056 prior-on-or-before remains; helper output is not signal authorization |
+| PCD-07 | Freshness and publication delay | Open; D-058 proposes seven calendar days | Approve a common maximum selected-observation age and publication-delay handling for weekends, holidays, and delayed provider updates | Callers must pass an explicit threshold; no implicit production default |
 | PCD-08 | Missing and partial responses | Generic fail-closed behavior implemented | Require all three symbols and at least 13 valid monthly observations each; reject provider notices, malformed values, or any incomplete symbol response | No silent fill, interpolation, or partial dataset |
 | PCD-09 | Duplicate and conflicting observations | Generic duplicate identity rejected; conflict policy open | Define provider-specific handling for conflicting records, overlapping pages, and repeated retrievals | No arbitrary winner selection |
 | PCD-10 | Revisions and corrections | Open | Decide whether calculation uses latest revised history or retrieval-time snapshots; define revision identity and correction precedence | No revision selection or durable snapshot behavior implemented |
@@ -98,7 +98,7 @@ A status change in this register is not sufficient evidence of approval by itsel
 
 ## Implementation order (dependency guidance, not approval)
 
-1. Close PCD-01 through PCD-07 before provider-specific observations can be qualified.
+1. Close remaining PCD-04 through PCD-07 evidence before provider observations can qualify an ADM signal.
 2. Close PCD-08 through PCD-12 to define data quality, revision, provenance, and operations.
 3. PCD-13 and PCD-14 are approved by D-055; do not reopen them to unblock provider work.
 4. Close PCD-15 and PCD-16 before end-to-end signal integration or activation review.

@@ -1,12 +1,12 @@
 # Moon ADM Data Contract
 
 Version: 1.0  
-Status: Contract Baseline - D-055 Comparison Approved; Source Integration Deferred
+Status: Contract Baseline - D-055 Comparison Approved; D-057 Provider Adapter Implemented; D-058 Freshness Proposal Open
 Last Updated: 2026-10-10
 
 ## Purpose
 
-This document records the minimum data requirements implied by the existing ADM implementation specification and D-028. D-055 approves SGOV as the absolute-momentum comparison benchmark and strict greater-than comparison, with equality false. D-056 approves provider-independent engineering defaults for prior-on-or-before selection and fail-closed missing/conflicting data handling. Neither decision approves a provider or authorizes production collection.
+This document records the ADM data boundary implied by the implementation specification and decisions D-028, D-055, D-056, and D-057. Alpha Vantage's monthly adjusted endpoint is implemented for private individual research under D-057. D-058 proposes target-date and freshness defaults; its seven-day limit remains unapproved. Provider access does not authorize ADM signal assembly or activation.
 
 ## Existing strategy contract
 
@@ -46,22 +46,25 @@ layer needs:
 3. enough source metadata to reproduce which observations were selected.
 
 The strategy's research specification describes monthly evaluation on the
-last trading day. Step 28 implements the engineering default: for
-each explicit target date, select the latest available observation whose
-`observed_at` date is on or before that target. This avoids selecting a future
-bar when a target falls on a weekend or holiday, and records both target dates
-and selected observations for auditability.
+last trading day. `derive_adm_monthly_target_dates(as_of_date)` implements the
+D-058 proposed target rule: use the last calendar day of the month preceding
+the `as_of` month and the same month's end one year earlier. This excludes a
+possibly incomplete current-month bar and handles leap-month ends. For each
+explicit target, select the latest available observation on or before it,
+never a future observation, and retain targets plus selected observations.
 
 This is the selected prior-observation policy for the engineering baseline,
 not proof that the selected observation is a valid exchange trading day; it
-also does not impose a numeric maximum age. Under D-056, the same field,
+also does not impose an approved numeric maximum age. D-058 recommends seven
+calendar days for every selected endpoint, but callers must continue to pass
+an explicit threshold until that proposal is approved. Under D-056, the same field,
 targets, and selection rule apply to VTI, VEU, and the SGOV comparison input.
 Required missing, invalid, stale under an explicit caller policy, or
 conflicting observations fail closed; no fill, interpolation, or partial
 success is allowed. Provider bar calendars, timezone, numeric freshness
-limits, conflict/revision semantics, and adjusted-price semantics remain
-separate source-contract decisions. Production collection remains gated on
-those decisions and provider approval.
+limits, conflict/revision semantics, and empirical validation of the provider's
+adjusted-price history remain separate source-contract gates. Production signal
+assembly remains gated on those decisions and governance approval.
 
 ## Defensive benchmark dependency
 
@@ -69,31 +72,35 @@ D-055 approves SGOV as the absolute-momentum comparison benchmark. The configure
 
 ## Source and collection boundary
 
-Yahoo Finance is listed as a candidate primary source in `ADM_Orion.md`, but
-that document does not constitute production-source approval. No API client,
-network dependency, retry behavior, source precedence, cache, or persistence
-is introduced by this contract.
+D-057 selects Alpha Vantage `TIME_SERIES_MONTHLY_ADJUSTED` for private
+individual research. The adapter is opt-in through
+`ORION_ALPHA_VANTAGE_API_KEY`, returns canonical monthly observations for VTI,
+VEU, and SGOV, and fails the full batch on provider or validation errors.
+Monthly data are last-trading-day labels; they are date-only and are preserved
+without timezone conversion. The adapter makes no retries, cache, persistence,
+signal assembly, or activation.
 
 ## Acceptance criteria for a future adapter
 
-Before an adapter can be considered production-ready, it must:
+Before ADM signal assembly can be considered ready, it must:
 
 - map provider fields explicitly to canonical `symbol`, `field`, `observed_at`,
   `value`, `source`, `currency`, and metadata;
 - document instrument identity and adjusted-price semantics;
-- document evaluation date, trailing-period selection, timezone, and calendar;
+- approve the D-058 target-date rule and freshness threshold, and document any
+  execution-date/timezone mapping;
 - define missing, duplicate, stale, revised, and conflicting observations;
 - honor D-055's SGOV comparison benchmark; document any separate configured defensive holding relationship;
 - provide deterministic fixtures covering normal and invalid input cases;
 - produce `ADMSignalInput` only after required inputs pass validation.
 
-The calculation layer now supports an auditable VTI/VEU relative-momentum result
-from a shared field, target-date pair, and prior-observation policy identifier.
-It deliberately stops before absolute-momentum calculation and signal-input
-construction.
+The data layer supports the Alpha Vantage provider boundary, auditable VTI/VEU
+relative-momentum calculation, D-055 absolute-momentum comparison inputs, and
+explicit freshness checks. It deliberately stops before constructing
+`ADMSignalInput` or activating ADM.
 
-Until the adapter criteria above are met, ADM remains a strategy over precomputed
-inputs; there is no claim of end-to-end market-data integration.
+The provider adapter is implemented, but ADM remains a strategy over precomputed
+inputs; there is no claim of end-to-end signal integration.
 
 ## Related documents
 
