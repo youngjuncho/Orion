@@ -32,3 +32,18 @@ def test_auto_approve_materializes_existing_accepted_decision_contract():
     assert accepted.decision_id == "accepted:c-auto"
     assert accepted.accepted_by == "orion-runtime:auto-approval"
     assert accepted.conditions is None
+
+
+def test_default_auto_approval_also_accepts_rebalance_plan_proposals():
+    plan_candidate = DecisionCandidate(
+        "moon-rebalance:p-1",
+        "Moon",
+        "RebalancePlanProposal",
+        "RebalancePlan",
+        "p-1",
+    )
+
+    accepted = auto_approve(plan_candidate)
+
+    assert accepted.candidate is plan_candidate
+    assert accepted.accepted_by == "orion-runtime:auto-approval"
