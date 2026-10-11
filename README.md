@@ -71,7 +71,7 @@ The provider-neutral data boundary is implemented, but concrete provider use and
 - `docs/01_Architecture/Moon_ADM_Provider_Contract_Readiness_Audit.md` ? readiness findings and evidence limitations
 - `docs/01_Architecture/Moon_ADM_Provider_Governance_Gate_Specification.md` ? cumulative gates and fail-closed approval requirements
 - `docs/01_Architecture/Moon_ADM_Authoritative_Decision_Record_Schema_and_Validator.md` ? local record schema, digest validation, scope/dependency checks, and explicit authority limitations
-- `docs/01_Architecture/Orion_Authoritative_Registry_Snapshot_Contract.md` ? snapshot metadata, scope, digest, timestamp/freshness checks, and trust limitations
+- `docs/01_Architecture/Orion_Authoritative_Registry_Snapshot_Contract.md` ? snapshot metadata, scope, SHA-256 integrity, signature-verifier boundary, strict numeric version/anti-rollback, timestamp/freshness checks, and trust limitations
 
 Passing generic adapter tests does not approve a provider, investment methodology, or strategy activation.
 
@@ -117,3 +117,13 @@ operational configuration.
 ## Governance and decision records
 
 - Decision Registry Integrity & Revocation Model: `docs/01_Architecture/Orion_Decision_Registry_Integrity_and_Revocation_Model.md`
+
+## Text File Encoding Policy
+
+New and modified repository text files must use UTF-8 without a byte-order mark (BOM).
+`.editorconfig` provides the editor default, `.gitattributes` standardizes LF line
+endings for common text formats, and `python scripts/check_utf8.py` validates the
+repository text-file encoding. The check is also included in pytest as
+`tests/test_utf8_policy.py`. Binary assets (for example PDF files and images) are
+not text and must remain in their native formats.
+

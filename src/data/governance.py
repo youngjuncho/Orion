@@ -270,12 +270,16 @@ def validate_authoritative_registry_snapshot(
     now: datetime,
     max_age_seconds: int,
     max_future_skew_seconds: int = 0,
+    trusted_authorities: Sequence[str] | set[str] | frozenset[str] = (),
+    signature_verifier: Any = None,
+    last_accepted_version: int | None = None,
+    validate_record_lineage: bool = True,
 ) -> dict[str, Any]:
-    """Validate a caller-supplied registry snapshot contract and resolve its local integrity.
+    """Validate snapshot integrity, issuer trust, freshness, and monotonic version.
 
-    This verifies declared metadata, digest, scope, age, and record lineage. It does
-    not authenticate the issuer, prove that no newer snapshot exists, or fetch a
-    trusted remote registry. Callers must supply those guarantees separately.
+    ``signature_verifier(snapshot, signature, key_id, algorithm)`` must return
+    exactly True after cryptographic verification. This callback contract does
+    not itself provide key management or remote revocation.
     """
     from datetime import timezone
 
@@ -285,8 +289,25 @@ def validate_authoritative_registry_snapshot(
     missing = sorted(required - set(snapshot))
     if missing:
         raise DecisionRecordError(f"snapshot missing required fields: {', '.join(missing)}")
-    for field in ("snapshot_id", "snapshot_version", "generated_at", "authority_ref", "content_digest"):
+    for field in ("snapshot_id", "generated_at", "authority_ref", "content_digest"):
         _nonempty_text(snapshot[field], f"snapshot.{field}")
+    version = snapshot["snapshot_version"]
+    if not isinstance(version, int) or isinstance(version, bool) or version < 1:
+        raise DecisionRecordError("snapshot.snapshot_version must be a positive integer")
+    if last_accepted_version is not None:
+        if not isinstance(last_accepted_version, int) or isinstance(last_accepted_version, bool) or last_accepted_version < 0:
+            raise DecisionRecordError("last_accepted_version must be a non-negative integer or None")
+        if version <= last_accepted_version:
+            raise DecisionRecordError("snapshot version rollback or replay detected")
+    if not isinstance(trusted_authorities, (set, frozenset, list, tuple)):
+        raise DecisionRecordError("trusted_authorities must be a collection of authority references")
+    if snapshot["authority_ref"] not in trusted_authorities:
+        raise DecisionRecordError("snapshot authority is not trusted")
+    signature_fields = ("signature", "key_id", "signature_algorithm")
+    if any(not isinstance(snapshot.get(field), str) or not snapshot[field].strip() for field in signature_fields):
+        raise DecisionRecordError("snapshot signature and key metadata are required")
+    if not callable(signature_verifier):
+        raise DecisionRecordError("signature verifier is required")
     if not isinstance(snapshot["scope"], Mapping) or not snapshot["scope"]:
         raise DecisionRecordError("snapshot.scope must be a non-empty mapping")
     if not isinstance(expected_scope, Mapping) or not expected_scope:
@@ -316,5 +337,16 @@ def validate_authoritative_registry_snapshot(
         raise DecisionRecordError("snapshot.records must be a non-empty mapping")
     if snapshot["content_digest"] != canonical_snapshot_digest(snapshot):
         raise DecisionRecordError("snapshot content_digest mismatch")
-    validate_registry_lineage(records)
+    try:
+        verified = signature_verifier(
+            dict(snapshot), snapshot["signature"], snapshot["key_id"], snapshot["signature_algorithm"]
+        )
+    except Exception as exc:
+        raise DecisionRecordError("snapshot signature verification raised an exception") from exc
+    if verified is not True:
+        raise DecisionRecordError("snapshot signature verification failed")
+    if not isinstance(validate_record_lineage, bool):
+        raise DecisionRecordError("validate_record_lineage must be a boolean")
+    if validate_record_lineage:
+        validate_registry_lineage(records)
     return dict(snapshot)

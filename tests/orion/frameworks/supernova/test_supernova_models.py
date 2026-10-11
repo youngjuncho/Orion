@@ -215,3 +215,140 @@ def test_approved_company_validates_governance_dimensions() -> None:
         ApprovedCompany("NVDA", "AI", Score(90), "Bogus", "Strong")
     with pytest.raises(ValueError, match="Approved companies must"):
         ApprovedCompany("NVDA", "AI", Score(90), "Low", "Strong", "Candidate", "Approved")
+
+
+def _approved_registry_snapshot() -> dict:
+    digest = "a" * 64
+    record = {
+        "record_id": "D049-NVDA-2026-10-05",
+        "company_id": "NVDA",
+        "decision_ref": "D-049",
+        "review_cycle": "2026-10-05",
+        "governance_status": "approved",
+        "effective_at": "2026-10-05T00:00:00Z",
+        "supersedes_record_id": None,
+        "decision_payload_digest": digest,
+    }
+    return {
+        "registry_type": "supernova.approved_company_state",
+        "schema_version": 1,
+        "scope": {"framework": "Supernova", "domain": "approved_company_state", "review_cycle": "2026-10-05"},
+        "records": {record["record_id"]: record},
+        "source_decision_refs": ["D-049"],
+        "snapshot_id": "snap-2026-10-05-001",
+        "snapshot_version": 1,
+        "generated_at": "2026-10-06T00:00:00Z",
+        "authority_ref": "proposal-only-authority",
+        "signature": "proposal-only-signature",
+        "key_id": "proposal-only-key",
+        "signature_algorithm": "proposal-only-algorithm",
+        "content_digest": digest,
+    }
+
+
+def test_supernova_approved_company_registry_schema_accepts_explicit_record() -> None:
+    from orion.frameworks.supernova.registry_contract import validate_approved_company_snapshot
+
+    result = validate_approved_company_snapshot(_approved_registry_snapshot(), expected_review_cycle="2026-10-05")
+    assert result["records"]["D049-NVDA-2026-10-05"]["company_id"] == "NVDA"
+
+
+@pytest.mark.parametrize("mutate, message", [
+    (lambda s: s.update(registry_type="research.candidate_universe"), "registry_type mismatch"),
+    (lambda s: s.update(snapshot_version=True), "snapshot_version must be a positive integer"),
+    (lambda s: s["scope"].update(review_cycle="other-cycle"), "snapshot review_cycle mismatch"),
+    (lambda s: s["records"]["D049-NVDA-2026-10-05"].update(governance_status="candidate"), "only explicit approved records"),
+    (lambda s: s["records"]["D049-NVDA-2026-10-05"].update(company_id="nvda"), "canonical uppercase ticker"),
+    (lambda s: s["records"]["D049-NVDA-2026-10-05"].update(decision_payload_digest="bad"), "lowercase SHA-256"),
+    (lambda s: s["records"]["D049-NVDA-2026-10-05"].update(decision_ref="D-999"), "missing from source_decision_refs"),
+    (lambda s: s.update(unrecognized_field="nope"), "unknown envelope fields"),
+])
+def test_supernova_approved_company_registry_schema_rejects_invalid_snapshot(mutate, message: str) -> None:
+    from copy import deepcopy
+    from orion.frameworks.supernova.registry_contract import SupernovaRegistryContractError, validate_approved_company_snapshot
+
+    snapshot = deepcopy(_approved_registry_snapshot())
+    mutate(snapshot)
+    with pytest.raises(SupernovaRegistryContractError, match=message):
+        validate_approved_company_snapshot(snapshot, expected_review_cycle="2026-10-05")
+
+
+def test_supernova_approved_company_registry_rejects_duplicate_company_identity() -> None:
+    from copy import deepcopy
+    from orion.frameworks.supernova.registry_contract import SupernovaRegistryContractError, validate_approved_company_snapshot
+
+    snapshot = deepcopy(_approved_registry_snapshot())
+    record = dict(snapshot["records"]["D049-NVDA-2026-10-05"])
+    record.update(record_id="D049-NVDA-duplicate")
+    snapshot["records"][record["record_id"]] = record
+    with pytest.raises(SupernovaRegistryContractError, match="duplicate company_id"):
+        validate_approved_company_snapshot(snapshot, expected_review_cycle="2026-10-05")
+
+
+def _trusted_supernova_snapshot():
+    from data.governance import canonical_snapshot_digest
+    snapshot = _approved_registry_snapshot()
+    snapshot["content_digest"] = canonical_snapshot_digest(snapshot)
+    return snapshot
+
+
+def test_supernova_trusted_snapshot_composes_authenticity_and_domain_contracts():
+    from datetime import datetime, timezone
+    from orion.frameworks.supernova.registry_contract import validate_trusted_approved_company_snapshot
+
+    snapshot = _trusted_supernova_snapshot()
+    result = validate_trusted_approved_company_snapshot(
+        snapshot,
+        expected_review_cycle="2026-10-05",
+        now=datetime(2026, 10, 6, 0, 1, tzinfo=timezone.utc),
+        max_age_seconds=3600,
+        trusted_authorities={"proposal-only-authority"},
+        signature_verifier=lambda *args: True,
+        last_accepted_version=0,
+    )
+    assert result["records"]["D049-NVDA-2026-10-05"]["company_id"] == "NVDA"
+
+
+def test_supernova_trusted_snapshot_rejects_rollback_and_untrusted_authority():
+    from copy import deepcopy
+    from datetime import datetime, timezone
+    from data.governance import canonical_snapshot_digest
+    from orion.frameworks.supernova.registry_contract import SupernovaRegistryContractError, validate_trusted_approved_company_snapshot
+
+    kwargs = dict(
+        expected_review_cycle="2026-10-05",
+        now=datetime(2026, 10, 6, 0, 1, tzinfo=timezone.utc),
+        max_age_seconds=3600,
+        trusted_authorities={"proposal-only-authority"},
+        signature_verifier=lambda *args: True,
+        last_accepted_version=1,
+    )
+    with pytest.raises(SupernovaRegistryContractError, match="rollback or replay"):
+        validate_trusted_approved_company_snapshot(_trusted_supernova_snapshot(), **kwargs)
+
+    snapshot = deepcopy(_trusted_supernova_snapshot())
+    snapshot["authority_ref"] = "untrusted-authority"
+    snapshot["content_digest"] = canonical_snapshot_digest(snapshot)
+    with pytest.raises(SupernovaRegistryContractError, match="authority is not trusted"):
+        validate_trusted_approved_company_snapshot(snapshot, **{**kwargs, "last_accepted_version": 0})
+
+
+def test_supernova_trusted_snapshot_rejects_invalid_domain_lineage():
+    from copy import deepcopy
+    from datetime import datetime, timezone
+    from data.governance import canonical_snapshot_digest
+    from orion.frameworks.supernova.registry_contract import SupernovaRegistryContractError, validate_trusted_approved_company_snapshot
+
+    snapshot = deepcopy(_trusted_supernova_snapshot())
+    snapshot["records"]["D049-NVDA-2026-10-05"]["supersedes_record_id"] = "missing-predecessor"
+    snapshot["content_digest"] = canonical_snapshot_digest(snapshot)
+    with pytest.raises(SupernovaRegistryContractError, match="predecessor missing"):
+        validate_trusted_approved_company_snapshot(
+            snapshot,
+            expected_review_cycle="2026-10-05",
+            now=datetime(2026, 10, 6, 0, 1, tzinfo=timezone.utc),
+            max_age_seconds=3600,
+            trusted_authorities={"proposal-only-authority"},
+            signature_verifier=lambda *args: True,
+            last_accepted_version=0,
+        )

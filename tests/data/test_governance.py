@@ -164,10 +164,13 @@ def make_snapshot(records=None, **extra):
     from data.governance import canonical_snapshot_digest
     snapshot = {
         "snapshot_id": "fixture-snapshot-001",
-        "snapshot_version": "1",
+        "snapshot_version": 1,
         "generated_at": "2026-10-09T12:00:00Z",
         "scope": {"provider": "fixture", "use": "test"},
         "authority_ref": "fixture-authority://registry",
+        "signature": "fixture-signature",
+        "key_id": "fixture-key-1",
+        "signature_algorithm": "fixture-test-algorithm",
         "records": records or {"PCD-01": make_record("PCD-01")},
         "content_digest": "pending",
     }
@@ -185,6 +188,8 @@ def test_authoritative_snapshot_contract_accepts_fresh_scoped_snapshot():
         expected_scope={"provider": "fixture", "use": "test"},
         now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc),
         max_age_seconds=300,
+            trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=lambda snapshot, signature, key_id, algorithm: True,
     )
     assert validated["snapshot_id"] == "fixture-snapshot-001"
 
@@ -198,13 +203,17 @@ def test_authoritative_snapshot_rejects_missing_metadata_and_bad_digest():
         validate_authoritative_registry_snapshot(
             snapshot, expected_scope={"provider": "fixture"},
             now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc), max_age_seconds=300,
+            trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=lambda snapshot, signature, key_id, algorithm: True,
         )
     snapshot = make_snapshot()
-    snapshot["snapshot_version"] = "tampered"
+    snapshot["snapshot_version"] = 2
     with pytest.raises(DecisionRecordError, match="digest mismatch"):
         validate_authoritative_registry_snapshot(
             snapshot, expected_scope={"provider": "fixture"},
             now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc), max_age_seconds=300,
+            trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=lambda snapshot, signature, key_id, algorithm: True,
         )
 
 
@@ -216,11 +225,15 @@ def test_authoritative_snapshot_rejects_scope_mismatch_and_stale_snapshot():
         validate_authoritative_registry_snapshot(
             snapshot, expected_scope={"provider": "live"},
             now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc), max_age_seconds=300,
+            trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=lambda snapshot, signature, key_id, algorithm: True,
         )
     with pytest.raises(DecisionRecordError, match="stale"):
         validate_authoritative_registry_snapshot(
             snapshot, expected_scope={"provider": "fixture"},
             now=datetime(2026, 10, 9, 13, 0, tzinfo=timezone.utc), max_age_seconds=300,
+            trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=lambda snapshot, signature, key_id, algorithm: True,
         )
 
 
@@ -233,10 +246,88 @@ def test_authoritative_snapshot_rejects_naive_and_excessively_future_timestamps(
         validate_authoritative_registry_snapshot(
             snapshot, expected_scope={"provider": "fixture"},
             now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc), max_age_seconds=300,
+            trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=lambda snapshot, signature, key_id, algorithm: True,
         )
     snapshot = make_snapshot(generated_at="2026-10-09T13:00:00Z")
     with pytest.raises(DecisionRecordError, match="future"):
         validate_authoritative_registry_snapshot(
             snapshot, expected_scope={"provider": "fixture"},
             now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc), max_age_seconds=300,
+            trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=lambda snapshot, signature, key_id, algorithm: True,
+        )
+
+
+def test_snapshot_rejects_untrusted_authority_and_missing_signature_metadata():
+    from datetime import datetime, timezone
+    from data.governance import validate_authoritative_registry_snapshot
+    snapshot = make_snapshot()
+    kwargs = dict(
+        expected_scope={"provider": "fixture"},
+        now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc),
+        max_age_seconds=300,
+        signature_verifier=lambda snapshot, signature, key_id, algorithm: True,
+    )
+    with pytest.raises(DecisionRecordError, match="authority is not trusted"):
+        validate_authoritative_registry_snapshot(snapshot, trusted_authorities=set(), **kwargs)
+    snapshot = make_snapshot()
+    del snapshot["key_id"]
+    snapshot["content_digest"] = __import__("data.governance", fromlist=["canonical_snapshot_digest"]).canonical_snapshot_digest(snapshot)
+    with pytest.raises(DecisionRecordError, match="signature and key metadata"):
+        validate_authoritative_registry_snapshot(snapshot, trusted_authorities={"fixture-authority://registry"}, **kwargs)
+
+
+@pytest.mark.parametrize("verifier,match", [
+    (None, "signature verifier is required"),
+    (lambda *args: False, "signature verification failed"),
+    (lambda *args: None, "signature verification failed"),
+    (lambda *args: (_ for _ in ()).throw(RuntimeError("verifier down")), "raised an exception"),
+])
+def test_snapshot_signature_verification_fails_closed(verifier, match):
+    from datetime import datetime, timezone
+    from data.governance import validate_authoritative_registry_snapshot
+    snapshot = make_snapshot()
+    with pytest.raises(DecisionRecordError, match=match):
+        validate_authoritative_registry_snapshot(
+            snapshot, expected_scope={"provider": "fixture"},
+            now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc),
+            max_age_seconds=300, trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=verifier,
+        )
+
+
+@pytest.mark.parametrize("version,high_water,match", [
+    (1, 1, "rollback or replay"),
+    (1, 2, "rollback or replay"),
+    ("2", 1, "positive integer"),
+    (True, 1, "positive integer"),
+    (0, None, "positive integer"),
+    (-1, None, "positive integer"),
+    (1.5, None, "positive integer"),
+])
+def test_snapshot_version_and_high_water_mark_are_strict(version, high_water, match):
+    from datetime import datetime, timezone
+    from data.governance import canonical_snapshot_digest, validate_authoritative_registry_snapshot
+    snapshot = make_snapshot(snapshot_version=version)
+    snapshot["content_digest"] = canonical_snapshot_digest(snapshot)
+    with pytest.raises(DecisionRecordError, match=match):
+        validate_authoritative_registry_snapshot(
+            snapshot, expected_scope={"provider": "fixture"},
+            now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc),
+            max_age_seconds=300, trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=lambda *args: True, last_accepted_version=high_water,
+        )
+
+
+def test_snapshot_rejects_invalid_high_water_mark():
+    from datetime import datetime, timezone
+    from data.governance import validate_authoritative_registry_snapshot
+    snapshot = make_snapshot()
+    with pytest.raises(DecisionRecordError, match="last_accepted_version"):
+        validate_authoritative_registry_snapshot(
+            snapshot, expected_scope={"provider": "fixture"},
+            now=datetime(2026, 10, 9, 12, 1, tzinfo=timezone.utc),
+            max_age_seconds=300, trusted_authorities={"fixture-authority://registry"},
+            signature_verifier=lambda *args: True, last_accepted_version=True,
         )

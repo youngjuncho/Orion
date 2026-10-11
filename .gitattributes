@@ -1,1 +1,14 @@
 * text=auto eol=lf
+
+# Text-file policy: UTF-8 is validated by scripts/check_utf8.py; use LF line endings.
+*.py   text eol=lf
+*.md   text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml  text eol=lf
+*.toml text eol=lf
+*.ini  text eol=lf
+*.cfg  text eol=lf
+*.txt  text eol=lf
+*.sh   text eol=lf
+*.ps1  text eol=lf
