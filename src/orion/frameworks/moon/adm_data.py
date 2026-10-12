@@ -974,6 +974,16 @@ class ADMMonthlyDataAssessment:
             raise ValueError("selected_risk_asset must be an ADM risk asset")
         if not isinstance(self.absolute_momentum_inputs, ADMAbsoluteMomentumInputs):
             raise ValueError("absolute_momentum_inputs has an invalid type")
+        relative = self.relative_momentum_freshness.relative_momentum_result
+        if relative.relative_momentum["VTI"] == relative.relative_momentum["VEU"]:
+            raise ValueError("relative-momentum tie is undefined by the ADM specification")
+        expected_winner = (
+            "VTI"
+            if relative.relative_momentum["VTI"] > relative.relative_momentum["VEU"]
+            else "VEU"
+        )
+        if self.selected_risk_asset != expected_winner:
+            raise ValueError("selected_risk_asset must match the relative-momentum winner")
         if self.absolute_momentum_inputs.risk_asset_symbol != self.selected_risk_asset:
             raise ValueError("absolute-momentum risk asset must match the relative-momentum winner")
         if self.absolute_momentum_inputs.benchmark_symbol != ADM_ABSOLUTE_MOMENTUM_BENCHMARK:
@@ -1000,6 +1010,10 @@ class ADMMonthlyDataAssessment:
             raise ValueError("comparison must match the approved D-055 input values")
         if not isinstance(self.readiness, ADMDataAssemblyReadiness):
             raise ValueError("readiness has an invalid type")
+        if self.readiness.relative_momentum_freshness != self.relative_momentum_freshness:
+            raise ValueError("readiness relative-momentum inputs must match the assessment")
+        if self.readiness.absolute_momentum_inputs != self.absolute_momentum_inputs:
+            raise ValueError("readiness absolute-momentum inputs must match the assessment")
         if not self.readiness.data_quality_passed:
             raise ValueError("monthly assessment requires a passing data-quality result")
         if (

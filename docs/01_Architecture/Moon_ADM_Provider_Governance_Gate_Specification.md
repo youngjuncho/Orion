@@ -93,6 +93,8 @@ This specification does not choose a provider, approve any adjusted-price series
 
 ## Related documents
 
+- `Moon_ADM_Governance_Binding_Implementation_Audit.md`
+
 - `Moon_ADM_Authoritative_Decision_Record_Schema_and_Validator.md`
 
 - `Moon_ADM_Provider_Contract_Decision_Register.md`

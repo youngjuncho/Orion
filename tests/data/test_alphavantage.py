@@ -118,3 +118,83 @@ def test_provider_does_not_expose_api_key_in_transport_error() -> None:
 def test_provider_requires_configured_api_key() -> None:
     with pytest.raises(ValueError, match="ORION_ALPHA_VANTAGE_API_KEY"):
         AlphaVantageMonthlyAdjustedSource(api_key="")
+
+@pytest.mark.parametrize(
+    "provider_notice",
+    [
+        {"Error Message": "Invalid API call."},
+        {"Note": "API call frequency exceeded."},
+        {"Information": "Thank you for using Alpha Vantage."},
+    ],
+)
+def test_provider_rejects_documented_notice_payloads_without_partial_batch(
+    provider_notice: dict[str, str],
+) -> None:
+    def transport(url: str, timeout: float) -> bytes:
+        return json.dumps(provider_notice).encode("utf-8")
+
+    provider = AlphaVantageMonthlyAdjustedProvider(
+        AlphaVantageMonthlyAdjustedSource("test-secret", transport=transport)
+    )
+    with pytest.raises(AlphaVantageProviderError, match="notice"):
+        provider.load()
+
+
+def test_provider_rejects_response_for_different_symbol() -> None:
+    def transport(url: str, timeout: float) -> bytes:
+        requested = parse_qs(urlparse(url).query)["symbol"][0]
+        wrong = "VEU" if requested == "VTI" else requested
+        return provider_response(wrong)
+
+    provider = AlphaVantageMonthlyAdjustedProvider(
+        AlphaVantageMonthlyAdjustedSource("test-secret", transport=transport)
+    )
+    with pytest.raises(AlphaVantageProviderError, match="unexpected instrument identity"):
+        provider.load()
+
+
+def test_provider_rejects_non_finite_adjusted_close() -> None:
+    def transport(url: str, timeout: float) -> bytes:
+        symbol = parse_qs(urlparse(url).query)["symbol"][0]
+        response = json.loads(provider_response(symbol))
+        first_date = next(iter(response["Monthly Adjusted Time Series"]))
+        response["Monthly Adjusted Time Series"][first_date]["5. adjusted close"] = "NaN"
+        return json.dumps(response).encode("utf-8")
+
+    provider = AlphaVantageMonthlyAdjustedProvider(
+        AlphaVantageMonthlyAdjustedSource("test-secret", transport=transport)
+    )
+    with pytest.raises(AlphaVantageProviderError, match="non-positive"):
+        provider.load()
+
+
+@pytest.mark.parametrize("malformed_price", [True, False, None, [], {}])
+def test_provider_rejects_non_numeric_json_adjusted_close(malformed_price: object) -> None:
+    def transport(url: str, timeout: float) -> bytes:
+        symbol = parse_qs(urlparse(url).query)["symbol"][0]
+        response = json.loads(provider_response(symbol))
+        first_date = next(iter(response["Monthly Adjusted Time Series"]))
+        response["Monthly Adjusted Time Series"][first_date]["5. adjusted close"] = malformed_price
+        return json.dumps(response).encode("utf-8")
+
+    provider = AlphaVantageMonthlyAdjustedProvider(
+        AlphaVantageMonthlyAdjustedSource("test-secret", transport=transport)
+    )
+    with pytest.raises(AlphaVantageProviderError, match="invalid adjusted close"):
+        provider.load()
+
+
+def test_provider_rejects_multiple_bars_in_the_same_calendar_month() -> None:
+    def transport(url: str, timeout: float) -> bytes:
+        symbol = parse_qs(urlparse(url).query)["symbol"][0]
+        response = json.loads(provider_response(symbol))
+        series = response["Monthly Adjusted Time Series"]
+        # Keep the existing September bar and add a second distinct date in September.
+        series["2026-09-29"] = {"5. adjusted close": "111.0"}
+        return json.dumps(response).encode("utf-8")
+
+    provider = AlphaVantageMonthlyAdjustedProvider(
+        AlphaVantageMonthlyAdjustedSource("test-secret", transport=transport)
+    )
+    with pytest.raises(AlphaVantageProviderError, match="multiple monthly bars"):
+        provider.load()
