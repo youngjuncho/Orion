@@ -64,7 +64,10 @@ class AlphaVantageMonthlyAdjustedSource:
         timeout_seconds: float = 15.0,
         transport: Callable[[str, float], bytes] | None = None,
     ) -> None:
-        resolved_key = api_key or os.environ.get("ORION_ALPHA_VANTAGE_API_KEY")
+        if api_key is None:
+            resolved_key = os.environ.get("ORION_ALPHA_VANTAGE_API_KEY")
+        else:
+            resolved_key = api_key
         if not isinstance(resolved_key, str) or not resolved_key.strip():
             raise ValueError("ORION_ALPHA_VANTAGE_API_KEY is required")
         if isinstance(timeout_seconds, bool) or not isinstance(timeout_seconds, (int, float)) or timeout_seconds <= 0:
@@ -132,15 +135,29 @@ class AlphaVantageMonthlyAdjustedSource:
 
             series = response[series_keys[0]]
             symbol_observations = 0
+            observed_months: set[str] = set()
             for observed_at, row in series.items():
                 if not isinstance(observed_at, str) or not isinstance(row, Mapping):
                     raise AlphaVantageProviderError(
                         f"Alpha Vantage returned a malformed monthly row for {symbol}"
                     )
                 try:
-                    if datetime.strptime(observed_at, "%Y-%m-%d").date().isoformat() != observed_at:
+                    parsed_observation_date = datetime.strptime(observed_at, "%Y-%m-%d").date()
+                    if parsed_observation_date.isoformat() != observed_at:
                         raise ValueError
-                    price = float(row[self.provider_field])
+                    month_key = parsed_observation_date.strftime("%Y-%m")
+                    if month_key in observed_months:
+                        raise AlphaVantageProviderError(
+                            f"Alpha Vantage returned multiple monthly bars for {symbol}; no partial batch was accepted"
+                        )
+                    observed_months.add(month_key)
+                    raw_price = row[self.provider_field]
+                    # JSON booleans are Python ints for numeric coercion purposes:
+                    # float(True) == 1.0. Reject them before conversion so malformed
+                    # provider data cannot become a plausible positive price.
+                    if isinstance(raw_price, bool) or not isinstance(raw_price, (str, int, float)):
+                        raise TypeError
+                    price = float(raw_price)
                 except (KeyError, TypeError, ValueError, OverflowError):
                     raise AlphaVantageProviderError(
                         f"Alpha Vantage returned an invalid adjusted close for {symbol}"

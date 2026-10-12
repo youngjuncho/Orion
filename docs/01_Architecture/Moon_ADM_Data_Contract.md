@@ -128,6 +128,7 @@ inputs; there is no claim of end-to-end signal integration.
 - `docs/01_Architecture/Orion_Data_Pipeline.md`
 - `docs/01_Architecture/Moon_ADM_Data_Readiness_and_Closure.md`
 - `docs/01_Architecture/Moon_ADM_Provider_Adapter_Readiness_Review.md`
+- `docs/01_Architecture/Moon_ADM_Methodology_Implementation_Consistency_Audit.md`
 
 
 ## Implementation boundary

@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 import pytest
 
 from data import MarketDataPoint, MarketDataSet
@@ -60,6 +62,28 @@ def test_monthly_assessment_uses_seven_day_gate_and_d055_comparison() -> None:
     assert assessment.comparison.status is ADMAbsoluteMomentumComparisonStatus.TRUE
     assert assessment.readiness.max_age_days == 7
     assert assessment.signal_assembly_ready is False
+
+
+def test_monthly_assessment_rejects_readiness_from_a_different_input_batch() -> None:
+    assessment = assess_adm_monthly_dataset(monthly_dataset())
+    other = assess_adm_monthly_dataset(monthly_dataset(vti_current=116.0))
+
+    with pytest.raises(ValueError, match="readiness relative-momentum inputs must match"):
+        replace(assessment, readiness=other.readiness)
+
+
+def test_monthly_assessment_rejects_a_selected_asset_that_is_not_the_winner() -> None:
+    assessment = assess_adm_monthly_dataset(monthly_dataset())
+    other = assess_adm_monthly_dataset(monthly_dataset(vti_current=105.0))
+
+    with pytest.raises(ValueError, match="selected_risk_asset must match"):
+        replace(
+            assessment,
+            selected_risk_asset=other.selected_risk_asset,
+            absolute_momentum_inputs=other.absolute_momentum_inputs,
+            comparison=other.comparison,
+            readiness=other.readiness,
+        )
 
 
 def test_monthly_assessment_digest_is_stable_and_binds_selected_values() -> None:
@@ -1128,3 +1152,38 @@ def test_adm_composed_data_pipeline_keeps_readiness_distinct_from_signal_approva
     assert guarded.eligible_for_signal_assembly is False
     assert "production_data_governance_not_approved" in guarded.blocked_reasons
     assert "unresolved_policy_gates" in guarded.blocked_reasons
+
+@pytest.mark.parametrize(
+    ("approval_status", "approval_reference"),
+    [
+        ("UNKNOWN", None),
+        ("NOT_APPROVED", None),
+        ("NOT_APPROVED", "fixture-record-v1"),
+        ("APPROVED", None),
+        ("APPROVED", "fixture-record-v1"),
+    ],
+)
+def test_governance_gate_audit_never_allows_signal_assembly_without_authoritative_binding(
+    approval_status, approval_reference
+) -> None:
+    """Caller attestations cannot open the signal gate in any status combination."""
+    from dataclasses import replace
+    from orion.frameworks.moon.adm_data import (
+        ADMPolicyApprovalStatus,
+        guard_adm_comparison_for_signal_assembly,
+    )
+
+    readiness = _readiness_for_comparison_guard()
+    # Even a fully clean local readiness object is not an authoritative record.
+    readiness = replace(readiness, unresolved_policy_gates=())
+    comparison = _comparison_for_readiness(readiness)
+    result = guard_adm_comparison_for_signal_assembly(
+        comparison,
+        readiness,
+        policy_approval_status=ADMPolicyApprovalStatus[approval_status],
+        policy_approval_reference=approval_reference,
+    )
+
+    assert result.eligible_for_signal_assembly is False
+    assert "authoritative_governance_binding_not_implemented" in result.blocked_reasons
+

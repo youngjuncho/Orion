@@ -31,3 +31,7 @@ Unit tests use deterministic fixtures only. They demonstrate orchestration behav
 - Provider and assessment failures fail closed.
 - No signal object is returned or constructed.
 - No persistence or Runtime/framework activation path is introduced.
+
+## Provider-to-workflow integration evidence
+
+`tests/orion/frameworks/moon/test_adm_provider_workflow_integration.py` joins the concrete Alpha Vantage response parser/adapter to the isolated workflow using synthetic provider-shaped fixtures. It verifies all three configured symbols normalize to one 39-observation batch and reach an assessment, and that insufficient history for any required symbol prevents a workflow result. The fixture values are synthetic and do not establish live provider availability, current endpoint behavior, adjusted-price correctness, licensing/entitlement, or governance approval. No network request or API credential is used by these tests.
