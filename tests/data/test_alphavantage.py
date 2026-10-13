@@ -119,26 +119,59 @@ def test_provider_requires_configured_api_key() -> None:
     with pytest.raises(ValueError, match="ORION_ALPHA_VANTAGE_API_KEY"):
         AlphaVantageMonthlyAdjustedSource(api_key="")
 
+
 @pytest.mark.parametrize(
-    "provider_notice",
+    ("provider_notice", "expected_code"),
     [
-        {"Error Message": "Invalid API call."},
-        {"Note": "API call frequency exceeded."},
-        {"Information": "Thank you for using Alpha Vantage."},
+        (
+            {"Error Message": "Invalid API call."},
+            "API_KEY_OR_REQUEST_NOTICE",
+        ),
+        (
+            {"Note": "API call frequency exceeded."},
+            "API_RATE_LIMIT",
+        ),
+        (
+            {
+                "Information":
+                    "This endpoint requires a premium subscription."
+            },
+            "API_PREMIUM_OR_PLAN_NOTICE",
+        ),
+        (
+            {"Information": "Invalid API key"},
+            "API_KEY_OR_REQUEST_NOTICE",
+        ),
+        (
+            {"Information": "Thank you for using Alpha Vantage."},
+            "API_INFORMATION_NOTICE",
+        ),
     ],
 )
 def test_provider_rejects_documented_notice_payloads_without_partial_batch(
     provider_notice: dict[str, str],
+    expected_code: str,
 ) -> None:
     def transport(url: str, timeout: float) -> bytes:
         return json.dumps(provider_notice).encode("utf-8")
 
     provider = AlphaVantageMonthlyAdjustedProvider(
-        AlphaVantageMonthlyAdjustedSource("test-secret", transport=transport)
+        AlphaVantageMonthlyAdjustedSource(
+            "test-secret",
+            transport=transport,
+        )
     )
-    with pytest.raises(AlphaVantageProviderError, match="notice"):
+
+    with pytest.raises(AlphaVantageProviderError, match="notice") as error:
         provider.load()
 
+    error_message = str(error.value)
+    assert expected_code in error_message
+    assert "test-secret" not in error_message
+    assert "no partial batch was accepted" in error_message
+
+    raw_notice = next(iter(provider_notice.values()))
+    assert raw_notice not in error_message
 
 def test_provider_rejects_response_for_different_symbol() -> None:
     def transport(url: str, timeout: float) -> bytes:

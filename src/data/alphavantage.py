@@ -114,11 +114,60 @@ class AlphaVantageMonthlyAdjustedSource:
                 raise AlphaVantageProviderError("Alpha Vantage returned invalid JSON") from None
             if not isinstance(response, Mapping):
                 raise AlphaVantageProviderError("Alpha Vantage response must be an object")
-            if any(key in response for key in ("Error Message", "Note", "Information")):
-                raise AlphaVantageProviderError(
-                    "Alpha Vantage rejected the request or returned a notice; no partial batch was accepted"
-                )
 
+            notice_keys = ("Error Message", "Note", "Information")
+            detected_keys = [key for key in notice_keys if key in response]
+
+            if detected_keys:
+                if len(detected_keys) > 1:
+                    diagnostic_code = "API_MULTIPLE_ERROR_FIELDS"
+                else:
+                    key = detected_keys[0]
+                    # Inspect response text in memory only. Never log or expose it.
+                    raw_notice = response.get(key)
+                    notice_text = (
+                        raw_notice.lower()
+                        if isinstance(raw_notice, str)
+                        else ""
+                    )
+
+                    if any(term in notice_text for term in (
+                        "rate limit",
+                        "frequency",
+                        "requests per day",
+                        "call frequency",
+                        "call volume",
+                        "quota",
+                    )):
+                        diagnostic_code = "API_RATE_LIMIT"
+                    elif any(term in notice_text for term in (
+                        "premium",
+                        "subscription",
+                        "plan upgrade",
+                        "paid plan",
+                    )):
+                        diagnostic_code = "API_PREMIUM_OR_PLAN_NOTICE"
+                    elif any(term in notice_text for term in (
+                        "api key",
+                        "apikey",
+                        "invalid key",
+                        "invalid api call",
+                        "not authorized",
+                        "unauthorized",
+                    )):
+                        diagnostic_code = "API_KEY_OR_REQUEST_NOTICE"
+                    elif key == "Error Message":
+                        diagnostic_code = "API_REQUEST_REJECTED"
+                    elif key == "Note":
+                        diagnostic_code = "API_RATE_LIMIT_OR_NOTICE"
+                    else:
+                        diagnostic_code = "API_INFORMATION_NOTICE"
+
+                raise AlphaVantageProviderError(
+                    f"Alpha Vantage notice [{diagnostic_code}]; "
+                    "no partial batch was accepted"
+                )
+            
             metadata = response.get("Meta Data")
             if not isinstance(metadata, Mapping) or metadata.get("2. Symbol") != symbol:
                 raise AlphaVantageProviderError(
