@@ -491,3 +491,43 @@ Not Started
 * Moon_Interface.md
 * Moon_Execution_Mapping.md
 * Moon_Scoring_Framework.md
+
+---
+
+# Variant Comparison Addendum (2026-10-13)
+
+Status: Draft — Not Approved for Production
+
+## Reference Variant Is Not Yet Selected
+
+The current Orion offensive candidate list (SPY, EFA, EEM, AGG, LQD, VNQ, DBC) is a custom seven-asset list. It does not match the commonly documented G4 or G12 offensive universe. The defensive candidates (SHY, IEF, LQD) match the commonly documented defensive universe.
+
+Do not infer the strategy variant from the current candidate list.
+
+## Keep These Parameters Separate
+
+- `breadth_threshold` (`B`): breadth parameter from the selected VAA variant.
+- `top_offensive_count` (`T`): number of top-ranked offensive assets held when offensive allocation is nonzero.
+- `cash_fraction` (`CF`): defensive allocation fraction computed using the selected variant's exact rule.
+
+For the original-paper G12 parameterization commonly reported as T=2 and B=4, the Easy Trading rule is discretized: `CF = floor(b * T / B) / T`, where `b` counts offensive scores <= 0. This produces 0%, 50%, or 100% defensive allocation, not linear 0%, 25%, 50%, 75%, 100% allocation.
+
+Some public implementations use a different G12 profile (for example TopO=5 or linear allocation). Treat these as custom variants unless their equivalence to the original paper is demonstrated. The Easy Investing implementation is not present in the repository ZIP and has not yet been verified.
+
+## Signal and Execution Separation
+
+The canonical signal universe determines momentum, ranking, and breadth. Execution mappings are applied only after the strategy result is produced. A mapping must not alter the signal universe or momentum calculation.
+
+## Implementation Gate
+
+Before coding, record:
+1. Exact selected variant and source.
+2. Offensive and defensive signal universes.
+3. 13612W price series and formula.
+4. Breadth comparison (`<= 0` or another explicitly justified rule).
+5. `T`, `B`, and exact `CF` equation.
+6. Missing data and insufficient history behavior.
+7. Monthly signal date and execution timing.
+8. Expected `StrategyResult` state, weights, and metadata for each allocation state.
+
+Until these decisions are resolved, status remains Research In Progress / Coding Not Started.
