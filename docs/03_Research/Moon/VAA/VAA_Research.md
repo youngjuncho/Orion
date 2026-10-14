@@ -301,11 +301,11 @@ Define Orion-specific implementation details while preserving the original metho
 
 ---
 
-# Variant Comparison Addendum ? Primary-Source Parameter Clarification
+# Variant Comparison Addendum â€” Primary-Source Parameter Clarification
 
 Last Updated: 2026-10-13
 
-Status: Research Clarification ? Variant Not Yet Approved
+Status: Research Clarification â€” Variant Not Yet Approved
 
 ## Reference VAA-G4
 
@@ -327,7 +327,7 @@ The original-paper parameterization is reported as:
 
 The important distinction is that the original paper's Easy Trading approach discretizes the cash fraction into increments determined by T. A commonly reported formula is:
 
-CF = floor(b ¡¿ T / B) / T
+CF = floor(b Ã— T / B) / T
 
 where b is the number of offensive assets whose 13612W score is <= 0. The defensive allocation is CF; the offensive allocation is 1 - CF.
 
@@ -338,7 +338,7 @@ For G12 (T=2, B=4), this yields:
 
 This is not the same as the simplified linear formula CF = min(1, b/B), which would produce 25% and 75% defensive allocations for b=1 and b=3. Do not substitute the linear formula for the discretized original-paper rule without explicitly approving a variant change.
 
-Some modern public implementations label a profile VAA-G12 while using TopO=5 and/or linear partial-defensive allocation. Those should be treated as implementation variants, not assumed equivalent to the original-paper T=2 configuration. The exact implementation referred to as ¡°Easy Investing¡± is not included in the current repository ZIP and therefore has not been independently verified.
+Some modern public implementations label a profile VAA-G12 while using TopO=5 and/or linear partial-defensive allocation. Those should be treated as implementation variants, not assumed equivalent to the original-paper T=2 configuration. The exact implementation referred to as â€œEasy Investingâ€ is not included in the current repository ZIP and therefore has not been independently verified.
 
 ## Momentum Formula
 
@@ -355,7 +355,7 @@ Use the same score for ranking and the <= 0 breadth classification. The precise 
 
 Orion's current candidate offensive list is SPY, EFA, EEM, AGG, LQD, VNQ, DBC. It is neither the canonical G4 universe nor the canonical G12 universe. The defensive candidates SHY, IEF, LQD align with the commonly documented defensive universe.
 
-The current execution substitutions (SPY¡æSPYM, EFA¡æVEA, EEM¡æVWO, AGG¡æBND, LQD¡æVCIT, VNQ¡æUSRT, DBC¡æBCI, SHY¡æSCHO, IEF¡æVGIT) must remain execution-only and must not alter the signal calculations.
+The current execution substitutions (SPYâ†’SPYM, EFAâ†’VEA, EEMâ†’VWO, AGGâ†’BND, LQDâ†’VCIT, VNQâ†’USRT, DBCâ†’BCI, SHYâ†’SCHO, IEFâ†’VGIT) must remain execution-only and must not alter the signal calculations.
 
 ## Decisions Still Open
 
