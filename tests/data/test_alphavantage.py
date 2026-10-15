@@ -157,6 +157,18 @@ def test_provider_rejects_non_finite_or_non_positive_timeout(
             {"Information": "Thank you for using Alpha Vantage."},
             "API_INFORMATION_NOTICE",
         ),
+        (
+            {"Error Message": "Request could not be completed."},
+            "API_REQUEST_REJECTED",
+        ),
+        (
+            {"Note": "Provider supplied a temporary notice."},
+            "API_RATE_LIMIT_OR_NOTICE",
+        ),
+        (
+            {"Note": "rate limit", "Information": "premium plan"},
+            "API_MULTIPLE_ERROR_FIELDS",
+        ),
     ],
 )
 def test_provider_rejects_documented_notice_payloads_without_partial_batch(
@@ -183,6 +195,25 @@ def test_provider_rejects_documented_notice_payloads_without_partial_batch(
 
     raw_notice = next(iter(provider_notice.values()))
     assert raw_notice not in error_message
+
+
+def test_provider_stops_after_first_notice_without_partial_requests() -> None:
+    requested: list[str] = []
+
+    def transport(url: str, timeout: float) -> bytes:
+        symbol = parse_qs(urlparse(url).query)["symbol"][0]
+        requested.append(symbol)
+        return json.dumps({"Note": "API call frequency exceeded."}).encode("utf-8")
+
+    provider = AlphaVantageMonthlyAdjustedProvider(
+        AlphaVantageMonthlyAdjustedSource("test-secret", transport=transport)
+    )
+
+    with pytest.raises(AlphaVantageProviderError, match="API_RATE_LIMIT"):
+        provider.load()
+
+    assert requested == ["VTI"]
+
 
 def test_provider_rejects_response_for_different_symbol() -> None:
     def transport(url: str, timeout: float) -> bytes:
