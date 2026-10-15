@@ -491,43 +491,66 @@ Not Started
 * Moon_Interface.md
 * Moon_Execution_Mapping.md
 * Moon_Scoring_Framework.md
+## Current Orion Working Rule — G12 + Easy Trading
 
----
+This section records the current implementation candidate; it does not activate
+VAA or authorize new execution-ETF mappings.
 
-# Variant Comparison Addendum (2026-10-13)
+### Momentum score
 
-Status: Draft — Not Approved for Production
+Use monthly adjusted closes from the last completed month-end. For asset price
+series `P`, calculate `13612W = 12 × R1 + 4 × R3 + 2 × R6 + R12`, where
+`Rk = P(t) / P(t-k) - 1`. The input series must contain at least 13 monthly
+observations, ordered oldest to newest. Missing observations, invalid prices, or
+incomplete universes fail closed; no universe shrinking is permitted.
 
-## Reference Variant Is Not Yet Selected
+### G12 universes
 
-The current Orion offensive candidate list (SPY, EFA, EEM, AGG, LQD, VNQ, DBC) is a custom seven-asset list. It does not match the commonly documented G4 or G12 offensive universe. The defensive candidates (SHY, IEF, LQD) match the commonly documented defensive universe.
+Offensive: `SPY, IWM, QQQ, VGK, EWJ, VWO, VNQ, GSG, GLD, TLT, HYG, LQD`.
+Defensive: `SHY, IEF, LQD`.
 
-Do not infer the strategy variant from the current candidate list.
+### Easy Trading breadth rule
 
-## Keep These Parameters Separate
+Let `b` be the count of offensive assets whose 13612W score is less than or
+equal to zero. With `T=2` and `B=4`, the defensive fraction is
+`min(1, floor(b × T / B) / T)`: `b=0–1` gives 0%, `b=2–3` gives 50%, and
+`b>=4` gives 100% defensive allocation. The allocation is two top-ranked
+offensive assets at 50% each, one top-ranked offensive plus one top-ranked
+non-duplicated defensive asset at 50% each, or the top-ranked defensive asset
+at 100%, respectively. Rank ties follow the declared universe order. `LQD`
+overlaps both universes, so mixed-mode selection explicitly skips a defensive
+asset already selected offensively.
 
-- `breadth_threshold` (`B`): breadth parameter from the selected VAA variant.
-- `top_offensive_count` (`T`): number of top-ranked offensive assets held when offensive allocation is nonzero.
-- `cash_fraction` (`CF`): defensive allocation fraction computed using the selected variant's exact rule.
+### Scope and execution gate
 
-For the original-paper G12 parameterization commonly reported as T=2 and B=4, the Easy Trading rule is discretized: `CF = floor(b * T / B) / T`, where `b` counts offensive scores <= 0. This produces 0%, 50%, or 100% defensive allocation, not linear 0%, 25%, 50%, 75%, 100% allocation.
+The signal implementation is separate from market-data retrieval and execution
+mapping. The upstream data layer must supply complete, date-aligned monthly
+adjusted-close observations for every required ticker and enforce month-end
+selection/freshness. The signal date is the completed observation date; actual
+execution is a later trading-day concern and is not inferred by this module.
 
-Some public implementations use a different G12 profile (for example TopO=5 or linear allocation). Treat these as custom variants unless their equivalence to the original paper is demonstrated. The Easy Investing implementation is not present in the repository ZIP and has not yet been verified.
+The existing execution mapping is intentionally unchanged. `VGK`, `EWJ`, `VWO`,
+and `GSG` do not all have approved signal-to-execution mappings in the current
+mapping table. Until mappings are reviewed and recorded in the Decision Log,
+execution mapping should continue to fail closed for unsupported tickers.
+`config/moon.yaml` remains inactive for VAA.
 
-## Signal and Execution Separation
 
-The canonical signal universe determines momentum, ranking, and breadth. Execution mappings are applied only after the strategy result is produced. A mapping must not alter the signal universe or momentum calculation.
 
-## Implementation Gate
+## Dated Monthly Adjusted-Close Input Builder — Engineering Candidate
 
-Before coding, record:
-1. Exact selected variant and source.
-2. Offensive and defensive signal universes.
-3. 13612W price series and formula.
-4. Breadth comparison (`<= 0` or another explicitly justified rule).
-5. `T`, `B`, and exact `CF` equation.
-6. Missing data and insufficient history behavior.
-7. Monthly signal date and execution timing.
-8. Expected `StrategyResult` state, weights, and metadata for each allocation state.
+`build_vaa_signal_input()` now converts a mapping of ticker to ordered
+`(observation_date, adjusted_close)` pairs into a complete `VAASignalInput`.
+It requires all unique G12/defensive tickers, at least 13 observations per
+ticker, strictly increasing dates, no missing calendar months, a common set of
+observation dates, and a latest observation in the last completed calendar
+month before `as_of_date`. It computes the 13612W scores only after these
+checks pass.
 
-Until these decisions are resolved, status remains Research In Progress / Coding Not Started.
+This is a pure validation/calculation boundary: it does not fetch prices,
+verify exchange calendars, define a numeric publication-age SLA, infer the
+next execution session, persist source provenance, or activate VAA. The
+month-end fixture tests use calendar month-end dates; production provider data
+will normally label observations with the last trading day of each month.
+The caller must supply consistent month-end trading observations and should
+not pass an incomplete current-month bar.
