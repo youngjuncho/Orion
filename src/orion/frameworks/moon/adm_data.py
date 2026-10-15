@@ -480,6 +480,8 @@ def validate_adm_observation_pair_freshness(
         raise ValueError("pair must be an ADMPriceObservationPair")
     if isinstance(max_age_days, bool) or not isinstance(max_age_days, int) or max_age_days < 0:
         raise ValueError("max_age_days must be a non-negative integer")
+    if max_age_days > ADM_MONTHLY_MAX_OBSERVATION_AGE_DAYS:
+        raise ValueError("max_age_days must not exceed the approved D-058 limit of seven days")
     if pair.current_target_date is None or pair.trailing_target_date is None:
         raise ValueError("pair must retain target dates for freshness validation")
 
@@ -757,6 +759,14 @@ class ADMAbsoluteMomentumComparisonResult:
         for name, value in (("risk_asset_return", self.risk_asset_return), ("benchmark_return", self.benchmark_return)):
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value):
                 raise ValueError(f"{name} must be a finite number")
+        if self.policy_id is not None and (
+            not isinstance(self.policy_id, str) or not self.policy_id.strip()
+        ):
+            raise ValueError("policy_id must be a non-empty string when supplied")
+        if self.operator is not None and not isinstance(
+            self.operator, ADMAbsoluteMomentumComparisonOperator
+        ):
+            raise ValueError("operator must be an ADMAbsoluteMomentumComparisonOperator when supplied")
         if self.status is ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE:
             if not isinstance(self.reason, str) or not self.reason.strip():
                 raise ValueError("unavailable result requires a reason")
@@ -866,6 +876,8 @@ class ADMDataAssemblyReadiness:
             raise ValueError("absolute_momentum_inputs must be an ADMAbsoluteMomentumInputs")
         if isinstance(self.max_age_days, bool) or not isinstance(self.max_age_days, int) or self.max_age_days < 0:
             raise ValueError("max_age_days must be a non-negative integer")
+        if self.max_age_days > ADM_MONTHLY_MAX_OBSERVATION_AGE_DAYS:
+            raise ValueError("max_age_days must not exceed the approved D-058 limit of seven days")
         relative = self.relative_momentum_freshness.relative_momentum_result
         absolute = self.absolute_momentum_inputs
         if (
@@ -879,6 +891,8 @@ class ADMDataAssemblyReadiness:
             raise ValueError("relative and absolute momentum selection policies must match")
         if self.relative_momentum_freshness.max_age_days != self.max_age_days:
             raise ValueError("relative and absolute momentum must use the same maximum age")
+        if not isinstance(self.absolute_freshness_by_symbol, Mapping):
+            raise ValueError("absolute_freshness_by_symbol must be a mapping")
         expected_symbols = {absolute.risk_asset_symbol, absolute.benchmark_symbol}
         if set(self.absolute_freshness_by_symbol) != expected_symbols:
             raise ValueError("absolute_freshness_by_symbol must cover risk asset and benchmark")
@@ -902,6 +916,8 @@ class ADMDataAssemblyReadiness:
             if freshness.max_age_days != self.max_age_days:
                 raise ValueError("all assembly freshness checks must use the same maximum age")
             normalized[symbol] = freshness
+        if not isinstance(self.unresolved_policy_gates, tuple):
+            raise ValueError("unresolved_policy_gates must be a tuple of non-empty strings")
         if any(
             not isinstance(gate, str) or not gate.strip() for gate in self.unresolved_policy_gates
         ):
@@ -951,6 +967,43 @@ def prepare_adm_signal_assembly_readiness(
         max_age_days=max_age_days,
         absolute_freshness_by_symbol=absolute_freshness,
     )
+
+
+def _selected_adm_input_digest(
+    relative_momentum_freshness: ADMRelativeMomentumFreshnessResult,
+    absolute_momentum_inputs: ADMAbsoluteMomentumInputs,
+) -> str:
+    """Hash the canonical selected observation set used by an ADM assessment."""
+
+    selected_points = {
+        point.identity: point
+        for pair in (
+            *relative_momentum_freshness.relative_momentum_result.observation_pairs.values(),
+            *absolute_momentum_inputs.observation_pairs.values(),
+        )
+        for point in (pair.current, pair.trailing)
+    }
+    digest_payload = [
+        {
+            "symbol": point.symbol,
+            "field": point.field,
+            "observed_at": point.observed_at,
+            "value": point.value,
+            "source": point.source,
+            "currency": point.currency,
+            "metadata": dict(point.metadata),
+        }
+        for _, point in sorted(selected_points.items())
+    ]
+    return hashlib.sha256(
+        json.dumps(
+            digest_payload,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+            allow_nan=False,
+        ).encode("utf-8")
+    ).hexdigest()
 
 
 @dataclass(frozen=True)
@@ -1005,9 +1058,10 @@ class ADMMonthlyDataAssessment:
             self.comparison.benchmark_symbol != absolute.benchmark_symbol
             or self.comparison.risk_asset_return != absolute.risk_asset_return
             or self.comparison.benchmark_return != absolute.benchmark_return
-            or self.comparison.policy_id != "D-055"
+            or self.comparison.policy_id != APPROVED_ADM_ABSOLUTE_MOMENTUM_POLICY.policy_id
+            or self.comparison.operator is not APPROVED_ADM_ABSOLUTE_MOMENTUM_POLICY.operator
         ):
-            raise ValueError("comparison must match the approved D-055 input values")
+            raise ValueError("comparison must match the approved D-055 input values and operator")
         if not isinstance(self.readiness, ADMDataAssemblyReadiness):
             raise ValueError("readiness has an invalid type")
         if self.readiness.relative_momentum_freshness != self.relative_momentum_freshness:
@@ -1022,15 +1076,23 @@ class ADMMonthlyDataAssessment:
             or any(char not in "0123456789abcdef" for char in self.selected_input_digest)
         ):
             raise ValueError("selected_input_digest must be a lowercase SHA-256 digest")
+        expected_digest = _selected_adm_input_digest(
+            self.relative_momentum_freshness, self.absolute_momentum_inputs
+        )
+        if self.selected_input_digest != expected_digest:
+            raise ValueError("selected_input_digest does not match selected observations")
 
     @property
     def signal_assembly_ready(self) -> bool:
-        """Expose readiness while preserving independent governance gates."""
+        """Report whether signal assembly is actually permitted by current gates.
 
-        return (
-            self.readiness.signal_ready
-            and self.comparison.status is not ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE
-        )
+        Data readiness and an available D-055 comparison are insufficient while
+        PCD-15's authoritative governance binding is not implemented. Keep this
+        property fail-closed even if a caller manually clears data-policy gates;
+        the dedicated signal guard records the corresponding blocking reason.
+        """
+
+        return False
 
 
 def assess_adm_monthly_dataset(
@@ -1087,35 +1149,9 @@ def assess_adm_monthly_dataset(
         absolute_inputs,
         max_age_days=max_age_days,
     )
-    selected_points = {
-        point.identity: point
-        for pair in (
-            *relative_freshness.relative_momentum_result.observation_pairs.values(),
-            *absolute_inputs.observation_pairs.values(),
-        )
-        for point in (pair.current, pair.trailing)
-    }
-    digest_payload = [
-        {
-            "symbol": point.symbol,
-            "field": point.field,
-            "observed_at": point.observed_at,
-            "value": point.value,
-            "source": point.source,
-            "currency": point.currency,
-            "metadata": dict(point.metadata),
-        }
-        for _, point in sorted(selected_points.items())
-    ]
-    selected_input_digest = hashlib.sha256(
-        json.dumps(
-            digest_payload,
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=False,
-            allow_nan=False,
-        ).encode("utf-8")
-    ).hexdigest()
+    selected_input_digest = _selected_adm_input_digest(
+        relative_freshness, absolute_inputs
+    )
     return ADMMonthlyDataAssessment(
         targets=targets,
         relative_momentum_freshness=relative_freshness,
@@ -1161,9 +1197,10 @@ class ADMComparisonSignalGuardResult:
             not isinstance(self.policy_approval_reference, str) or not self.policy_approval_reference.strip()
         ):
             raise ValueError("policy_approval_reference must be a non-empty production governance reference when supplied")
+        if not isinstance(self.blocked_reasons, tuple):
+            raise ValueError("blocked_reasons must be a tuple of non-empty strings")
         if any(not isinstance(reason, str) or not reason.strip() for reason in self.blocked_reasons):
             raise ValueError("blocked_reasons entries must be non-empty strings")
-        object.__setattr__(self, "blocked_reasons", tuple(self.blocked_reasons))
         if self.eligible_for_signal_assembly != (len(self.blocked_reasons) == 0):
             raise ValueError("eligibility must exactly reflect whether blocked reasons are empty")
 
@@ -1220,6 +1257,11 @@ def guard_adm_comparison_for_signal_assembly(
     if comparison.status is not ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE:
         if not comparison.policy_id:
             reasons.append("comparison_policy_provenance_missing")
+        if (
+            comparison.policy_id != APPROVED_ADM_ABSOLUTE_MOMENTUM_POLICY.policy_id
+            or comparison.operator is not APPROVED_ADM_ABSOLUTE_MOMENTUM_POLICY.operator
+        ):
+            reasons.append("comparison_policy_not_approved")
 
     return ADMComparisonSignalGuardResult(
         eligible_for_signal_assembly=not reasons,

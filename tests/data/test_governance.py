@@ -36,6 +36,15 @@ def test_valid_record_passes_schema_and_digest_validation():
     assert validate_decision_record(record)["decision_id"] == "PCD-01"
 
 
+@pytest.mark.parametrize("status", [[], {}, None, True, 7])
+def test_malformed_status_type_fails_closed(status):
+    record = make_record()
+    record["status"] = status
+    record["content_digest"] = canonical_digest(record)
+    with pytest.raises(DecisionRecordError, match="status is not recognized"):
+        validate_decision_record(record)
+
+
 def test_missing_field_fails_closed():
     record = make_record()
     del record["authority"]
@@ -331,3 +340,15 @@ def test_snapshot_rejects_invalid_high_water_mark():
             max_age_seconds=300, trusted_authorities={"fixture-authority://registry"},
             signature_verifier=lambda *args: True, last_accepted_version=True,
         )
+
+
+@pytest.mark.parametrize("required_ids", ["PCD-01", b"PCD-01", bytearray(b"PCD-01"), [], (), None, 7])
+def test_required_decision_ids_reject_invalid_sequence_contract(required_ids):
+    with pytest.raises(DecisionRecordError, match="required_ids must be a non-empty sequence"):
+        resolve_approved_decisions({}, required_ids, {"provider": "fixture"})
+
+
+def test_required_decision_ids_reject_empty_or_non_text_members():
+    for required_ids in ([""], ["  "], [None], [7]):
+        with pytest.raises(DecisionRecordError, match=r"required_ids\[0\]"):
+            resolve_approved_decisions({}, required_ids, {"provider": "fixture"})

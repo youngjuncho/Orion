@@ -48,7 +48,7 @@ def validate_decision_record(record: Mapping[str, Any]) -> dict[str, Any]:
         raise DecisionRecordError(f"missing required fields: {', '.join(missing)}")
     _nonempty_text(record["decision_id"], "decision_id")
     _nonempty_text(record["record_version"], "record_version")
-    if record["status"] not in VALID_STATUSES:
+    if not isinstance(record["status"], str) or record["status"] not in VALID_STATUSES:
         raise DecisionRecordError("status is not recognized")
     if not isinstance(record["scope"], Mapping) or not record["scope"]:
         raise DecisionRecordError("scope must be a non-empty mapping")
@@ -87,6 +87,26 @@ def validate_decision_record(record: Mapping[str, Any]) -> dict[str, Any]:
     return dict(record)
 
 
+def _validate_required_ids(required_ids: Sequence[str]) -> tuple[str, ...]:
+    """Validate required decision IDs before resolution.
+
+    A bare string is a Sequence[str] at runtime, but treating it as a list of
+    one-character decision IDs is almost certainly a caller error. Empty input
+    must also fail closed rather than look like a successful empty resolution.
+    """
+    if (
+        not isinstance(required_ids, Sequence)
+        or isinstance(required_ids, (str, bytes, bytearray))
+        or not required_ids
+    ):
+        raise DecisionRecordError("required_ids must be a non-empty sequence of decision IDs")
+    validated: list[str] = []
+    for index, decision_id in enumerate(required_ids):
+        _nonempty_text(decision_id, f"required_ids[{index}]")
+        validated.append(decision_id)
+    return tuple(validated)
+
+
 def resolve_approved_decisions(
     registry: Mapping[str, Mapping[str, Any]],
     required_ids: Sequence[str],
@@ -100,6 +120,7 @@ def resolve_approved_decisions(
     """
     if not isinstance(registry, Mapping):
         raise DecisionRecordError("authoritative registry must be a mapping")
+    required_ids = _validate_required_ids(required_ids)
     if not isinstance(requested_scope, Mapping) or not requested_scope:
         raise DecisionRecordError("requested_scope must be a non-empty mapping")
     resolved: dict[str, dict[str, Any]] = {}
@@ -131,7 +152,6 @@ def resolve_approved_decisions(
         return record
 
     for required_id in required_ids:
-        _nonempty_text(required_id, "required decision ID")
         visit(required_id)
     return tuple(resolved[key] for key in sorted(resolved))
 

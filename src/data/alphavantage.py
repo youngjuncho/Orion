@@ -70,8 +70,17 @@ class AlphaVantageMonthlyAdjustedSource:
             resolved_key = api_key
         if not isinstance(resolved_key, str) or not resolved_key.strip():
             raise ValueError("ORION_ALPHA_VANTAGE_API_KEY is required")
-        if isinstance(timeout_seconds, bool) or not isinstance(timeout_seconds, (int, float)) or timeout_seconds <= 0:
-            raise ValueError("timeout_seconds must be positive")
+        try:
+            valid_timeout = (
+                not isinstance(timeout_seconds, bool)
+                and isinstance(timeout_seconds, (int, float))
+                and isfinite(timeout_seconds)
+                and timeout_seconds > 0
+            )
+        except OverflowError:
+            valid_timeout = False
+        if not valid_timeout:
+            raise ValueError("timeout_seconds must be a finite positive number")
         if transport is not None and not callable(transport):
             raise ValueError("transport must be callable")
         self._api_key = resolved_key.strip()

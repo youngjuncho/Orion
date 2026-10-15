@@ -2725,3 +2725,41 @@ avoids undocumented cross-run mixing or arbitrary duplicate resolution. It does 
 live use, caching, persistence, provider fallback, or point-in-time
 reproducibility. PCD-10 is closed by this decision; PCD-11 records the
 implemented fingerprint and its limits.
+
+
+---
+
+## D-060 — Defer Authoritative Registry Domain and Authority
+
+Status: **Approved — deferred; production gate remains blocking**  
+Date: 2026-10-14
+
+### Decision
+
+Defer selecting and operationalizing an authoritative registry domain, issuer,
+and publish/revoke authority for Step 50. Record G-01 as
+`DEFERRED — BLOCKING`, not closed or waived. Keep the registry acceptance
+prototype isolated and do not connect it to production Runtime, Moon/ADM, or
+Supernova paths under this decision. Keep Moon's `active_strategies` unchanged
+(`[]`) and retain the existing fail-closed ADM governance guard.
+
+Reopen G-01 only when a concrete consumer requirement for authoritative
+approval is documented and an accountable issuer and operational owner can be
+identified. At that point, specify the registry domain, issuer identity,
+publish/revoke permissions, audit responsibility, and evidence of ownership
+before deciding signature/key policy or implementing production integration.
+
+### Rationale and scope
+
+The inspected repository evidence does not establish that the current MVP
+requires an independently operated authoritative registry. Selecting an issuer
+or trust model without a demonstrated consumer requirement would create
+operational and security obligations without an approved owner. Deferral avoids
+that premature commitment while preserving the isolated validation prototype
+for tests and future evaluation.
+
+This is a deferral, not an acceptance of the residual risk for production use,
+not permission to bypass the gate, and not approval of any trust authority,
+signature algorithm, key source, freshness policy, rollback recovery model,
+Runtime/Supernova wiring, ADM signal assembly, or strategy activation. G-01
+remains blocking; downstream production gates remain open.

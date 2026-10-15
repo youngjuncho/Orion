@@ -16,7 +16,7 @@ A gate is complete only when the decision is explicit, the decision owner is ide
 
 | ID | Decision required | Minimum decision content | Evidence required before closure | Current status |
 |---|---|---|---|---|
-| G-01 | Registry domain and authority | Exact registry type, authoritative issuer identity, ownership, and authority to publish/revoke records | Approved domain contract and issuer ownership evidence | OPEN — BLOCKING |
+| G-01 | Registry domain and authority | Exact registry type, authoritative issuer identity, ownership, and authority to publish/revoke records | Approved domain contract and issuer ownership evidence | DEFERRED — BLOCKING (D-060) |
 | G-02 | Payload and scope contract | Required fields, schema/version evolution, canonical serialization, exact scope keys, and whether unknown fields are rejected | Versioned schema/contract plus positive and negative fixtures | OPEN — BLOCKING |
 | G-03 | Signature and key policy | Signature scheme, signed bytes/canonicalization, key identifiers, trusted-key source, key rotation, expiry, revocation, and compromise response | Reviewed verifier implementation, key lifecycle procedure, test vectors, invalid-signature and revoked-key tests | OPEN — BLOCKING |
 | G-04 | Freshness and replay policy | Maximum snapshot age, tolerated future clock skew, handling of delayed but valid snapshots, and recovery behavior after extended outage | Explicit numeric policy with boundary tests and documented clock assumptions | OPEN — BLOCKING |
@@ -53,6 +53,7 @@ If any required field is missing, retain `OPEN — BLOCKING`. Do not infer appro
 
 ## 5. Current engineering disposition
 
+- **G-01 disposition (D-060): DEFERRED — BLOCKING.** No authoritative registry domain or issuer is selected. This is not a waiver and does not permit production wiring. Reopen when a concrete consumer requirement and accountable issuer/operational owner are identified.
 - `RegistryAcceptanceService` is the intended guarded acceptance entry point for isolated use.
 - `SQLiteHighWaterMarkStore.accept_snapshot()` and `advance()` remain callable APIs; source-level tests discourage bypasses but do not create a security boundary against arbitrary external callers.
 - The signature verifier and trusted-authority/key policy are supplied externally and have not been approved here.

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+import math
 from typing import NoReturn
 
 from data.registry_high_water_store import RegistryAcceptanceEvent, SQLiteHighWaterMarkStore
@@ -93,6 +94,13 @@ def drain_leased_acceptances(
         raise ValueError("worker_id must be a non-empty string")
     if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 10000:
         raise ValueError("limit must be an integer between 1 and 10000")
+    if (
+        not isinstance(lease_seconds, (int, float))
+        or isinstance(lease_seconds, bool)
+        or not math.isfinite(lease_seconds)
+        or lease_seconds <= 0
+    ):
+        raise ValueError("lease_seconds must be a finite positive number")
     completed = 0
     while completed < limit:
         leases = store.claim_pending_acceptances(

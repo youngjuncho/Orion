@@ -183,6 +183,20 @@ def test_later_version_is_blocked_until_earlier_event_is_applied(tmp_path):
     assert [item.event.event_id for item in next_claim] == [second.event_id]
 
 
+
+
+@pytest.mark.parametrize("lease_seconds", [0, -1, float("nan"), float("inf"), True, "30"])
+def test_leased_drain_validates_lease_duration_even_when_queue_is_empty(tmp_path, lease_seconds):
+    store = new_store(tmp_path)
+
+    with pytest.raises(ValueError, match="lease_seconds must be a finite positive number"):
+        drain_leased_acceptances(
+            store, "worker-a", lambda _event: None, lease_seconds=lease_seconds,
+        )
+
+    assert store.list_pending_acceptances() == []
+
+
 def test_leased_drain_applies_events_and_acknowledges_them(tmp_path):
     store = new_store(tmp_path)
     first = accept(store, None, 1)

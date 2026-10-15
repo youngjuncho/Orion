@@ -121,6 +121,17 @@ def test_provider_requires_configured_api_key() -> None:
 
 
 @pytest.mark.parametrize(
+    "timeout_seconds",
+    [0, -1, float("nan"), float("inf"), float("-inf"), True, 10**1000],
+)
+def test_provider_rejects_non_finite_or_non_positive_timeout(
+    timeout_seconds: object,
+) -> None:
+    with pytest.raises(ValueError, match="finite positive"):
+        AlphaVantageMonthlyAdjustedSource("test-secret", timeout_seconds=timeout_seconds)
+
+
+@pytest.mark.parametrize(
     ("provider_notice", "expected_code"),
     [
         (

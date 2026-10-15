@@ -64,6 +64,33 @@ def test_monthly_assessment_uses_seven_day_gate_and_d055_comparison() -> None:
     assert assessment.signal_assembly_ready is False
 
 
+def test_readiness_rejects_non_mapping_absolute_freshness_collection() -> None:
+    assessment = assess_adm_monthly_dataset(monthly_dataset())
+
+    with pytest.raises(ValueError, match="absolute_freshness_by_symbol must be a mapping"):
+        replace(assessment.readiness, absolute_freshness_by_symbol=None)
+
+    with pytest.raises(ValueError, match="absolute_freshness_by_symbol must be a mapping"):
+        replace(assessment.readiness, absolute_freshness_by_symbol=[("VTI", None)])
+
+
+def test_monthly_assessment_never_reports_signal_ready_without_governance_binding() -> None:
+    assessment = assess_adm_monthly_dataset(monthly_dataset())
+    cleared_data_gates = replace(assessment.readiness, unresolved_policy_gates=())
+    reassessed = replace(assessment, readiness=cleared_data_gates)
+
+    assert reassessed.readiness.signal_ready is True
+    assert reassessed.comparison.status is not ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE
+    assert reassessed.signal_assembly_ready is False
+
+
+def test_readiness_rejects_max_age_above_approved_d058_limit() -> None:
+    assessment = assess_adm_monthly_dataset(monthly_dataset())
+
+    with pytest.raises(ValueError, match="approved D-058 limit of seven days"):
+        replace(assessment.readiness, max_age_days=8)
+
+
 def test_monthly_assessment_rejects_readiness_from_a_different_input_batch() -> None:
     assessment = assess_adm_monthly_dataset(monthly_dataset())
     other = assess_adm_monthly_dataset(monthly_dataset(vti_current=116.0))
@@ -93,6 +120,70 @@ def test_monthly_assessment_digest_is_stable_and_binds_selected_values() -> None
 
     assert first.selected_input_digest == same.selected_input_digest
     assert first.selected_input_digest != revised.selected_input_digest
+
+
+def test_monthly_assessment_rejects_d055_label_with_nonapproved_operator() -> None:
+    from dataclasses import replace
+    from orion.frameworks.moon.adm_data import ADMAbsoluteMomentumComparisonOperator
+
+    assessment = assess_adm_monthly_dataset(monthly_dataset())
+    forged_comparison = replace(
+        assessment.comparison,
+        operator=ADMAbsoluteMomentumComparisonOperator.RISK_RETURN_GTE_BENCHMARK,
+    )
+
+    with pytest.raises(ValueError, match="approved D-055 input values and operator"):
+        replace(assessment, comparison=forged_comparison)
+
+
+def test_monthly_assessment_rejects_digest_not_bound_to_selected_observations() -> None:
+    assessment = assess_adm_monthly_dataset(monthly_dataset())
+    replacement_digest = "0" * 64
+    assert replacement_digest != assessment.selected_input_digest
+
+    with pytest.raises(ValueError, match="does not match selected observations"):
+        replace(assessment, selected_input_digest=replacement_digest)
+
+
+def test_monthly_assessment_digest_ignores_mapping_insertion_order() -> None:
+    base = monthly_dataset()
+    reordered = MarketDataSet(
+        tuple(
+            MarketDataPoint(
+                point.symbol,
+                point.field,
+                point.observed_at,
+                point.value,
+                point.source,
+                point.currency,
+                {"provider_revision": "r1", "retrieved_at": "2026-10-10T00:00:00Z"}
+                if index % 2 == 0
+                else {"retrieved_at": "2026-10-10T00:00:00Z", "provider_revision": "r1"},
+            )
+            for index, point in enumerate(base.observations)
+        ),
+        as_of=base.as_of,
+    )
+    with_metadata = MarketDataSet(
+        tuple(
+            MarketDataPoint(
+                point.symbol,
+                point.field,
+                point.observed_at,
+                point.value,
+                point.source,
+                point.currency,
+                {"provider_revision": "r1", "retrieved_at": "2026-10-10T00:00:00Z"},
+            )
+            for point in base.observations
+        ),
+        as_of=base.as_of,
+    )
+
+    assert (
+        assess_adm_monthly_dataset(reordered).selected_input_digest
+        == assess_adm_monthly_dataset(with_metadata).selected_input_digest
+    )
 
 
 def test_monthly_assessment_rejects_stale_endpoint_for_any_risk_asset() -> None:
@@ -506,6 +597,27 @@ def test_adm_freshness_audit_rejects_observation_older_than_explicit_limit() -> 
         validate_adm_observation_pair_freshness(pair, max_age_days=1)
 
 
+
+def test_adm_freshness_audit_rejects_threshold_above_approved_d058_limit() -> None:
+    from orion.frameworks.moon.adm_data import (
+        select_adm_price_observations_on_or_before,
+        validate_adm_observation_pair_freshness,
+    )
+
+    dataset = make_dataset(
+        MarketDataPoint("VTI", "adjusted_close", "2026-10-08", 112.0, "fixture"),
+        MarketDataPoint("VTI", "adjusted_close", "2025-10-08", 100.0, "fixture"),
+    )
+    pair = select_adm_price_observations_on_or_before(
+        dataset,
+        symbol="VTI",
+        field="adjusted_close",
+        current_target_date="2026-10-09",
+        trailing_target_date="2025-10-09",
+    )
+    with pytest.raises(ValueError, match="approved D-058 limit of seven days"):
+        validate_adm_observation_pair_freshness(pair, max_age_days=8)
+
 def test_adm_freshness_result_rejects_fabricated_age_values() -> None:
     from orion.frameworks.moon.adm_data import ADMObservationFreshnessResult
 
@@ -769,6 +881,17 @@ def test_adm_signal_assembly_readiness_passes_data_gates_but_not_policy_gates() 
     assert "adjusted_price_semantics_approval" in readiness.unresolved_policy_gates
 
 
+def test_adm_signal_assembly_readiness_rejects_string_policy_gates() -> None:
+    readiness = _readiness_for_comparison_guard()
+
+    # A string is iterable, so an empty string could otherwise masquerade as
+    # an empty gate collection and incorrectly report signal_ready=True.
+    with pytest.raises(ValueError, match="unresolved_policy_gates must be a tuple"):
+        replace(readiness, unresolved_policy_gates="")
+    with pytest.raises(ValueError, match="unresolved_policy_gates must be a tuple"):
+        replace(readiness, unresolved_policy_gates="approval-pending")
+
+
 def test_adm_signal_assembly_readiness_rejects_mismatched_target_dates() -> None:
     from orion.frameworks.moon.adm_data import (
         calculate_adm_absolute_momentum_inputs,
@@ -948,6 +1071,27 @@ def test_absolute_momentum_comparison_rejects_status_inconsistent_with_operator(
         replace(result, status=ADMAbsoluteMomentumComparisonStatus.FALSE)
 
 
+def test_unavailable_comparison_rejects_malformed_optional_policy_provenance() -> None:
+    from dataclasses import replace
+    from orion.frameworks.moon.adm_data import (
+        ADMAbsoluteMomentumComparisonOperator,
+        ADMAbsoluteMomentumComparisonStatus,
+        compare_adm_absolute_momentum_returns,
+    )
+
+    policy = ADMAbsoluteMomentumComparisonOperator.RISK_RETURN_GT_BENCHMARK
+    result = compare_adm_absolute_momentum_returns(_absolute_inputs_for_comparison())
+    unavailable = replace(
+        result,
+        status=ADMAbsoluteMomentumComparisonStatus.UNAVAILABLE,
+        reason="fixture-unavailable",
+    )
+    with pytest.raises(ValueError, match="policy_id must be a non-empty string"):
+        replace(unavailable, policy_id=[])
+    with pytest.raises(ValueError, match="operator must be an ADMAbsoluteMomentumComparisonOperator"):
+        replace(unavailable, operator="risk_return_gt_benchmark")
+
+
 def test_absolute_momentum_comparison_rejects_policy_benchmark_mismatch_as_unavailable() -> None:
     from orion.frameworks.moon.adm_data import (
         ADMAbsoluteMomentumComparisonOperator,
@@ -1058,6 +1202,24 @@ def test_comparison_signal_guard_blocks_unknown_approval_and_open_data_gates() -
     assert "unresolved_policy_gates" in result.blocked_reasons
 
 
+@pytest.mark.parametrize("blocked_reasons", ["blocked", ["blocked"]])
+def test_comparison_guard_result_rejects_non_tuple_blocked_reasons(blocked_reasons) -> None:
+    from orion.frameworks.moon.adm_data import (
+        ADMAbsoluteMomentumComparisonStatus,
+        ADMComparisonSignalGuardResult,
+        ADMPolicyApprovalStatus,
+    )
+
+    with pytest.raises(ValueError, match="blocked_reasons must be a tuple"):
+        ADMComparisonSignalGuardResult(
+            eligible_for_signal_assembly=False,
+            comparison_status=ADMAbsoluteMomentumComparisonStatus.TRUE,
+            policy_approval_status=ADMPolicyApprovalStatus.UNKNOWN,
+            policy_approval_reference=None,
+            blocked_reasons=blocked_reasons,
+        )
+
+
 def test_comparison_signal_guard_requires_explicit_approval_reference() -> None:
     from orion.frameworks.moon.adm_data import (
         ADMPolicyApprovalStatus,
@@ -1096,6 +1258,32 @@ def test_comparison_signal_guard_blocks_comparison_return_mismatch() -> None:
     assert result.comparison_status is ADMAbsoluteMomentumComparisonStatus.TRUE
     assert result.eligible_for_signal_assembly is False
     assert "comparison_does_not_match_readiness_inputs" in result.blocked_reasons
+
+
+def test_comparison_signal_guard_blocks_nonapproved_operator_even_with_d055_label() -> None:
+    from dataclasses import replace
+    from orion.frameworks.moon.adm_data import (
+        ADMAbsoluteMomentumComparisonOperator,
+        ADMPolicyApprovalStatus,
+        guard_adm_comparison_for_signal_assembly,
+    )
+
+    readiness = _readiness_for_comparison_guard()
+    readiness = replace(readiness, unresolved_policy_gates=())
+    comparison = replace(
+        _comparison_for_readiness(readiness),
+        operator=ADMAbsoluteMomentumComparisonOperator.RISK_RETURN_GTE_BENCHMARK,
+    )
+    result = guard_adm_comparison_for_signal_assembly(
+        comparison,
+        readiness,
+        policy_approval_status=ADMPolicyApprovalStatus.APPROVED,
+        policy_approval_reference="fixture-governance-record-v1",
+    )
+
+    assert result.eligible_for_signal_assembly is False
+    assert "comparison_policy_not_approved" in result.blocked_reasons
+    assert "authoritative_governance_binding_not_implemented" in result.blocked_reasons
 
 
 def test_comparison_signal_guard_blocks_unverified_caller_attestation() -> None:

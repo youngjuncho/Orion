@@ -50,3 +50,7 @@ Before live access is available, the fixture-only contract has been hardened in 
 Automated tests use synthetic payloads and do not make network requests. These safeguards improve response-shape validation but do not prove live symbol coverage, trading-calendar correctness, historical price accuracy, adjusted-price parity, or investment suitability.
 
 See also [`Moon_ADM_Alpha_Vantage_Endpoint_Entitlement_Audit.md`](Moon_ADM_Alpha_Vantage_Endpoint_Entitlement_Audit.md) for a documentation-only review of endpoint entitlement labels.
+
+## Offline timeout validation hardening — 2026-10-15
+
+The Alpha Vantage source constructor now rejects non-finite timeout values as well as zero, negative, and boolean values. In Python, comparisons against `NaN` do not behave like ordinary numeric bounds, so a simple `timeout_seconds <= 0` check did not fail closed for `NaN`; positive infinity was also accepted. Parameterized fixture tests cover `0`, negative values, `NaN`, positive/negative infinity, and `True`. No live API request is required for this validation.
