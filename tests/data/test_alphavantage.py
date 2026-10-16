@@ -190,6 +190,7 @@ def test_provider_rejects_documented_notice_payloads_without_partial_batch(
 
     error_message = str(error.value)
     assert expected_code in error_message
+    assert "for VTI" in error_message
     assert "test-secret" not in error_message
     assert "no partial batch was accepted" in error_message
 

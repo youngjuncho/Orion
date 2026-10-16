@@ -173,7 +173,7 @@ class AlphaVantageMonthlyAdjustedSource:
                         diagnostic_code = "API_INFORMATION_NOTICE"
 
                 raise AlphaVantageProviderError(
-                    f"Alpha Vantage notice [{diagnostic_code}]; "
+                    f"Alpha Vantage notice [{diagnostic_code}] for {symbol}; "
                     "no partial batch was accepted"
                 )
             

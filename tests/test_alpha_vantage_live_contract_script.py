@@ -90,6 +90,38 @@ def test_live_contract_script_success_output_contains_only_coverage_metadata(
     assert "100.0" not in output.out
 
 
+def test_live_contract_script_reports_symbol_and_code_without_raw_notice(
+    monkeypatch, capsys
+) -> None:
+    from data.alphavantage import AlphaVantageProviderError
+
+    module = _load_script_module()
+    monkeypatch.setenv("ORION_ALPHA_VANTAGE_API_KEY", "test-secret-key")
+
+    class FakeProvider:
+        def __init__(self, _source):
+            pass
+
+        def load(self):
+            raise AlphaVantageProviderError(
+                "Alpha Vantage notice [API_RATE_LIMIT] for VEU; "
+                "no partial batch was accepted"
+            )
+
+    monkeypatch.setattr(module, "AlphaVantageMonthlyAdjustedProvider", FakeProvider)
+    assert module.main() == 1
+
+    output = capsys.readouterr()
+    assert output.out == (
+        "LIVE CONTRACT CHECK FAILED: Alpha Vantage notice [API_RATE_LIMIT] "
+        "for VEU; no partial batch was accepted\n"
+    )
+    assert output.err == ""
+    assert "test-secret-key" not in output.out
+    assert "https://" not in output.out
+    assert "raw provider notice" not in output.out
+
+
 def test_live_contract_script_suppresses_unexpected_exception_details(
     monkeypatch, capsys
 ) -> None:
