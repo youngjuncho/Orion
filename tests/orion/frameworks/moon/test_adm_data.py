@@ -1220,6 +1220,23 @@ def test_comparison_guard_result_rejects_non_tuple_blocked_reasons(blocked_reaso
         )
 
 
+def test_guard_result_cannot_be_forged_as_eligible_before_pcd15() -> None:
+    from orion.frameworks.moon.adm_data import (
+        ADMAbsoluteMomentumComparisonStatus,
+        ADMComparisonSignalGuardResult,
+        ADMPolicyApprovalStatus,
+    )
+
+    with pytest.raises(ValueError, match="PCD-15 authoritative governance binding"):
+        ADMComparisonSignalGuardResult(
+            eligible_for_signal_assembly=True,
+            comparison_status=ADMAbsoluteMomentumComparisonStatus.TRUE,
+            policy_approval_status=ADMPolicyApprovalStatus.APPROVED,
+            policy_approval_reference="caller-supplied-reference",
+            blocked_reasons=(),
+        )
+
+
 def test_comparison_signal_guard_requires_explicit_approval_reference() -> None:
     from orion.frameworks.moon.adm_data import (
         ADMPolicyApprovalStatus,

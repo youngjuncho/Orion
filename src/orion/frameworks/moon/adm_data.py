@@ -1203,6 +1203,14 @@ class ADMComparisonSignalGuardResult:
             raise ValueError("blocked_reasons entries must be non-empty strings")
         if self.eligible_for_signal_assembly != (len(self.blocked_reasons) == 0):
             raise ValueError("eligibility must exactly reflect whether blocked reasons are empty")
+        # PCD-15 has no authoritative resolver yet. Do not allow a manually
+        # constructed result object to represent a successful guard decision.
+        # This is an accidental-misuse barrier, not a Python security boundary.
+        if self.eligible_for_signal_assembly:
+            raise ValueError(
+                "signal assembly eligibility cannot be asserted until the "
+                "PCD-15 authoritative governance binding is implemented"
+            )
 
 
 def guard_adm_comparison_for_signal_assembly(
