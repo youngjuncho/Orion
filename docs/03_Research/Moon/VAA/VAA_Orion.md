@@ -1,10 +1,10 @@
 # VAA Orion Implementation Specification
 
-Version: 1.0
+Version: 1.1
 
-Status: Draft
+Status: Research implementation candidate; not production-approved
 
-Last Updated: 2026-07-27
+Last Updated: 2026-10-18
 
 Depends On:
 
@@ -46,45 +46,22 @@ The Orion implementation prioritizes:
 
 # Orion VAA Universe
 
-## Offensive Universe
+## Source-Method Signal Universe — VAA-G12
 
-Purpose:
+Offensive assets: `SPY, IWM, QQQ, VGK, EWJ, VWO, VNQ, GSG, GLD, TLT, HYG, LQD`.
 
-Primary growth allocation during favorable market conditions.
+Defensive assets: `SHY, IEF, LQD`.
 
-Candidate Assets:
+Parameters: `T=2`, `B=4`. These are the source-method signal assets and
+parameters documented in `VAA_Research.md`. They are not a declaration that
+all assets have approved Orion execution mappings.
 
-* SPY
-* EFA
-* EEM
-* AGG
-* LQD
-* VNQ
-* DBC
+## Execution Mapping Boundary
 
-Status:
-
-Pending validation against the original methodology.
-
----
-
-## Defensive Universe
-
-Purpose:
-
-Capital preservation during deteriorating market conditions.
-
-Candidate Assets:
-
-* SHY
-* IEF
-* LQD
-
-Status:
-
-Pending validation against the original methodology.
-
----
+Execution assets must follow
+`docs/02_Investment_Framework/Moon/Moon_Execution_Mapping.md`. No mapping is
+created by this specification. Unsupported signal tickers must fail closed
+until the mapping is reviewed and recorded in the Decision Log.
 
 # Data Source
 
@@ -155,35 +132,26 @@ docs/06_Implementation/Moon_Interface.md
 
 # Breadth Evaluation
 
-Purpose:
+Count `b` across the complete 12-asset offensive universe where the 13612W
+score is non-positive (`<= 0`). For VAA-G12, `B=4`. The source linear cash
+fraction is `min(1, b/B)`; the selected Easy Trading candidate rounds this to
+whole `1/T` position units with `T=2`, yielding 0%, 50%, or 100% defensive.
 
-Measure the number of offensive assets with negative momentum.
-
-The defensive allocation increases as market weakness expands.
-
-Current Status:
-
-Pending validation.
-
-Related Research Question:
-
-RQ-404
+The method definition is source-verified. Independent historical replication,
+market-data freshness controls, and production approval remain open.
 
 ---
 
 # Momentum Calculation
 
-Purpose:
+Use total-return-adjusted monthly prices and `13612W = 12×R1 + 4×R3 + 2×R6 + R12`,
+where `Rk = P(t)/P(t-k) - 1`. Use this same score to rank offensive and
+defensive assets and to count offensive scores `<= 0`. The code accepts adjusted
+close inputs, so the upstream provider's adjustment semantics and monthly
+observation selection must be validated before production use.
 
-Rank candidate assets.
-
-Current Status:
-
-Pending validation against the original methodology.
-
-Related Research Question:
-
-RQ-403
+Source-method formula: documented. Independent numerical replication and
+provider-data validation: open.
 
 ---
 
@@ -211,29 +179,19 @@ Allocate partially or fully to defensive assets.
 
 Number of Selected Assets:
 
-Pending validation.
-
-Status:
-
-Open
-
-Related Research Question:
-
-RQ-405
+`T=2` for the VAA-G12 + Easy Trading candidate. In Risk On, hold the top two
+offensive assets equally. In Partial Defense, hold the top offensive asset and
+top non-duplicated defensive asset equally. In Defensive, hold the top defensive
+asset only. This candidate behavior is implemented in `vaa.py`; it is not a
+production authorization.
 
 ---
 
 # Signal Universe
 
-Signal generation uses the original research ETF universe whenever possible.
-
-Examples:
-
-* SPY
-* EEM
-* AGG
-* VNQ
-* DBC
+Use the VAA-G12 source-method signal universe listed above without silently
+substituting execution tickers. The offensive and defensive universes may share
+`LQD`; this overlap is part of the source definition.
 
 Signal integrity has priority over execution convenience.
 
@@ -241,21 +199,12 @@ Signal integrity has priority over execution convenience.
 
 # Execution Universe
 
-Execution assets follow:
-
-docs/02_Investment_Framework/Moon/Moon_Execution_Mapping.md
-
-Examples:
-
-* SPY → SPYM
-* EFA → VEA
-* EEM → VWO
-* AGG → BND
-* LQD → VCIT
-* VNQ → USRT
-* DBC → BCI
-* SHY → SCHO
-* IEF → VGIT
+Execution assets follow
+`docs/02_Investment_Framework/Moon/Moon_Execution_Mapping.md` only when an
+explicit approved mapping exists. The examples previously listed here mixed
+other candidate universes with VAA-G12 and are removed to avoid implying that
+those substitutions are approved. Any unsupported VAA signal ticker must fail
+closed until a mapping is reviewed and recorded in the Decision Log.
 
 ---
 
@@ -417,73 +366,32 @@ Every rebalance event must store:
 
 # Known Open Issues
 
-OI-401
+OI-401 — Independent historical replication of the source-method signal and
+Easy Trading rounding. Status: Open.
 
-Final Offensive Universe.
+OI-402 — Provider data adjustment semantics, month-end trading-date alignment,
+source provenance, and freshness SLA. Status: Open.
 
-Status:
+OI-403 — Review and approval of signal-to-execution mappings for every ticker.
+Status: Open; unsupported mappings must fail closed.
 
-Open
+OI-404 — Governance approval and activation criteria. Status: Open.
 
----
-
-OI-402
-
-Final Defensive Universe.
-
-Status:
-
-Open
-
----
-
-OI-403
-
-Final Momentum Formula.
-
-Status:
-
-Open
-
----
-
-OI-404
-
-Breadth Threshold Validation.
-
-Status:
-
-Open
-
----
-
-OI-405
-
-Validation against the Easy Investing implementation.
-
-Status:
-
-Open
-
-Related Research Question:
-
-RQ-406
-
----
+OI-405 — Resolve terminology references in any remaining docs or reports:
+use “Easy Trading (ET)” for the source's whole-position rounding variant; do
+not use “Easy Investing” unless a distinct, citable methodology is identified.
+Status: Documentation reconciliation.
 
 # Approval Status
 
-Research:
-In Progress
+Research method definition: Source-verified for VAA-G12 + Easy Trading.
 
-Implementation:
-Research candidate implemented for isolated signal calculation and dated input validation; not production-approved.
+Independent backtest/data validation: In Progress / Open.
 
-Coding:
-Core signal, dated-series builder, and MarketDataSet adapter implemented with unit tests.
+Implementation: Research candidate; code and unit tests exist.
 
-Operational readiness:
-Not approved. Provider freshness guarantees, exchange-calendar validation, provenance persistence, execution mappings, governance binding, and activation remain outside this implementation.
+Production approval and activation: Not approved. `config/moon.yaml` remains
+inactive for VAA, and no execution mapping or governance approval is inferred.
 
 ---
 
@@ -557,22 +465,3 @@ month-end fixture tests use calendar month-end dates; production provider data
 will normally label observations with the last trading day of each month.
 The caller must supply consistent month-end trading observations and should
 not pass an incomplete current-month bar.
-
-
-## Implemented Input Boundary (2026-10-18)
-
-`build_vaa_signal_input()` validates a complete mapping of ticker to ordered
-`(YYYY-MM-DD, adjusted_close)` observations. It requires all unique G12 and
-defensive tickers, at least 13 observations per ticker, strictly increasing
-monthly dates without skipped calendar months, identical date sequences across
-all tickers, finite positive prices, and the latest observation in the last
-completed calendar month relative to `as_of_date`.
-
-`build_vaa_signal_input_from_dataset()` adapts `data.contracts.MarketDataSet`
-using the `adjusted_close` field by default. It fails closed for missing required
-tickers, invalid prices, or multiple provider source labels among the relevant
-observations. The adapter does not establish that a provider's source label is
-trustworthy, verify exchange trading calendars, impose a numeric freshness SLA,
-fetch data, persist provenance, authorize execution mappings, or activate VAA.
-The VAA symbols and functions are exported from `orion.frameworks.moon` while
-existing ADM exports are preserved.
