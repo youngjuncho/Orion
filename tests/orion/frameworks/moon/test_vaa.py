@@ -36,6 +36,15 @@ def test_13612w_momentum_uses_weighted_1_3_6_12_month_returns():
     assert calculate_13612w_momentum(prices) == pytest.approx(expected)
 
 
+def test_13612w_matches_independent_nonuniform_price_fixture():
+    # Independently calculated from the published weighted-return formula:
+    # 12*(112/111-1) + 4*(112/109-1) + 2*(112/106-1) + (112/100-1).
+    # A nonuniform series prevents the equal-return fixture from masking lag errors.
+    prices = [100.0, 101.0, 103.0, 102.0, 105.0, 104.0, 106.0,
+              108.0, 107.0, 109.0, 110.0, 111.0, 112.0]
+    assert calculate_13612w_momentum(prices) == pytest.approx(0.4514073983971847)
+
+
 def test_13612w_requires_thirteen_positive_finite_prices():
     with pytest.raises(ValueError, match="13 monthly prices"):
         calculate_13612w_momentum([100.0] * 12)

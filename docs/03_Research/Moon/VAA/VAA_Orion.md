@@ -208,6 +208,20 @@ closed until a mapping is reviewed and recorded in the Decision Log.
 
 ---
 
+# Validation Status and Evidence Boundary
+
+The unit tests validate formula implementation, selected breadth boundaries,
+input contracts, and deterministic signal selection. They do not establish
+that provider data represents the final valid trading session of each month,
+that adjusted-price semantics match the research source, or that historical
+performance has been independently reproduced.
+
+Before production consideration, attach a versioned historical input dataset
+and an independent expected-signal report as specified in `VAA_Research.md`.
+Do not mark this gate complete based on unit-test success alone.
+
+---
+
 # State Model
 
 ## Risk On

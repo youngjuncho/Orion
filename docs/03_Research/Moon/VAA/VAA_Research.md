@@ -2,7 +2,7 @@
 
 Version: 1.1
 
-Status: Research ? core G12 method specified; empirical validation remains open
+Status: Research â€” core G12 method specified; empirical validation remains open
 
 Author:
 
@@ -160,13 +160,13 @@ Allocate remaining capital to top-ranked offensive assets.
 
 ---
 
-# Momentum Measurement ? Source-Verified G12 Rule
+# Momentum Measurement â€” Source-Verified G12 Rule
 
 The Keller and Keuning (2017) VAA paper defines the fast 13612W momentum
 filter from total-return-adjusted monthly prices. For price series `P`, the
 score is:
 
-`M = 12 ¡¿ (P(t)/P(t?1) ? 1) + 4 ¡¿ (P(t)/P(t?3) ? 1) + 2 ¡¿ (P(t)/P(t?6) ? 1) + (P(t)/P(t?12) ? 1)`
+`M = 12 Ã— (P(t)/P(tâˆ’1) âˆ’ 1) + 4 Ã— (P(t)/P(tâˆ’3) âˆ’ 1) + 2 Ã— (P(t)/P(tâˆ’6) âˆ’ 1) + (P(t)/P(tâˆ’12) âˆ’ 1)`
 
 The same score is used for relative ranking and for classifying an offensive
 asset as bad when its score is non-positive (`M <= 0`). Thirteen month-end
@@ -238,7 +238,7 @@ Public implementations may differ from the original paper.
 
 # Research Questions and Decisions
 
-## RQ-401 ? Final Offensive Universe Definition
+## RQ-401 â€” Final Offensive Universe Definition
 
 Status: Resolved for the VAA-G12 source-method baseline; change requires a
 recorded Orion decision.
@@ -248,7 +248,7 @@ Decision: `SPY, IWM, QQQ, VGK, EWJ, VWO, VNQ, GSG, GLD, TLT, HYG, LQD`.
 Evidence: Keller and Keuning (2017), VAA-G12 universe definition. This is the
 signal universe, not an execution-ETF mapping.
 
-## RQ-402 ? Final Defensive Universe Definition
+## RQ-402 â€” Final Defensive Universe Definition
 
 Status: Resolved for the VAA-G12 source-method baseline; execution mapping is
 not implied.
@@ -258,16 +258,16 @@ Decision: `SHY, IEF, LQD`.
 Evidence: Keller and Keuning (2017), VAA-G12 default cash/defensive universe.
 `LQD` also appears in the offensive universe in the source definition.
 
-## RQ-403 ? Exact Momentum Formula
+## RQ-403 â€” Exact Momentum Formula
 
 Status: Resolved for the source-method baseline; implementation parity is
 covered by code tests, while independent numerical replication remains open.
 
-Decision: `13612W = 12¡¿R1 + 4¡¿R3 + 2¡¿R6 + R12`, where `Rk = P(t)/P(t?k) ? 1`,
+Decision: `13612W = 12Ã—R1 + 4Ã—R3 + 2Ã—R6 + R12`, where `Rk = P(t)/P(tâˆ’k) âˆ’ 1`,
 using total-return-adjusted monthly prices. The same score drives ranking and
 the non-positive momentum test.
 
-## RQ-404 ? Breadth Threshold Definition
+## RQ-404 â€” Breadth Threshold Definition
 
 Status: Resolved for the VAA-G12 source-method baseline.
 
@@ -276,7 +276,7 @@ Decision: `b` is the number of the 12 offensive assets with `13612W <= 0`;
 variant rounds defensive allocation to whole `1/T` units; with `T=2`, G12
 allocations are 0%, 50%, and 100% defensive.
 
-## RQ-405 ? Number of Selected Assets
+## RQ-405 â€” Number of Selected Assets
 
 Status: Resolved for the VAA-G12 + Easy Trading candidate; empirical replication
 and Orion approval remain open.
@@ -286,16 +286,50 @@ each. Partial defense: the highest-ranked offensive asset and the highest-
 ranked defensive asset at 50% each. Fully defensive: the highest-ranked
 defensive asset at 100%.
 
-## RQ-406 ? Source Method or Alternative Implementation
+## RQ-406 â€” Source Method or Alternative Implementation
 
 Status: Resolved as a terminology/method selection; production approval remains
 open.
 
 Decision: Use Keller and Keuning's VAA-G12 as the source baseline and identify
-the whole-position rounding variant as **Easy Trading (ET)**. ¡°Easy Investing¡±
+the whole-position rounding variant as **Easy Trading (ET)**. â€œEasy Investingâ€
 was an incorrect label in the earlier research question and is not treated as a
 separate methodology without a specific source. Orion-specific data validation,
 execution mapping and governance remain local implementation concerns.
+
+# Independent Numerical Validation Protocol
+
+Status: Defined; execution against trusted historical provider data remains open.
+
+Before treating VAA-G12 as empirically replicated, record a versioned input
+dataset and reproduce each monthly signal independently of the production
+implementation. The validation record must include:
+
+1. Provider, retrieval timestamp, adjustment field semantics, currency, and
+   source/license constraints.
+2. The 13 aligned monthly adjusted-close observations for every required
+   signal ticker, including the provider observation date for each month.
+3. Independently calculated 1-, 3-, 6-, and 12-month returns and the weighted
+   13612W score for every offensive and defensive ticker.
+4. The offensive non-positive breadth count `b`, source linear cash fraction,
+   Easy Trading rounded defensive fraction, selected assets, and final weights.
+5. A comparison report against Orion output, with explicit tolerances and any
+   mismatches explained before a validation pass is declared.
+
+The deterministic nonuniform-price unit fixture in `test_vaa.py` is a numerical
+regression oracle for the formula and lag indexing; it is not a substitute for
+a provider-backed historical replication. No live or historical provider data
+was fetched as part of this validation step.
+
+## Validation Gate
+
+Empirical replication remains **OPEN** until a reproducible monthly dataset
+and independently generated expected signals are stored or referenced with
+provenance. Live-data freshness, exchange-session completeness, execution ETF
+mapping, and governance approval are separate gates and must not be inferred
+from a passing numerical fixture.
+
+---
 
 # Research Conclusion
 
