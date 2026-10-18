@@ -1,4 +1,9 @@
+from calendar import monthrange
+from datetime import date
+
 import pytest
+
+from data import MarketDataPoint, MarketDataSet
 
 from orion.frameworks.moon.vaa import (
     VAA_DEFENSIVE_ASSETS,
@@ -6,6 +11,8 @@ from orion.frameworks.moon.vaa import (
     VAASignalInput,
     VAAStrategy,
     calculate_13612w_momentum,
+    build_vaa_signal_input,
+    build_vaa_signal_input_from_dataset,
 )
 
 
@@ -71,3 +78,78 @@ def test_ties_follow_configured_universe_order():
         {asset: 1.0 for asset in VAA_DEFENSIVE_ASSETS},
     )
     assert VAAStrategy().calculate_signal(inputs).selected_assets == ("SPY", "IWM")
+
+
+def dated_series(start_year=2025, start_month=9, count=13, price=100.0):
+    result = []
+    year, month = start_year, start_month
+    for _ in range(count):
+        result.append((date(year, month, monthrange(year, month)[1]).isoformat(), price))
+        year, month = (year + 1, 1) if month == 12 else (year, month + 1)
+    return result
+
+
+def complete_dated_mapping():
+    return {asset: dated_series() for asset in set(VAA_OFFENSIVE_ASSETS + VAA_DEFENSIVE_ASSETS)}
+
+
+def test_build_vaa_signal_input_from_complete_aligned_monthly_series():
+    inputs = build_vaa_signal_input(complete_dated_mapping(), as_of_date="2026-10-18")
+    assert inputs.signal_date == "2026-09-30"
+    assert set(inputs.offensive_momentum) == set(VAA_OFFENSIVE_ASSETS)
+    assert set(inputs.defensive_momentum) == set(VAA_DEFENSIVE_ASSETS)
+    assert all(score == pytest.approx(0.0) for score in inputs.offensive_momentum.values())
+
+
+def test_dated_builder_rejects_missing_asset_and_misaligned_dates():
+    data = complete_dated_mapping()
+    data.pop("SPY")
+    with pytest.raises(ValueError, match="monthly_observations is missing: SPY"):
+        build_vaa_signal_input(data, as_of_date="2026-10-18")
+    data = complete_dated_mapping()
+    data["SPY"] = data["SPY"][:-1] + [("2026-09-29", 100.0)]
+    with pytest.raises(ValueError, match="same observation dates"):
+        build_vaa_signal_input(data, as_of_date="2026-10-18")
+
+
+def test_dated_builder_rejects_skipped_month_invalid_price_and_stale_month():
+    data = complete_dated_mapping()
+    data["SPY"] = data["SPY"][:2] + data["SPY"][3:]
+    with pytest.raises(ValueError, match="at least 13"):
+        build_vaa_signal_input(data, as_of_date="2026-10-18")
+    data = complete_dated_mapping()
+    data["SPY"][-1] = (data["SPY"][-1][0], float("nan"))
+    with pytest.raises(ValueError, match="finite positive"):
+        build_vaa_signal_input(data, as_of_date="2026-10-18")
+    with pytest.raises(ValueError, match="last completed calendar month"):
+        build_vaa_signal_input(complete_dated_mapping(), as_of_date="2026-11-18")
+
+
+def test_market_dataset_adapter_accepts_complete_single_source_dataset():
+    points = []
+    for asset, observations in complete_dated_mapping().items():
+        points.extend(MarketDataPoint(asset, "adjusted_close", observed, price, "fixture")
+                      for observed, price in observations)
+    dataset = MarketDataSet(tuple(points), as_of="2026-10-18")
+    assert build_vaa_signal_input_from_dataset(dataset).signal_date == "2026-09-30"
+
+
+def test_market_dataset_adapter_rejects_mixed_sources_and_missing_history():
+    points = []
+    for asset, observations in complete_dated_mapping().items():
+        source = "provider-a" if asset == "SPY" else "provider-b"
+        points.extend(MarketDataPoint(asset, "adjusted_close", observed, price, source)
+                      for observed, price in observations)
+    with pytest.raises(ValueError, match="single data source"):
+        build_vaa_signal_input_from_dataset(MarketDataSet(tuple(points), as_of="2026-10-18"))
+
+    points = [point for point in points if point.symbol != "SPY"]
+    with pytest.raises(ValueError, match="missing adjusted_close observations for: SPY"):
+        build_vaa_signal_input_from_dataset(MarketDataSet(tuple(points), as_of="2026-10-18"))
+
+
+def test_public_moon_interface_exposes_vaa_and_preserves_adm():
+    from orion.frameworks.moon import ADMStrategy as PublicADMStrategy
+    from orion.frameworks.moon import VAAStrategy as PublicVAAStrategy
+    assert PublicADMStrategy.__name__ == "ADMStrategy"
+    assert PublicVAAStrategy is VAAStrategy

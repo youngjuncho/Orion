@@ -477,10 +477,13 @@ Research:
 In Progress
 
 Implementation:
-Draft
+Research candidate implemented for isolated signal calculation and dated input validation; not production-approved.
 
 Coding:
-Not Started
+Core signal, dated-series builder, and MarketDataSet adapter implemented with unit tests.
+
+Operational readiness:
+Not approved. Provider freshness guarantees, exchange-calendar validation, provenance persistence, execution mappings, governance binding, and activation remain outside this implementation.
 
 ---
 
@@ -554,3 +557,22 @@ month-end fixture tests use calendar month-end dates; production provider data
 will normally label observations with the last trading day of each month.
 The caller must supply consistent month-end trading observations and should
 not pass an incomplete current-month bar.
+
+
+## Implemented Input Boundary (2026-10-18)
+
+`build_vaa_signal_input()` validates a complete mapping of ticker to ordered
+`(YYYY-MM-DD, adjusted_close)` observations. It requires all unique G12 and
+defensive tickers, at least 13 observations per ticker, strictly increasing
+monthly dates without skipped calendar months, identical date sequences across
+all tickers, finite positive prices, and the latest observation in the last
+completed calendar month relative to `as_of_date`.
+
+`build_vaa_signal_input_from_dataset()` adapts `data.contracts.MarketDataSet`
+using the `adjusted_close` field by default. It fails closed for missing required
+tickers, invalid prices, or multiple provider source labels among the relevant
+observations. The adapter does not establish that a provider's source label is
+trustworthy, verify exchange trading calendars, impose a numeric freshness SLA,
+fetch data, persist provenance, authorize execution mappings, or activate VAA.
+The VAA symbols and functions are exported from `orion.frameworks.moon` while
+existing ADM exports are preserved.

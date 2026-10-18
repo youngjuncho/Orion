@@ -5,9 +5,17 @@ from .engine import MoonEngine
 from .execution import DOCUMENTED_EXECUTION_MAPPING, ExecutionMapper
 from .main import run_report
 from .models import ConsensusAllocation, MoonReport, Strategy, StrategyResult
+from .vaa import (
+    VAA_DEFENSIVE_ASSETS, VAA_OFFENSIVE_ASSETS, VAASignalInput, VAAStrategy,
+    build_vaa_signal_input, build_vaa_signal_input_from_dataset,
+    calculate_13612w_momentum,
+)
 
 __all__ = [
     "ADM_RISK_ASSETS", "ADMSignalInput", "ADMStrategy", "calculate_adjusted_price_return",
     "ConsensusAllocator", "ConsensusAllocation", "DOCUMENTED_EXECUTION_MAPPING", "ExecutionMapper",
     "MoonEngine", "MoonReport", "Strategy", "StrategyResult", "run_report",
+    "VAA_DEFENSIVE_ASSETS", "VAA_OFFENSIVE_ASSETS", "VAASignalInput", "VAAStrategy",
+    "build_vaa_signal_input", "build_vaa_signal_input_from_dataset",
+    "calculate_13612w_momentum",
 ]
