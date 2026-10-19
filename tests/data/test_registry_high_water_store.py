@@ -178,6 +178,25 @@ def test_event_insert_failure_rolls_back_high_water_mark(tmp_path):
     assert store.list_pending_acceptances() == []
 
 
+def test_restoring_an_older_valid_database_can_roll_back_the_hwm(tmp_path):
+    """Document the SQLite prototype's limit: local persistence is not an anti-rollback anchor."""
+    import shutil
+
+    path = tmp_path / "registry-state.sqlite3"
+    store = SQLiteHighWaterMarkStore(path)
+    advance(store, None, 1)
+    backup = tmp_path / "older-valid-backup.sqlite3"
+    shutil.copy2(path, backup)
+
+    advance(store, 1, 2)
+    assert get(store) == 2
+
+    # Restoring a previously valid database restores its older HWM as well.
+    # This is a documented security limitation, not an acceptable production trust design.
+    shutil.copy2(backup, path)
+    assert get(store_at(tmp_path)) == 1
+
+
 def test_corrupt_database_fails_closed_instead_of_reinitializing_state(tmp_path):
     """A damaged state file must not be silently treated as a fresh registry."""
     path = tmp_path / "registry-state.sqlite3"

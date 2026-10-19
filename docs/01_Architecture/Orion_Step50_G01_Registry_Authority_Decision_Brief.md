@@ -1,6 +1,6 @@
 # Orion Step 50 — G-01 Registry Domain and Authority Decision Brief
 
-**Status:** Decision brief only; no authority selected and no production approval granted  
+**Status:** Option D selected for the current MVP; G-01 remains `DEFERRED — BLOCKING`; no authority selected and no production approval granted  
 **Date:** 2026-10-14  
 **Decision gate:** G-01 — Registry domain and authority  
 **Related gates:** G-02, G-03, G-06, G-07, G-09, G-10; PCD-15 and PCD-16
@@ -95,6 +95,8 @@ Complete this template only after the project owner makes the decision:
 If any required item is unknown, record G-01 as `Deferred — BLOCKING`; do not infer approval from silence or from an implemented prototype.
 
 ## 8. Current safe disposition
+
+The project owner confirmed Option D on 2026-10-19: no authoritative registry will be connected to Moon/ADM in the current MVP. See `Orion_Step50_G01_Registry_Authority_Decision_Record_2026-10-19.md`. This records a deliberate MVP deferral; it does not close G-01 or waive downstream gates.
 
 Until G-01 is explicitly decided and its evidence is linked from the authoritative governance record:
 

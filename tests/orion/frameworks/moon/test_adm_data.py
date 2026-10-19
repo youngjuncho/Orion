@@ -1220,6 +1220,32 @@ def test_comparison_guard_result_rejects_non_tuple_blocked_reasons(blocked_reaso
         )
 
 
+def test_registry_acceptance_is_not_an_adm_governance_binding(tmp_path) -> None:
+    """A registry journal event alone must not clear the independent PCD-15 gate."""
+    from data.registry_high_water_store import SQLiteHighWaterMarkStore
+    from orion.frameworks.moon.adm_data import guard_adm_comparison_for_signal_assembly
+
+    # A durable accepted event is deliberately created outside the ADM path.
+    store = SQLiteHighWaterMarkStore(tmp_path / "registry-state.sqlite3")
+    event = store.accept_snapshot(
+        authority_ref="test-authority",
+        registry_type="test.registry",
+        scope={"framework": "Moon", "domain": "policy", "review_cycle": "test"},
+        expected_current_version=None,
+        snapshot_version=1,
+        snapshot_id="snapshot-1",
+        content_digest="a" * 64,
+    )
+    assert event.status == "pending"
+
+    readiness = _readiness_for_comparison_guard()
+    result = guard_adm_comparison_for_signal_assembly(
+        _comparison_for_readiness(readiness), readiness,
+    )
+    assert result.eligible_for_signal_assembly is False
+    assert "authoritative_governance_binding_not_implemented" in result.blocked_reasons
+
+
 def test_guard_result_cannot_be_forged_as_eligible_before_pcd15() -> None:
     from orion.frameworks.moon.adm_data import (
         ADMAbsoluteMomentumComparisonStatus,
