@@ -479,3 +479,22 @@ month-end fixture tests use calendar month-end dates; production provider data
 will normally label observations with the last trading day of each month.
 The caller must supply consistent month-end trading observations and should
 not pass an incomplete current-month bar.
+
+
+### Independent reference oracle
+
+Use `scripts/vaa_independent_replication.py` to generate a separately implemented signal report from the same provider CSV used to build Orion's `VAASignalInput`. Compare the signal date, all 15 unique-asset scores, ranks, breadth, defensive fraction, selected assets, and weights. Do not treat agreement on synthetic fixtures as market-data validation. Provider provenance, adjusted-close semantics, actual last trading session, and source-file hash must accompany any accepted evidence.
+
+## Provider Data Acquisition — Research Only
+
+`scripts/fetch_vaa_monthly_prices.py` provides an opt-in Alpha Vantage acquisition path for the 14 unique source-method ETFs. It reads `ORION_ALPHA_VANTAGE_API_KEY` from the environment, calls `TIME_SERIES_MONTHLY_ADJUSTED` once per unique symbol, applies conservative request pacing, excludes the current incomplete calendar month, and fails closed if any asset lacks the last completed month or 13 aligned observations. The script writes a CSV plus a `.manifest.json` sidecar containing provider semantics, retrieval time, the latest provider observation date per symbol, and the CSV SHA-256.
+
+Example (Windows PowerShell):
+
+```powershell
+$env:ORION_ALPHA_VANTAGE_API_KEY = "<your-key>"
+python scripts/fetch_vaa_monthly_prices.py --output data/vaa_monthly_adjusted_close.csv --as-of-date 2026-10-20
+python scripts/vaa_independent_replication.py data/vaa_monthly_adjusted_close.csv --as-of-date 2026-10-20 --output reports/vaa_independent_signal_2026-09.json
+```
+
+Do not put the API key in source files, command-line arguments, logs, or the ZIP. Alpha Vantage may reject requests due to plan entitlement or request limits; a failed fetch must not be bypassed with synthetic data or a silently substituted asset. The downloader's unit tests use mocked provider responses and do not establish live endpoint access. A successful fetch is input acquisition evidence only; compare the independent report with Orion's result before claiming replication.

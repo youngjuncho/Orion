@@ -350,3 +350,17 @@ VAA_Orion.md
 Purpose:
 
 Define Orion-specific implementation details while preserving the original methodology.
+
+## Independent Replication Harness (v1.2)
+
+A standalone reference oracle is provided at `scripts/vaa_independent_replication.py`. It intentionally does not import Orion's VAA module, and independently computes the 13612W scores, offensive/defensive ranks, breadth, T=2/B=4 Easy Trading fraction, and selected weights from a provider-exported CSV. This reduces the risk of comparing Orion output to itself.
+
+Expected CSV schema: one row per month, oldest to newest; `Date` in `YYYY-MM-DD` format plus one column for each unique asset in `SPY,IWM,QQQ,VGK,EWJ,VWO,VNQ,GSG,GLD,TLT,HYG,LQD,SHY,IEF`. Values must be monthly adjusted closes from one provider, consistently adjusted for distributions/splits and sampled with a documented month-end convention. The script validates required columns, numeric positive values, chronological contiguous months, at least 13 rows, and the last-completed-month cutoff. It cannot itself certify the provider's adjustment semantics or whether the supplied observation is the actual final exchange session.
+
+Example invocation (after obtaining and documenting the CSV):
+
+```bash
+python scripts/vaa_independent_replication.py data/vaa_monthly_adjusted_close.csv --as-of-date 2026-10-18 --output reports/vaa_independent_signal_2026-09.json
+```
+
+**Evidence status:** the harness and deterministic synthetic-fixture tests are implemented; no provider-backed CSV was available in this execution environment and no external market-data download succeeded. Therefore, this is reproducibility infrastructure, not a completed historical-market replication. The empirical replication gate remains **OPEN** until a source-attributed data file is run through this oracle and compared with the Orion output.
