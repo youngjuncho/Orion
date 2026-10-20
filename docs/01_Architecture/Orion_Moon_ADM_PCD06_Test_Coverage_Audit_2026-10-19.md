@@ -53,3 +53,16 @@ Do not add a holiday calendar or signal/execution scheduler as part of this slic
 ## Verification boundary
 
 This audit inspected existing source and tests only. No source, test, configuration, provider, or runtime behavior was changed. No live API requests were made.
+
+
+## Addendum — as-of boundary helper implementation (2026-10-20)
+
+A standalone pure helper was added in `src/orion/frameworks/moon/adm_asof.py` with deterministic unit tests in `tests/orion/frameworks/moon/test_adm_asof.py`. Covered cases include inclusive date-only target converted to an exclusive next-day `Asia/Seoul` boundary, UTC normalization, exact timestamp semantics, equivalent offset representations, explicit handling of naive timestamps, malformed input rejection, exclusive availability comparison, and leap-day boundary arithmetic.
+
+Focused ADM calendar/data/as-of/adapter tests at v57: 122 passed. Full workspace test suite at v57: 527 passed. UTF-8 policy check passed (410 text files). This did not implement the complete PCD-06 matrix and did not connect helpers to ADM runtime, providers, scheduling, signal assembly, or execution.
+
+## Addendum — D-058 boundary and real-calendar integration tests (2026-10-20, v58)
+
+Added an explicit D-058 acceptance test showing that a current observation exactly seven calendar days old passes when the configured maximum is seven. The existing eight-day configuration test continues to reject a threshold above the approved cap. Added optional real-package integration tests for XNYS month-end/weekend cutoffs, November month-end session handling, February leap/non-leap cases, and sessions/non-sessions around US DST transition dates. These integration tests run only when `exchange-calendars==4.13.2` is installed; they were skipped in the current workspace because it has version 4.13.1.
+
+Verification in the current workspace: focused tests 123 passed, 4 skipped; full suite 528 passed, 4 skipped; UTF-8 policy check passed (501 text files). The skipped real-package tests must be run in the user's isolated `orion-calendar-audit` environment. No live API calls were made, and no scheduler/runtime wiring was added.

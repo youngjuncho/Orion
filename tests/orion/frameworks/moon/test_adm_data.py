@@ -598,6 +598,30 @@ def test_adm_freshness_audit_rejects_observation_older_than_explicit_limit() -> 
 
 
 
+def test_adm_freshness_audit_accepts_exactly_seven_calendar_days() -> None:
+    from orion.frameworks.moon.adm_data import (
+        select_adm_price_observations_on_or_before,
+        validate_adm_observation_pair_freshness,
+    )
+
+    dataset = make_dataset(
+        MarketDataPoint("VTI", "adjusted_close", "2026-10-02", 112.0, "fixture"),
+        MarketDataPoint("VTI", "adjusted_close", "2025-10-09", 100.0, "fixture"),
+    )
+    pair = select_adm_price_observations_on_or_before(
+        dataset,
+        symbol="VTI",
+        field="adjusted_close",
+        current_target_date="2026-10-09",
+        trailing_target_date="2025-10-09",
+    )
+
+    result = validate_adm_observation_pair_freshness(pair, max_age_days=7)
+    assert result.current_age_days == 7
+    assert result.trailing_age_days == 0
+    assert result.max_age_days == 7
+
+
 def test_adm_freshness_audit_rejects_threshold_above_approved_d058_limit() -> None:
     from orion.frameworks.moon.adm_data import (
         select_adm_price_observations_on_or_before,
