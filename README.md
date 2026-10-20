@@ -127,3 +127,8 @@ repository text-file encoding. The check is also included in pytest as
 `tests/test_utf8_policy.py`. Binary assets (for example PDF files and images) are
 not text and must remain in their native formats.
 
+
+
+## BAA local price-data validation
+
+BAA provider collection is opt-in and separate from Orion runtime. `scripts/baa/collect_provider_price_exports.py` is plan-only unless `--confirm-live-data-fetch` is explicitly supplied. Alpha Vantage credentials are read only from the local `ORION_ALPHA_VANTAGE_API_KEY` environment variable after that flag is provided. No data collection is scheduled or invoked by Orion. See `docs/03_Research/Moon/BAA/BAA_Data_Source_Assessment.md` for the offline normalization/comparison workflow and provider-approval caveats.
