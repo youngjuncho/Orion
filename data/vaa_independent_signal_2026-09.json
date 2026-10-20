@@ -1,0 +1,51 @@
+{
+  "signal_date": "2026-09-30",
+  "formula": "12*(P0/P1-1)+4*(P0/P3-1)+2*(P0/P6-1)+(P0/P12-1)",
+  "scores": {
+    "SPY": 0.3568818579069186,
+    "IWM": -0.023312993114995573,
+    "QQQ": 0.7072881558686823,
+    "VGK": -0.019264621554837102,
+    "EWJ": 0.6373714919904925,
+    "VWO": 0.16814597893380556,
+    "VNQ": -0.40784529465203323,
+    "GSG": 1.0418528085589698,
+    "GLD": -0.0674654692501162,
+    "TLT": -0.43766755011578606,
+    "HYG": -0.0946860713843769,
+    "LQD": -0.2472343315491764,
+    "SHY": -0.005366999620501245,
+    "IEF": -0.2609972189356202
+  },
+  "offensive_ranked": [
+    "GSG",
+    "QQQ",
+    "EWJ",
+    "SPY",
+    "VWO",
+    "VGK",
+    "IWM",
+    "GLD",
+    "HYG",
+    "LQD",
+    "VNQ",
+    "TLT"
+  ],
+  "defensive_ranked": [
+    "SHY",
+    "LQD",
+    "IEF"
+  ],
+  "offensive_nonpositive_count": 7,
+  "breadth_threshold_B": 4,
+  "easy_trading_T": 2,
+  "defensive_fraction": 1.0,
+  "state": "Defensive",
+  "selected_assets": [
+    "SHY"
+  ],
+  "weights": [
+    1.0
+  ],
+  "evidence_boundary": "Independent formula oracle only; not a performance backtest or proof of provider data correctness."
+}
